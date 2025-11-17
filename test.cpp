@@ -12,6 +12,13 @@ TEST(fileManagerTest, CreateFileTest){
     EXPECT_TRUE(fileM.createFile("testfile.txt","", std::ios_base::app));
 }
 
+TEST(fileManagerTest, ExistFileTest){
+    std::string testFileName = "testfile.txt";
+    FileManager fileM;
+    EXPECT_TRUE(fileM.existFile(testFileName));
+}
+
+
 // --- GoogleTest main ---
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
