@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include "FileManager.h"
+#include "EnvironmentManager.h"
 
 
 TEST(fileManagerTest, CreateFileTest){
@@ -18,6 +19,14 @@ TEST(fileManagerTest, ExistFileTest){
     EXPECT_TRUE(fileM.existFile(testFileName));
     EXPECT_FALSE(fileM.existFile("non_existent_file.txt"));
 }
+
+TEST(environmentManagerTest, checkEnvironmentVariable){
+    EnvironmentManager envM;
+    EXPECT_FALSE(envM.createEnvironment("","/tmp/files"));
+    EXPECT_FALSE(envM.createEnvironment("TEST_VAR",""));
+    EXPECT_TRUE(envM.createEnvironment("TEST_VAR","/tmp/files"));
+}
+
 
 
 // --- GoogleTest main ---

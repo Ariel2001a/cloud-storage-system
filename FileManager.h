@@ -6,7 +6,6 @@
 #include <iostream>
 
 
-
 class FileManager {
     public:
         bool createFile(const std::string& filename, const std::string& text, std::ios_base::openmode mode);
