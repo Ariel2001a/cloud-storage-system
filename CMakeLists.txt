@@ -13,7 +13,8 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(runTests 
+add_executable(runTests
+getcommand.cpp 
 EnvironmentManager.cpp    
 FileManager.cpp
 RleCompressor.cpp
