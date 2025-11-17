@@ -14,4 +14,7 @@ std::string get_file_content(std::string file_name);
 std::string set_file_content(std::string file_name);
 
 std::string decompress(std::string compress_content);
+
+std::string local_variable(std::string file_name);
+
 #endif

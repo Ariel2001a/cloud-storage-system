@@ -73,6 +73,11 @@ TEST(DecompressTest, HandlesDecompressStrings) {
     EXPECT_STREQ(decompress("b3a12c1").c_str(), "bbbaaaaaaaaaaaac");
 }
 
+TEST(LocalVariableTest, HandlesLocalVariableRetrieval) {
+    envMap["CONFIG_FILE"] = "config.txt";
+    EXPECT_STREQ(local_variable("CONFIG_FILE").c_str(), decompress("H1e1l2o1 W1o1r1l1d1").c_str());
+}
+
 
 // --- GoogleTest main ---
 int main(int argc, char **argv) {
