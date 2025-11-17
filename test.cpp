@@ -125,6 +125,25 @@ TEST(SearchTests, SingleMatch) {
 }
 
 
+//multiple matches test
+TEST(SearchTests, multipleMatches) {
+    std::vector<std::string> files = {
+        "fileA.txt",
+        "fileB.txt",
+        "fileAB.txt"
+    };
+
+    auto results = search(files, "B");
+
+    // Verify that there are exactly 2 matching files
+    ASSERT_EQ(results.size(), 2);
+
+    // Verify the exact files, order does not matter
+    EXPECT_EQ(results[0], "fileB.txt");
+    EXPECT_EQ(results[1], "fileAB.txt");
+
+}
+
 
 
 // --- GoogleTest main ---
