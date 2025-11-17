@@ -141,3 +141,10 @@ std::string local_variable(std::string file_name){
     std::string local_var = get_file_content(file_name);
     return local_var;
 }
+
+
+void print_decompress_content(std::string file_name){
+    std::string compressed_content = local_variable(file_name);
+    std::string decompressed_content = decompress(compressed_content);
+    std::cout << decompressed_content << std::endl;
+}

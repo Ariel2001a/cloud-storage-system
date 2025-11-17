@@ -78,6 +78,29 @@ TEST(LocalVariableTest, HandlesLocalVariableRetrieval) {
     EXPECT_STREQ(local_variable("CONFIG_FILE").c_str(), decompress("H1e1l2o1 W1o1r1l1d1").c_str());
 }
 
+TEST(LocalVariablePrintTest, PrintsCorrectValue) {
+    envMap["CONFIG_FILE"] = "config.txt";
+
+    get_file_content("CONFIG_FILE"); 
+
+    std::stringstream buffer;
+    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
+
+    std::string value = local_variable("CONFIG_FILE");
+    std::cout << value;
+
+    std::cout.rdbuf(old);
+
+    EXPECT_EQ(buffer.str(), "Hello World");
+
+    std::stringstream buffer2;
+    std::streambuf* old2 = std::cout.rdbuf(buffer2.rdbuf());
+    envMap["CONFIG_FILE2"] = "";
+    std::string value2 = local_variable("CONFIG_FILE2");
+    std::cout << value2;
+    std::cout.rdbuf(old2);
+    EXPECT_EQ(buffer2.str(), "");
+}
 
 // --- GoogleTest main ---
 int main(int argc, char **argv) {

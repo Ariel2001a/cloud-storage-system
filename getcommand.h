@@ -17,4 +17,6 @@ std::string decompress(std::string compress_content);
 
 std::string local_variable(std::string file_name);
 
+void print_decompress_content(std::string file_name);
+
 #endif
