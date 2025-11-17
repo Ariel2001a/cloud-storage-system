@@ -18,6 +18,10 @@ getcommand.cpp
 EnvironmentManager.cpp    
 FileManager.cpp
 RleCompressor.cpp
-test.cpp)
+test.cpp
+search.cpp
+
+
+)
 
 target_link_libraries(runTests gtest_main)
