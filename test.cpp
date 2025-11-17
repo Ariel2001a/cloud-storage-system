@@ -26,6 +26,16 @@ TEST(environmentManagerTest, checkEnvironmentVariable){
     EXPECT_TRUE(envM.createEnvironment("TEST_VAR","/tmp/files"));
 }
 
+TEST(environmentManagerTest, IfEnvironmentContainsFile){
+    
+    EnvironmentManager envM;
+    envM.setInMap("TEST_VAR", "/tmp/files");
+    EXPECT_TRUE(envM.existEnvironment("TEST_VAR"));
+    EXPECT_FALSE(envM.existEnvironment("NON_EXISTENT_VAR"));
+    EXPECT_EQ(envM.checkPath("TEST_VAR"), "/tmp/files");
+
+}
+
 
 
 // --- GoogleTest main ---
