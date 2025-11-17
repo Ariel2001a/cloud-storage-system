@@ -4,6 +4,7 @@
 #include <iostream>
 #include "FileManager.h"
 #include "EnvironmentManager.h"
+#include "RleCompressor.h"
 
 
 TEST(fileManagerTest, CreateFileTest){
@@ -34,6 +35,19 @@ TEST(environmentManagerTest, IfEnvironmentContainsFile){
     EXPECT_TRUE(envM.existEnvironment("TEST_VAR"));
     EXPECT_FALSE(envM.existEnvironment("NON_EXISTENT_VAR"));
     EXPECT_EQ(envM.checkPath("TEST_VAR"), "/tmp/files");
+}
+
+TEST(RLEcompressorTest, checkTextCompressedRLE){
+    RleCompressor rleCompressor;
+    std::string text1 = "AAABBBCCDAA";
+    std::string text2= "ccdgfj jjjdg";
+    std::string text3="";
+    std::string compressedText1 = rleCompressor.compress(text1);
+    EXPECT_EQ(compressedText1, "3A3B2C1D2A");
+    std::string compressedText2 = rleCompressor.compress(text2);
+    EXPECT_EQ(compressedText2, "2c1d1g1f1j 3j1d1g");
+    std::string compressedText3 = rleCompressor.compress(text3);
+    EXPECT_EQ(compressedText3, "");
 
 }
 
