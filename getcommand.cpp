@@ -42,3 +42,25 @@ std::string get_file_content(std::string file_name) {
         return set_file_content(file_path);
     }
 }
+
+std::string decompress(std::string compress_content){
+    std::string decompressed_content;
+    size_t i = 0;
+
+    while (i < compress_content.length()) {
+        char current_char = compress_content[i++];
+        if (i >= compress_content.length() || (!(compress_content[i] >= '0' && compress_content[i] <= '9'))) {
+            return "";
+        }
+
+        int count = 0;
+        while (i < compress_content.length() && compress_content[i] >= '0' && compress_content[i] <= '9') {
+            count = count * 10 + (compress_content[i] - '0');
+            i++;
+        }
+        
+        decompressed_content.append(count, current_char);
+    }
+    
+    return decompressed_content;
+}

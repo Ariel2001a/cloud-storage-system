@@ -11,7 +11,7 @@ char* find_environment_variable(std::string file_name);
 
 std::string get_file_content(std::string file_name);
 
-std::string set_file_content();
+std::string set_file_content(std::string file_name);
 
-
+std::string decompress(std::string compress_content);
 #endif

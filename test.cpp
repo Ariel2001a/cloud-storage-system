@@ -67,6 +67,12 @@ TEST(GetFileContentTest, HandlesExistingAndNonExistingStrings) {
     EXPECT_STREQ(get_file_content("CONFIG_FILE").c_str(), "Hello World\n");
 }
 
+TEST(DecompressTest, HandlesDecompressStrings) {
+    EXPECT_STREQ(decompress("abc").c_str(), "");
+    EXPECT_STREQ(decompress("a12b3c1").c_str(), "aaaaaaaaaaaabbbc");
+    EXPECT_STREQ(decompress("b3a12c1").c_str(), "bbbaaaaaaaaaaaac");
+}
+
 
 // --- GoogleTest main ---
 int main(int argc, char **argv) {
