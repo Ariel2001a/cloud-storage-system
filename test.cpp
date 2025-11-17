@@ -16,6 +16,7 @@ TEST(fileManagerTest, ExistFileTest){
     std::string testFileName = "testfile.txt";
     FileManager fileM;
     EXPECT_TRUE(fileM.existFile(testFileName));
+    EXPECT_FALSE(fileM.existFile("non_existent_file.txt"));
 }
 
 
