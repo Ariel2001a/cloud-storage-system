@@ -48,7 +48,7 @@ std::string decompress(std::string compress_content) {
     size_t i = 0;
 
     while (i < compress_content.length()) {
-        char current_char = compress_content[i++];
+        char current_char = compress_content[i];
         int count = 0;
 
         if (current_char == ' ') {
@@ -63,8 +63,11 @@ std::string decompress(std::string compress_content) {
                 count = count * 10 + (compress_content[i] - '0');
                 i++;
             }
+
+            current_char = compress_content[i];
         }
 
+        i++;
         decompressed_content.append(count, current_char);
     }
 
