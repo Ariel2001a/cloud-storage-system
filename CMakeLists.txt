@@ -16,6 +16,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(runTests 
 EnvironmentManager.cpp    
 FileManager.cpp
+RleCompressor.cpp
 test.cpp)
 
 target_link_libraries(runTests gtest_main)
