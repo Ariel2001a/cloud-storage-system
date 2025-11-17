@@ -7,6 +7,8 @@
 #include "RleCompressor.h"
 #include <map>
 #include "getcommand.h"
+#include <vector>
+#include <search.h>
 
 
 TEST(fileManagerTest, CreateFileTest){
@@ -101,6 +103,29 @@ TEST(LocalVariablePrintTest, PrintsCorrectValue) {
     std::cout.rdbuf(old2);
     EXPECT_EQ(buffer2.str(), "");
 }
+
+// tests for search command
+
+// single match test
+TEST(SearchTests, SingleMatch) {
+    std::vector<std::string> files = {
+        "fileA.txt",
+        "fileB.txt",
+        "fileC.txt"
+    };
+
+    // Only "fileB.txt" should match
+    auto results = search(files, "B");
+
+    // 1. Check that exactly one file was returned
+    ASSERT_EQ(results.size(), 1);
+
+    // 2. Check that the returned file is correct
+    EXPECT_EQ(results[0], "fileB.txt");
+}
+
+
+
 
 // --- GoogleTest main ---
 int main(int argc, char **argv) {
