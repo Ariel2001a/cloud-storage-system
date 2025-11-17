@@ -14,6 +14,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 add_executable(runTests 
+EnvironmentManager.cpp    
 FileManager.cpp
 test.cpp)
 
