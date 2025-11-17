@@ -64,7 +64,7 @@ TEST(FindEnvironmentVariableTest, HandlesExistingAndNonExistingVars) {
 TEST(GetFileContentTest, HandlesExistingAndNonExistingStrings) {
     EXPECT_EQ(get_file_content("abc"), "");
     envMap["CONFIG_FILE"] = "config.txt";
-    EXPECT_STREQ(get_file_content("CONFIG_FILE").c_str(), "Hello World\n");
+    EXPECT_STREQ(get_file_content("CONFIG_FILE").c_str(), "Hello World");
 }
 
 TEST(DecompressTest, HandlesDecompressStrings) {
