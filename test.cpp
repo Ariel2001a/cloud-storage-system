@@ -145,6 +145,22 @@ TEST(SearchTests, multipleMatches) {
 }
 
 
+// no matches test
+TEST(SearchTests, NoMatches) {
+    std::vector<std::string> files = {
+        "fileA.txt",
+        "fileB.txt",
+        "fileC.txt"
+    };
+
+    // No files should match the query "D"
+    auto results = search(files, "D");
+
+    // Check that no files were returned
+    ASSERT_EQ(results.size(), 0);
+}
+
+
 
 // --- GoogleTest main ---
 int main(int argc, char **argv) {
