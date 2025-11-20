@@ -20,7 +20,7 @@ FileManager.cpp
 RleCompressor.cpp
 test.cpp
 search.cpp
-
+#Compressor.cpp
 
 )
 

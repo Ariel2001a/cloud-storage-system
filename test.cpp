@@ -106,42 +106,61 @@ TEST(LocalVariablePrintTest, PrintsCorrectValue) {
 
 // tests for search command
 
-
 TEST(SearchTests, SingleMatch_RLE) {
+    RleCompressor compressor;
 
-    std::string f1 = Compressor.compress("AAAAAA")
-    std::string f2 = Compressor.compress("BBBBBB")
-    std::string f3 = Compressor.compress("CCCCCC")
-   
+    std::string inputA = "AAAAAA";      // compresses to: "6A"
+    std::string inputB = "BBBBBB";      // compresses to: "6B"
+    std::string inputC = "CCCCCC";      // compresses to: "6C"
+
+    std::string f1 = compressor.compress(inputA);
+    std::string f2 = compressor.compress(inputB);
+    std::string f3 = compressor.compress(inputC);
 
     std::vector<std::string> files = { f1, f2, f3 };
 
-    auto results = search(files, "BBB");
+    // Search inside the compressed outputs
+    auto results = search(files, "6B");
 
     ASSERT_EQ(results.size(), 1);
-    EXPECT_EQ(results[0], "fileB.txt");
+    EXPECT_EQ(results[0], f2);
 }
 
 TEST(SearchTests, MultipleMatches_RLE) {
+    RleCompressor compressor;
 
-    std::string f1 = Compressor.compress("BBB")
-    std::string f2 = Compressor.compress("BBBBBBBB")
-    std::string f3 = Compressor.compress("NO MATCHES")
+    std::string inputA = "BBB";          // compresses to "3B"
+    std::string inputB = "BBBBBBBB";     // compresses to "8B"
+    std::string inputC = "NO MATCHES";   
+
+    std::string f1 = compressor.compress(inputA);
+    std::string f2 = compressor.compress(inputB);
+    std::string f3 = compressor.compress(inputC);
 
     std::vector<std::string> files = { f1, f2, f3 };
 
-    auto results = search(files, "BB");
+    
+    auto results = search(files, "B");
 
     ASSERT_EQ(results.size(), 2);
-    EXPECT_EQ(results[0], "fileA.txt");
-    EXPECT_EQ(results[1], "fileB.txt");
+    EXPECT_EQ(results[0], f1);
+    EXPECT_EQ(results[1], f2);
 }
 
 TEST(SearchTests, NoMatches_RLE) {
 
-     std::string f1 = Compressor.compress("AAAAA")
-    std::string f2 = Compressor.compress("XXXXX")
-    std::string f3 = Compressor.compress("123456")
+
+    RleCompressor compressor;
+
+    
+    std::string inputA = "AAAAA";
+    std::string inputB= "XXXXX";
+    std::string inputC= "123456";
+
+    std::string f1 = compressor.compress(inputA);
+    std::string f2 = compressor.compress(inputB);
+    std::string f3 = compressor.compress(inputC);
+
     
     std::vector<std::string> files = { f1, f2, f3 };
 
