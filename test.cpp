@@ -106,59 +106,50 @@ TEST(LocalVariablePrintTest, PrintsCorrectValue) {
 
 // tests for search command
 
-// single match test
-TEST(SearchTests, SingleMatch) {
-    std::vector<std::string> files = {
-        "fileA.txt",
-        "fileB.txt",
-        "fileC.txt"
-    };
 
-    // Only "fileB.txt" should match
-    auto results = search(files, "B");
+TEST(SearchTests, SingleMatch_RLE) {
 
-    // 1. Check that exactly one file was returned
+    std::string f1 = Compressor.compress("AAAAAA")
+    std::string f2 = Compressor.compress("BBBBBB")
+    std::string f3 = Compressor.compress("CCCCCC")
+   
+
+    std::vector<std::string> files = { f1, f2, f3 };
+
+    auto results = search(files, "BBB");
+
     ASSERT_EQ(results.size(), 1);
-
-    // 2. Check that the returned file is correct
     EXPECT_EQ(results[0], "fileB.txt");
 }
 
+TEST(SearchTests, MultipleMatches_RLE) {
 
-//multiple matches test
-TEST(SearchTests, multipleMatches) {
-    std::vector<std::string> files = {
-        "fileA.txt",
-        "fileB.txt",
-        "fileAB.txt"
-    };
+    std::string f1 = Compressor.compress("BBB")
+    std::string f2 = Compressor.compress("BBBBBBBB")
+    std::string f3 = Compressor.compress("NO MATCHES")
 
-    auto results = search(files, "B");
+    std::vector<std::string> files = { f1, f2, f3 };
 
-    // Verify that there are exactly 2 matching files
+    auto results = search(files, "BB");
+
     ASSERT_EQ(results.size(), 2);
-
-    // Verify the exact files, order does not matter
-    EXPECT_EQ(results[0], "fileB.txt");
-    EXPECT_EQ(results[1], "fileAB.txt");
-
+    EXPECT_EQ(results[0], "fileA.txt");
+    EXPECT_EQ(results[1], "fileB.txt");
 }
 
+TEST(SearchTests, NoMatches_RLE) {
 
-// no matches test
-TEST(SearchTests, NoMatches) {
-    std::vector<std::string> files = {
-        "fileA.txt",
-        "fileB.txt",
-        "fileC.txt"
-    };
+     std::string f1 = Compressor.compress("AAAAA")
+    std::string f2 = Compressor.compress("XXXXX")
+    std::string f3 = Compressor.compress("123456")
+    
+    std::vector<std::string> files = { f1, f2, f3 };
 
-    // No files should match the query "D"
-    auto results = search(files, "D");
+    auto results = search(files, "ZZZ");
 
-    // Check that no files were returned
     ASSERT_EQ(results.size(), 0);
 }
+
 
 
 
