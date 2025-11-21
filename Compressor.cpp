@@ -3,22 +3,30 @@
 
 using namespace std;
 
+// Compresses the input text using a simple run-length encoding algorithm
 string Compressor::compress(const string& text){
             int count=0;
+            string compressedText;
+
+        // Compressed text result
         for(int i=0;i<text.length();i++){
+
+            // Handle spaces separately
              if (text[i] == ' ')
             {
-                compresssedText+=' ';
+                compressedText+=' ';
                 count=0;
                 continue;
             }
             count++;
+
+            // If the current character is different from the next one, append the count and character to the result
             if(text[i]!=text[i+1]){
-                compresssedText+=std::to_string(count)+text[i];
+                compressedText+=std::to_string(count)+text[i];
                 count=0;
             }           
         }
-        return compresssedText;
+        return compressedText;
 }
 
 string Compressor::decompress(const string& compress_content){

@@ -2,26 +2,35 @@ cmake_minimum_required(VERSION 3.10)
 
 project(MyExample)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include(FetchContent)
-FetchContent_Declare(
-    googletest
-    URL https://github.com/google/googletest/archive/refs/tags/release-1.11.0.zip
+add_executable(MyProgram
+    main.cpp
+    CommandManager.cpp
+    Compressor.cpp
+    AddCommand.cpp
+    ICommand.cpp
 )
 
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
+#include(FetchContent)
+#FetchContent_Declare(
+ #   googletest
+ #   URL https://github.com/google/googletest/archive/refs/tags/release-1.11.0.zip
+#)
 
-add_executable(runTests
-getcommand.cpp 
-EnvironmentManager.cpp    
-FileManager.cpp
-RleCompressor.cpp
-test.cpp
-search.cpp
+#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+#FetchContent_MakeAvailable(googletest)
+
+#add_executable(runTests
+#getcommand.cpp 
+#EnvironmentManager.cpp    
+#FileManager.cpp
+#RleCompressor.cpp
+#test.cpp
+#search.cpp
 
 
-)
+#)
 
-target_link_libraries(runTests gtest_main)
+#target_link_libraries(runTests gtest_main)

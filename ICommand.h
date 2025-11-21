@@ -15,7 +15,7 @@ class ICommand{
         virtual ~ICommand()=default;
 
 // Must be implemented by derived commands
-        virtual void run(const string vector(<string>& args))=0;
+        virtual void run(const vector<string>& args)=0;
 
 // Returns the name of the command
         string getName() const;
