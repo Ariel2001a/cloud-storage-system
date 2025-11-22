@@ -6,7 +6,6 @@
 #include "EnvironmentManager.h"
 #include "RleCompressor.h"
 #include <map>
-//#include "getcommand.h"
 #include <vector>
 #include "search.h"
 #include "Compressor.h"
@@ -71,16 +70,6 @@ TEST(CompressorTests, DecompressTest) {
 }
 
 // get command tests
-TEST(GetCommandTests, RunTest) {
-    std::stringstream buffer;
-    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
-    std::vector<std::string> args = {"GET CONFIG_FILE"};
-    GetICommand getcmd;
-    getcmd.run(args);
-    std::cout.rdbuf(old);
-    EXPECT_EQ(buffer.str(), "Hello World\n");
-}
-
 
 TEST(GetCommandTests, FindEnvironmentVariableTest) {
     GetICommand getcmd("CONFIG_FILE");
@@ -94,38 +83,16 @@ TEST(GetCommandTests, GetFileContentTest) {
     std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
     EXPECT_STREQ(getcmd.getContentFile(expectedPath).c_str(), "1H1e2l1o 1W1o1r1l1d");
 }
-
-/*
-
-TEST(LocalVariableTest, HandlesLocalVariableRetrieval) {
-    envMap["CONFIG_FILE"] = "config.txt";
-    EXPECT_STREQ(local_variable("CONFIG_FILE").c_str(), decompress("H1e1l2o1 W1o1r1l1d1").c_str());
-}
-
-TEST(LocalVariablePrintTest, PrintsCorrectValue) {
-    envMap["CONFIG_FILE"] = "config.txt";
-
-    get_file_content("CONFIG_FILE"); 
-
+TEST(GetCommandTests, RunTest) {
     std::stringstream buffer;
     std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
-
-    std::string value = local_variable("CONFIG_FILE");
-    std::cout << value;
-
+    std::vector<std::string> args = {"GET CONFIG_FILE"};
+    GetICommand getcmd;
+    getcmd.run(args);
     std::cout.rdbuf(old);
-
-    EXPECT_EQ(buffer.str(), "Hello World");
-
-    std::stringstream buffer2;
-    std::streambuf* old2 = std::cout.rdbuf(buffer2.rdbuf());
-    envMap["CONFIG_FILE2"] = "";
-    std::string value2 = local_variable("CONFIG_FILE2");
-    std::cout << value2;
-    std::cout.rdbuf(old2);
-    EXPECT_EQ(buffer2.str(), "");
+    EXPECT_EQ(buffer.str(), "Hello World\n");
 }
-*/
+
 // tests for search command
 
 // single match test
