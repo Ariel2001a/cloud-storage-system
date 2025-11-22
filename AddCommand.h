@@ -11,12 +11,10 @@ using namespace std;
 
 //AddCommand class
 class AddCommand: public ICommand{
-    private:
-        Compressor* comp;
     public:
 
     //constructor
-        AddCommand(Compressor* comp);
+        AddCommand();
         
         //execute add command
         void run(const vector<string>& args) override;

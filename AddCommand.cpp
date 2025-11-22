@@ -8,35 +8,19 @@
 #include <sys/stat.h>
 #include <filesystem>
 
+#include "Compressor.h"
+
 
 using namespace std;
 namespace fs = filesystem;
 
 
 //AddCommand constructor
-AddCommand::AddCommand(Compressor* comp) : ICommand("add")
-{
-    this->comp=comp;
-}
-
+AddCommand::AddCommand() : ICommand("add") {}
 
 //Execute add command
 void AddCommand::run(const vector<string>& args)
 {
-    // Check for sufficient arguments
-    if(args.size()<1){
-        return;
-    }
-
-    string fileName = args[1];
-
-
-    // Check for spaces in filename
-
-    if (fileName.find(' ') != -1) {
-        return;
-    }
-
     string filename = args[0];
     string text;
 
@@ -48,7 +32,7 @@ void AddCommand::run(const vector<string>& args)
         }
     }
 
-    string compressed = comp->compress(text);
+    string compressed = Compressor::compress(text);
 
     // Get directory from environment variable
     const char* folder = getenv("EX1_DIR");
@@ -59,14 +43,12 @@ void AddCommand::run(const vector<string>& args)
     // Create full file path
     string fullPath = string(folder) + "/" + filename;
 
-    // Check if folder exists    
-    /*struct stat info;
-    if (stat(folder, &info) != 0) {
-        cout << "folder does not exist\n";
-    } else {
-        cout << "folder exists\n";
-    }*/
-   
+    // Check if file already exists- do not overwrite
+    if (fs::exists(fullPath)) {
+        return;
+    }
+
+
     // Failed to open file for writing- abort
     ofstream out(fullPath);
     if (!out) {
@@ -75,19 +57,4 @@ void AddCommand::run(const vector<string>& args)
 
     out << compressed;
     out.close();
-
-
-    /*for (const auto& entry : fs::directory_iterator(folder)) {
-    if (fs::is_regular_file(entry)) {
-        cout << entry.path().filename().string() << endl;
-    }
-}*/
-
-    /*ifstream in(fullPath);
-    string line;
-    cout << "File content:\n";
-    while (getline(in, line)) {
-        cout << line << endl;
-    }
-    in.close();*/
 }
