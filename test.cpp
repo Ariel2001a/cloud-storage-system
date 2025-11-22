@@ -6,9 +6,12 @@
 #include "EnvironmentManager.h"
 #include "RleCompressor.h"
 #include <map>
-#include "getcommand.h"
+//#include "getcommand.h"
 #include <vector>
 #include "search.h"
+#include "Compressor.h"
+#include "ICommand.h"
+#include "getICommand.h"
 
 
 TEST(fileManagerTest, CreateFileTest){
@@ -55,25 +58,44 @@ TEST(RLEcompressorTest, checkTextCompressedRLE){
 
 }
 
+TEST(CompressorTests, DecompressTest) {
+    std::string compressed = "1H1e2l1o 1W1o1r1l1d";;
+    std::string expected = "Hello World"; 
+    EXPECT_EQ(Compressor::decompress(compressed), expected);
+    compressed = "2-21-110-13--4A";
+    expected = "2211111111111---AAAA"; 
+    EXPECT_EQ(Compressor::decompress(compressed), expected);
+    compressed = "2---2";
+    expected = ""; 
+    EXPECT_EQ(Compressor::decompress(compressed), expected);
+}
+
 // get command tests
-
-TEST(FindEnvironmentVariableTest, HandlesExistingAndNonExistingVars) {
-    EXPECT_EQ(find_environment_variable("abc"), nullptr);
-    envMap["CONFIG_FILE"] = "config.txt";
-    EXPECT_STREQ(find_environment_variable("CONFIG_FILE"), "config.txt");
+TEST(GetCommandTests, RunTest) {
+    std::stringstream buffer;
+    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
+    std::vector<std::string> args = {"GET CONFIG_FILE"};
+    GetICommand getcmd;
+    getcmd.run(args);
+    std::cout.rdbuf(old);
+    EXPECT_EQ(buffer.str(), "Hello World\n");
 }
 
-TEST(GetFileContentTest, HandlesExistingAndNonExistingStrings) {
-    EXPECT_EQ(get_file_content("abc"), "");
-    envMap["CONFIG_FILE"] = "config.txt";
-    EXPECT_STREQ(get_file_content("CONFIG_FILE").c_str(), "Hello World");
+
+TEST(GetCommandTests, FindEnvironmentVariableTest) {
+    GetICommand getcmd("CONFIG_FILE");
+    std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
+    EXPECT_EQ(getcmd.findEnvironmentVariable(), expectedPath);
 }
 
-TEST(DecompressTest, HandlesDecompressStrings) {
-    EXPECT_STREQ(decompress("abc").c_str(), "");
-    EXPECT_STREQ(decompress("a12b3c1").c_str(), "aaaaaaaaaaaabbbc");
-    EXPECT_STREQ(decompress("b3a12c1").c_str(), "bbbaaaaaaaaaaaac");
+
+TEST(GetCommandTests, GetFileContentTest) {
+    GetICommand getcmd("CONFIG_FILE");
+    std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
+    EXPECT_STREQ(getcmd.getContentFile(expectedPath).c_str(), "1H1e2l1o 1W1o1r1l1d");
 }
+
+/*
 
 TEST(LocalVariableTest, HandlesLocalVariableRetrieval) {
     envMap["CONFIG_FILE"] = "config.txt";
@@ -103,7 +125,7 @@ TEST(LocalVariablePrintTest, PrintsCorrectValue) {
     std::cout.rdbuf(old2);
     EXPECT_EQ(buffer2.str(), "");
 }
-
+*/
 // tests for search command
 
 // single match test

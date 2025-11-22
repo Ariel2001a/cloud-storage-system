@@ -3,48 +3,63 @@
 
 using namespace std;
 
-string Compressor::compress(const string& text){
-            int count=0;
-        for(int i=0;i<text.length();i++){
-             if (text[i] == ' ')
-            {
-                compresssedText+=' ';
-                count=0;
+    string Compressor::compress(const string& text){
+                int count=0;
+                string compresssedText;
+            for(int i=0;i<text.length();i++){
+                if (text[i] == ' ')
+                {
+                    compresssedText+=' ';
+                    count=0;
+                    continue;
+                }
+                count++;
+                if(text[i]!=text[i+1]){
+                    compresssedText+=std::to_string(count)+text[i];
+                    count=0;
+                }           
+            }
+            return compresssedText;
+    };
+
+    string Compressor::decompress(const string& compress_content){
+        std::string decompressed_content="";
+        size_t i = 0;
+
+        while (i < compress_content.length()) {
+            char char_for_expansion;
+            int count = 0;
+            if (compress_content[i] == ' ') {
+                decompressed_content += ' ';
+                i++;
                 continue;
             }
-            count++;
-            if(text[i]!=text[i+1]){
-                compresssedText+=std::to_string(count)+text[i];
-                count=0;
-            }           
-        }
-        return compresssedText;
-}
+            else {
+                if (!(compress_content[i] >= '0' && compress_content[i] <= '9')) {
+                    return "";
+                }
 
-string Compressor::decompress(const string& compress_content){
-        std::string decompressed_content;
-    size_t i = 0;
+                while (i < compress_content.length() && compress_content[i] >= '0' && compress_content[i] <= '9') {
+                    count = count * 10 + (compress_content[i] - '0');
+                    i++;
+                }
 
-    while (i < compress_content.length()) {
-        char current_char = compress_content[i++];
-        int count = 0;
-
-        if (current_char == ' ') {
-            count = 1;
-        } 
-        else {
-            if (i >= compress_content.length() || !(compress_content[i] >= '0' && compress_content[i] <= '9')) {
-                return "";
+                if (i >= compress_content.length()) {
+                    return "";
+                }
+                char_for_expansion = compress_content[i];
+                if(char_for_expansion == '-') {
+                    i++;
+                    if (i >= compress_content.length()) {
+                        return "";
+                    }
+                    char_for_expansion = compress_content[i];
+                }
             }
-
-            while (i < compress_content.length() && compress_content[i] >= '0' && compress_content[i] <= '9') {
-                count = count * 10 + (compress_content[i] - '0');
+            decompressed_content.append(count, char_for_expansion);
+            if(i < compress_content.length()){
                 i++;
             }
         }
-
-        decompressed_content.append(count, current_char);
-    }
-
-    return decompressed_content;
-}
+        return decompressed_content;
+    };
