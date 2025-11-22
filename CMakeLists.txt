@@ -20,7 +20,7 @@ RleCompressor.cpp
 test.cpp
 search.cpp
 Compressor.cpp
-getICommand.cpp
+GetCommand.cpp
 )
 
 target_link_libraries(runTests gtest_main)

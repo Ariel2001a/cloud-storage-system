@@ -10,7 +10,7 @@
 #include "search.h"
 #include "Compressor.h"
 #include "ICommand.h"
-#include "getICommand.h"
+#include "GetCommand.h"
 
 
 TEST(fileManagerTest, CreateFileTest){
@@ -72,14 +72,14 @@ TEST(CompressorTests, DecompressTest) {
 // get command tests
 
 TEST(GetCommandTests, FindEnvironmentVariableTest) {
-    GetICommand getcmd("CONFIG_FILE");
+    GetCommand getcmd("CONFIG_FILE");
     std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
     EXPECT_EQ(getcmd.findEnvironmentVariable(), expectedPath);
 }
 
 
 TEST(GetCommandTests, GetFileContentTest) {
-    GetICommand getcmd("CONFIG_FILE");
+    GetCommand getcmd("CONFIG_FILE");
     std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
     EXPECT_STREQ(getcmd.getContentFile(expectedPath).c_str(), "1H1e2l1o 1W1o1r1l1d");
 }
@@ -87,7 +87,7 @@ TEST(GetCommandTests, RunTest) {
     std::stringstream buffer;
     std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
     std::vector<std::string> args = {"GET CONFIG_FILE"};
-    GetICommand getcmd;
+    GetCommand getcmd;
     getcmd.run(args);
     std::cout.rdbuf(old);
     EXPECT_EQ(buffer.str(), "Hello World\n");

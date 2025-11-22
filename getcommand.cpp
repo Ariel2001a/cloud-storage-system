@@ -3,82 +3,88 @@
 #include <map>
 #include <fstream>
 using namespace std;
+#include "ICommand.h"
+#include "Compressor.h"
+#include "GetCommand.h"
+#include <filesystem>
+#include <sstream>
 
-std::map<std::string, std::string> envMap;
-    
-std::string set_file_content(std::string file_name) {
-
-    ofstream file(file_name, ios::trunc);
-    file << "Hello World\n";
-    file.close();
-
-    ifstream File(file_name);
-    std::string output_array;
-    std::string line;
-    while (getline(File, line)) {
-        output_array += line;
+map<string, string> m;
+GetCommand::GetCommand(const string& name_file){
+    fileName = name_file;
+    const char* folder = getenv("EX1_DIR");
+    if (!folder){
+         return;
     }
-    File.close();
-    
-    return output_array;
 
+    string fullPath = string(folder) + "/" + fileName;
+    std::ofstream file(fullPath);
+    if (!file) {
+        return;
+    }
+
+    string content = "1H1e2l1o 1W1o1r1l1d";
+    file << content;
+    file.close();
 }
 
-char* find_environment_variable(std::string file_name) {
-    auto it = envMap.find(file_name);
-    if (it != envMap.end())
-       return const_cast<char*>(it->second.c_str());
-
-    return nullptr;
+string GetCommand::findEnvironmentVariable() {
+    const char* folder = getenv("EX1_DIR");
+    if (!folder) return "";
+    return string(folder) + "/" + fileName;
 }
 
-std::string get_file_content(std::string file_name) {
 
-    char* file_path = find_environment_variable(file_name);
-    if (file_path == nullptr) {
+string GetCommand::getContentFile(const string& environment_variable_path) {
+    string compress_content;
+    ifstream file(environment_variable_path);
+            
+    if (!file) {
         return "";
     }
-    else {
-        return set_file_content(file_path);
+
+    string line;
+    while (getline(file, line)) {
+         compress_content += line;
     }
-}
+    file.close();
 
-std::string decompress(std::string compress_content) {
-    std::string decompressed_content;
-    size_t i = 0;
+    return compress_content;
+} 
 
-    while (i < compress_content.length()) {
-        char current_char = compress_content[i++];
-        int count = 0;
 
-        if (current_char == ' ') {
-            count = 1;
-        } 
-        else {
-            if (i >= compress_content.length() || !(compress_content[i] >= '0' && compress_content[i] <= '9')) {
-                return "";
-            }
-
-            while (i < compress_content.length() && compress_content[i] >= '0' && compress_content[i] <= '9') {
-                count = count * 10 + (compress_content[i] - '0');
-                i++;
-            }
-        }
-
-        decompressed_content.append(count, current_char);
+void GetCommand::run(const vector<string>& args) {
+    if (args.size() != 1) {
+        return;
     }
 
-    return decompressed_content;
-}
+    std::string full = args[0];
+    std::istringstream iss(full);
+    string cmd, file;
 
-std::string local_variable(std::string file_name){
-    std::string local_var = get_file_content(file_name);
-    return local_var;
-}
+    if (!(iss >> cmd >> file)) {
+        return;
+    }
 
+    std::string extra;
+    if (iss >> extra || cmd != "GET") {
+        return;
+    }
+    GetCommand getcmd(file);
+    string environment_variable_path = getcmd.findEnvironmentVariable();
+    if (environment_variable_path.empty()) {
+        return;
+    }
 
-void print_decompress_content(std::string file_name){
-    std::string compressed_content = local_variable(file_name);
-    std::string decompressed_content = decompress(compressed_content);
-    std::cout << decompressed_content << std::endl;
+    string compress_content = getcmd.getContentFile(environment_variable_path);
+    if (compress_content.empty()) {
+        return;
+    }
+
+    string decompressed_content = Compressor::decompress(compress_content);
+    if (decompressed_content.empty()) {
+        return;
+    }
+
+    cout << decompressed_content << endl;
 }

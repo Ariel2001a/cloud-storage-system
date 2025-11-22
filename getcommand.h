@@ -1,22 +1,19 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <fstream>
+using namespace std;
+#include "ICommand.h"
+#include "Compressor.h"
 
-#ifndef GETCOMMAND_H
-#define GETCOMMAND_H
-
-extern std::map<std::string, std::string> envMap;
-
-char* find_environment_variable(std::string file_name);
-
-std::string get_file_content(std::string file_name);
-
-std::string set_file_content(std::string file_name);
-
-std::string decompress(std::string compress_content);
-
-std::string local_variable(std::string file_name);
-
-void print_decompress_content(std::string file_name);
-
-#endif
+class GetCommand : public ICommand {
+    private:
+        string fileName;
+    
+    public:
+        GetCommand() = default;
+        GetCommand(const string& name_file);
+        string findEnvironmentVariable(); 
+        string getContentFile(const string& environment_variable_path);
+        void run(const vector<string>& args) override;
+};
