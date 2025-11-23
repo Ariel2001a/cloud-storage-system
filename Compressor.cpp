@@ -19,6 +19,19 @@ string Compressor::compress(const string& text){
 
         count++;
 
+        // When sequence ends
+        if (i == text.length() - 1 || text[i] != text[i + 1]) {
+
+            // Add the count
+            compressedText += std::to_string(count);
+
+
+
+            // Add the actual character
+            compressedText += text[i];
+
+            count = 0;
+        }
     }
     return compressedText;
 }
@@ -64,5 +77,4 @@ string Compressor::decompress(const string& compress_content){
         }
     }
     return decompressed_content;
-};
-
+}
