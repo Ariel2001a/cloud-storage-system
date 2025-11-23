@@ -4,7 +4,7 @@
 using namespace std;
 
 // Constructor implementation
-ICommand::Icommand(const string& cmdName){
+ICommand::ICommand(const string& cmdName){
     name=cmdName;
 }
 

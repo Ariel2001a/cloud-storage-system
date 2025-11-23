@@ -4,9 +4,14 @@
 
 using namespace std;
 
+// Compressor class for compressing and decompressing text
 class Compressor{
     public:
-        string compress(const string& text);
-        string decompress(const string& compressedText);
+
+        // Compresses the input text
+        string static compress(const string& text);
+
+        // Decompresses the input compressed text
+        string static decompress(const string& compressedText);
 };
 #endif
