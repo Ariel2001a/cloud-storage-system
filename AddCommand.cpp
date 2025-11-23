@@ -39,22 +39,4 @@ void AddCommand::run(const vector<string>& args)
     if (!folder){
          return;
     }
-
-    // Create full file path
-    string fullPath = string(folder) + "/" + filename;
-
-    // Check if file already exists- do not overwrite
-    if (fs::exists(fullPath)) {
-        return;
-    }
-
-
-    // Failed to open file for writing- abort
-    ofstream out(fullPath);
-    if (!out) {
-        return;
-    }
-
-    out << compressed;
-    out.close();
 }
