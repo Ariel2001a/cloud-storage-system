@@ -1,35 +1,19 @@
-#ifndef COMMAND_H
-#define COMMAND_H
+#ifndef ICOMMAND_H
+#define ICOMMAND_H
 
 #include <string>
 #include <vector>
 
+class ICommand {
+public:
+    virtual ~ICommand() = default;
+    virtual void run(const std::vector<std::string>& args) = 0;
+    virtual std::string getName() const = 0;
 
-using namespace std;
-
-// Interface for all commands
-class ICommand{
-    public:
-
-// Virtual destructor ensures proper cleanup of derived classes
-        ICommand()=default;
-        ICommand()=default;
-
-// Must be implemented by derived commands
-<<<<<<< HEAD
-        virtual void run(const vector<string>& args)=0;
-=======
-    virtual void run(const vector<string>& args) = 0;
->>>>>>> PASP-31-print-the-local-variable
-
-// Returns the name of the command
-        string getName() const;
-        
-    protected:
-    
-        string name;
-
-        // Constructor to initialize command name
-        ICommand(const string& cmdName);
+protected:
+    std::string name;
+    ICommand() = default;
+    ICommand(const std::string& cmdName) : name(cmdName) {}
 };
-#endif
+
+#endif // ICOMMAND_H
