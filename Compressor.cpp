@@ -31,6 +31,7 @@ string Compressor::compress(const string& text){
             compressedText += text[i];
 
             count = 0;
+
         }
     }
     return compressedText;
@@ -77,3 +78,6 @@ string Compressor::compress(const string& text){
             }
         }
 
+
+    return decompressed_content;
+}
