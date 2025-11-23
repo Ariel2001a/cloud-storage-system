@@ -25,10 +25,7 @@ string Compressor::compress(const string& text){
             // Add the count
             compressedText += std::to_string(count);
 
-            // If the character is problematic, escape it with '-'
-            if (isdigit(text[i]) || text[i] == '-') {
-                compressedText += '-';
-            }
+
 
             // Add the actual character
             compressedText += text[i];
