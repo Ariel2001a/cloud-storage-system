@@ -9,6 +9,8 @@ private:
     std::string folder;
     Compressor* comp;
 
+
+
 public:
     // Constructor
     SearchCommand(Compressor* compPtr, const std::string& folderPath);
