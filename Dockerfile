@@ -7,9 +7,12 @@ COPY . /usr/src/mytest
 WORKDIR /usr/src/mytest
 ENV EX1_DIR=/usr/src/mytest
 
-RUN mkdir build
+
+RUN mkdir build && mkdir -p /usr/src/mytest/newFiles
 WORKDIR /usr/src/mytest/build
 
 RUN cmake .. && make
 
-CMD [ "./runTests" ]
+ENV EX1_DIR=/usr/src/mytest/newFiles
+
+CMD [ "./MyProgram" ]

@@ -2,171 +2,103 @@
 #include <fstream>
 #include <string>
 #include <iostream>
-#include "FileManager.h"
-#include "EnvironmentManager.h"
-#include "RleCompressor.h"
 #include <map>
-#include "getcommand.h"
 #include <vector>
-#include "search.h"
+
+#include "Compressor.h"
+#include "main_helper_tests.h"
 
 
-TEST(fileManagerTest, CreateFileTest){
-    FileManager fileM;
-    EXPECT_TRUE(fileM.createFile("testfile.txt","HELLOW", std::ios_base::app));
-    EXPECT_FALSE(fileM.createFile("","HELLOW", std::ios_base::app));
-    EXPECT_TRUE(fileM.createFile("testfile.txt","", std::ios_base::app));
+TEST(ValidateInputTest, ValidInputWithMultipleArgs) {
+    string line = "add file1.txt Hello World";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
 }
 
-TEST(fileManagerTest, ExistFileTest){
-    std::string testFileName = "testfile.txt";
-    FileManager fileM;
-    EXPECT_TRUE(fileM.existFile(testFileName));
-    EXPECT_FALSE(fileM.existFile("non_existent_file.txt"));
+TEST(ValidateInputTest, ValidInputWithSingleArg) {
+    string line = "add file2.txt";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
 }
 
-TEST(environmentManagerTest, checkEnvironmentVariable){
-    EnvironmentManager envM;
-    EXPECT_FALSE(envM.createEnvironment("","/tmp/files"));
-    EXPECT_FALSE(envM.createEnvironment("TEST_VAR",""));
-    EXPECT_TRUE(envM.createEnvironment("TEST_VAR","/tmp/files"));
+TEST(ValidateInputTest, ValidInputWithLongArg) {
+    string line = "add notes.txt Hello my friend";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
 }
 
-TEST(environmentManagerTest, IfEnvironmentContainsFile){
-    
-    EnvironmentManager envM;
-    envM.setInMap("TEST_VAR", "/tmp/files");
-    EXPECT_TRUE(envM.existEnvironment("TEST_VAR"));
-    EXPECT_FALSE(envM.existEnvironment("NON_EXISTENT_VAR"));
-    EXPECT_EQ(envM.checkPath("TEST_VAR"), "/tmp/files");
+TEST(ValidateInputTest, MissingArgument) {
+    string line = "add";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_FALSE(validateInput(cmd, args));
 }
 
-TEST(RLEcompressorTest, checkTextCompressedRLE){
-    RleCompressor rleCompressor;
-    std::string text1 = "AAABBBCCDAA";
-    std::string text2= "ccdgfj jjjdg";
-    std::string text3="";
-    std::string compressedText1 = rleCompressor.compress(text1);
-    EXPECT_EQ(compressedText1, "3A3B2C1D2A");
-    std::string compressedText2 = rleCompressor.compress(text2);
-    EXPECT_EQ(compressedText2, "2c1d1g1f1j 3j1d1g");
-    std::string compressedText3 = rleCompressor.compress(text3);
-    EXPECT_EQ(compressedText3, "");
-
+TEST(ValidateInputTest, OnlyWhitespaceAfterCommand) {
+    string line = "add  ";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_FALSE(validateInput(cmd, args));
 }
 
-// get command tests
-
-TEST(FindEnvironmentVariableTest, HandlesExistingAndNonExistingVars) {
-    EXPECT_EQ(find_environment_variable("abc"), nullptr);
-    envMap["CONFIG_FILE"] = "config.txt";
-    EXPECT_STREQ(find_environment_variable("CONFIG_FILE"), "config.txt");
+TEST(ValidateInputTest, ArgIsWhitespace) {
+    string line = "add    file.txt    ";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
 }
 
-TEST(GetFileContentTest, HandlesExistingAndNonExistingStrings) {
-    EXPECT_EQ(get_file_content("abc"), "");
-    envMap["CONFIG_FILE"] = "config.txt";
-    EXPECT_STREQ(get_file_content("CONFIG_FILE").c_str(), "Hello World");
+
+TEST(CompressorTest, Compress_NormalString) {
+    Compressor comp;
+    string input = "aaabbc";
+    string expected = "3a2b1c";
+    EXPECT_EQ(comp.compress(input), expected);
 }
 
-TEST(DecompressTest, HandlesDecompressStrings) {
-    EXPECT_STREQ(decompress("abc").c_str(), "");
-    EXPECT_STREQ(decompress("a12b3c1").c_str(), "aaaaaaaaaaaabbbc");
-    EXPECT_STREQ(decompress("b3a12c1").c_str(), "bbbaaaaaaaaaaaac");
+TEST(CompressorTest, Compress_StringWithSpaces) {
+    Compressor comp;
+    string input = "aa a b  c";
+    string expected = "2a 1a 1b  1c";
+    EXPECT_EQ(comp.compress(input), expected);
 }
 
-TEST(LocalVariableTest, HandlesLocalVariableRetrieval) {
-    envMap["CONFIG_FILE"] = "config.txt";
-    EXPECT_STREQ(local_variable("CONFIG_FILE").c_str(), decompress("H1e1l2o1 W1o1r1l1d1").c_str());
+TEST(CompressorTest, Compress_StringWithNumbers) {
+    Compressor comp;
+    string input = "aa11b";
+    string expected = "2a2-11b";
+    EXPECT_EQ(comp.compress(input), expected);
 }
 
-TEST(LocalVariablePrintTest, PrintsCorrectValue) {
-    envMap["CONFIG_FILE"] = "config.txt";
-
-    get_file_content("CONFIG_FILE"); 
-
-    std::stringstream buffer;
-    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
-
-    std::string value = local_variable("CONFIG_FILE");
-    std::cout << value;
-
-    std::cout.rdbuf(old);
-
-    EXPECT_EQ(buffer.str(), "Hello World");
-
-    std::stringstream buffer2;
-    std::streambuf* old2 = std::cout.rdbuf(buffer2.rdbuf());
-    envMap["CONFIG_FILE2"] = "";
-    std::string value2 = local_variable("CONFIG_FILE2");
-    std::cout << value2;
-    std::cout.rdbuf(old2);
-    EXPECT_EQ(buffer2.str(), "");
+TEST(CompressorTest, Compress_StringWithHyphen) {
+    Compressor comp;
+    string input = "aa-bb";
+    string expected = "2a1--2b";
+    EXPECT_EQ(comp.compress(input), expected);
 }
 
-// tests for search command
-
-TEST(SearchTests, SingleMatch_RLE) {
-    RleCompressor compressor;
-
-    std::string inputA = "AAAAAA";      // compresses to: "6A"
-    std::string inputB = "BBBBBB";      // compresses to: "6B"
-    std::string inputC = "CCCCCC";      // compresses to: "6C"
-
-    std::string f1 = compressor.compress(inputA);
-    std::string f2 = compressor.compress(inputB);
-    std::string f3 = compressor.compress(inputC);
-
-    std::vector<std::string> files = { f1, f2, f3 };
-
-    // Search inside the compressed outputs
-    auto results = search(files, "6B");
-
-    ASSERT_EQ(results.size(), 1);
-    EXPECT_EQ(results[0], f2);
+TEST(CompressorTest, Compress_EmptyString) {
+    Compressor comp;
+    string input = "";
+    string expected = "";
+    EXPECT_EQ(comp.compress(input), expected);
 }
 
-TEST(SearchTests, MultipleMatches_RLE) {
-    RleCompressor compressor;
-
-    std::string inputA = "BBB";          // compresses to "3B"
-    std::string inputB = "BBBBBBBB";     // compresses to "8B"
-    std::string inputC = "NO MATCHES";   
-
-    std::string f1 = compressor.compress(inputA);
-    std::string f2 = compressor.compress(inputB);
-    std::string f3 = compressor.compress(inputC);
-
-    std::vector<std::string> files = { f1, f2, f3 };
-
-    
-    auto results = search(files, "B");
-
-    ASSERT_EQ(results.size(), 2);
-    EXPECT_EQ(results[0], f1);
-    EXPECT_EQ(results[1], f2);
+TEST(CompressorTest, Compress_SpacesOnly) {
+    Compressor comp;
+    string input = "   ";
+    string expected = "   ";
+    EXPECT_EQ(comp.compress(input), expected);
 }
 
-TEST(SearchTests, NoMatches_RLE) {
-
-
-    RleCompressor compressor;
-
-    
-    std::string inputA = "AAAAA";
-    std::string inputB= "XXXXX";
-    std::string inputC= "123456";
-
-    std::string f1 = compressor.compress(inputA);
-    std::string f2 = compressor.compress(inputB);
-    std::string f3 = compressor.compress(inputC);
-
-    
-    std::vector<std::string> files = { f1, f2, f3 };
-
-    auto results = search(files, "ZZZ");
-
-    ASSERT_EQ(results.size(), 0);
+TEST(CompressorTest, Compress_MixedCharacters) {
+    Compressor comp;
+    string input = "aaA11-- bb";
+    string expected = "2a1A2-12-- 2b";
+    EXPECT_EQ(comp.compress(input), expected);
 }
 
 
