@@ -144,6 +144,7 @@ TEST(GetCommandTests, RunTest) {
     EXPECT_EQ(buffer.str(), "Hello World\n");
 }
 
+
 // tests for search command
 
 // single match test

@@ -13,6 +13,7 @@ class ICommand{
 
 // Virtual destructor ensures proper cleanup of derived classes
         ICommand()=default;
+        ICommand()=default;
 
 // Must be implemented by derived commands
 <<<<<<< HEAD
