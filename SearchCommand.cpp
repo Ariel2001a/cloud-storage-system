@@ -8,13 +8,21 @@
 SearchCommand::SearchCommand(Compressor* compPtr, const std::string& folderPath)
     : ICommand("search"), comp(compPtr), folder(folderPath) {}
 
+//Print results 
+void SearchCommand::printResults(const std::vector<std::string>& results) {
+    for (size_t i = 0; i < results.size(); ++i) {
+        std::cout << results[i];
+        if (i != results.size() - 1) std::cout << " ";
+    }
+    std::cout << std::endl;
+}
 
 //Run command (CommandManager)
 void SearchCommand::run(const std::vector<std::string>& args) {
     if (args.empty()) return;
 
     std::vector<std::string> results = search(args[0]);
-    
+    printResults(results);
 }
 
 
