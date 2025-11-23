@@ -12,10 +12,14 @@ class ICommand{
     public:
 
 // Virtual destructor ensures proper cleanup of derived classes
-        virtual ~ICommand()=default;
+        ICommand()=default;
 
 // Must be implemented by derived commands
+<<<<<<< HEAD
         virtual void run(const vector<string>& args)=0;
+=======
+    virtual void run(const vector<string>& args) = 0;
+>>>>>>> PASP-31-print-the-local-variable
 
 // Returns the name of the command
         string getName() const;

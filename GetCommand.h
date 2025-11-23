@@ -16,4 +16,8 @@ class GetCommand : public ICommand {
         string findEnvironmentVariable(); 
         string getContentFile(const string& environment_variable_path);
         void run(const vector<string>& args) override;
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> PASP-31-print-the-local-variable

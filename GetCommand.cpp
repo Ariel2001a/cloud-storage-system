@@ -2,12 +2,13 @@
 #include <string>
 #include <map>
 #include <fstream>
-using namespace std;
 #include "ICommand.h"
 #include "Compressor.h"
 #include "GetCommand.h"
 #include <filesystem>
 #include <sstream>
+
+using namespace std;
 
 map<string, string> m;
 GetCommand::GetCommand(const string& name_file){
@@ -84,5 +85,5 @@ void GetCommand::run(const vector<string>& args) {
         return;
     }
 
-    std::cout << decompressed_content << std::endl;
+    cout << decompressed_content << endl;
 }

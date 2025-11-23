@@ -4,9 +4,16 @@
 #include <iostream>
 #include <map>
 #include <vector>
+<<<<<<< HEAD
 
 #include "Compressor.h"
 #include "main_helper_tests.h"
+=======
+#include "search.h"
+#include "Compressor.h"
+#include "ICommand.h"
+#include "GetCommand.h"
+>>>>>>> PASP-31-print-the-local-variable
 
 
 TEST(ValidateInputTest, ValidInputWithMultipleArgs) {
@@ -44,6 +51,7 @@ TEST(ValidateInputTest, OnlyWhitespaceAfterCommand) {
     EXPECT_FALSE(validateInput(cmd, args));
 }
 
+<<<<<<< HEAD
 TEST(ValidateInputTest, ArgIsWhitespace) {
     string line = "add    file.txt    ";
     vector<string> args = parseArgs(line);
@@ -99,8 +107,99 @@ TEST(CompressorTest, Compress_MixedCharacters) {
     string input = "aaA11-- bb";
     string expected = "2a1A2-12-- 2b";
     EXPECT_EQ(comp.compress(input), expected);
+=======
+TEST(CompressorTests, DecompressTest) {
+    std::string compressed = "1H1e2l1o 1W1o1r1l1d";;
+    std::string expected = "Hello World"; 
+    EXPECT_EQ(Compressor::decompress(compressed), expected);
+    compressed = "2-21-110-13--4A";
+    expected = "2211111111111---AAAA"; 
+    EXPECT_EQ(Compressor::decompress(compressed), expected);
+    compressed = "2---2";
+    expected = ""; 
+    EXPECT_EQ(Compressor::decompress(compressed), expected);
 }
 
+// get command tests
+
+TEST(GetCommandTests, FindEnvironmentVariableTest) {
+    GetCommand getcmd("CONFIG_FILE");
+    std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
+    EXPECT_EQ(getcmd.findEnvironmentVariable(), expectedPath);
+}
+
+
+TEST(GetCommandTests, GetFileContentTest) {
+    GetCommand getcmd("CONFIG_FILE");
+    std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
+    EXPECT_STREQ(getcmd.getContentFile(expectedPath).c_str(), "1H1e2l1o 1W1o1r1l1d");
+}
+TEST(GetCommandTests, RunTest) {
+    std::stringstream buffer;
+    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
+    std::vector<std::string> args = {"GET CONFIG_FILE"};
+    GetCommand getcmd;
+    getcmd.run(args);
+    std::cout.rdbuf(old);
+    EXPECT_EQ(buffer.str(), "Hello World\n");
+}
+
+// tests for search command
+
+// single match test
+TEST(SearchTests, SingleMatch) {
+    std::vector<std::string> files = {
+        "fileA.txt",
+        "fileB.txt",
+        "fileC.txt"
+    };
+
+    // Only "fileB.txt" should match
+    auto results = search(files, "B");
+
+    // 1. Check that exactly one file was returned
+    ASSERT_EQ(results.size(), 1);
+
+    // 2. Check that the returned file is correct
+    EXPECT_EQ(results[0], "fileB.txt");
+}
+
+
+//multiple matches test
+TEST(SearchTests, multipleMatches) {
+    std::vector<std::string> files = {
+        "fileA.txt",
+        "fileB.txt",
+        "fileAB.txt"
+    };
+
+    auto results = search(files, "B");
+
+    // Verify that there are exactly 2 matching files
+    ASSERT_EQ(results.size(), 2);
+
+    // Verify the exact files, order does not matter
+    EXPECT_EQ(results[0], "fileB.txt");
+    EXPECT_EQ(results[1], "fileAB.txt");
+
+}
+
+
+// no matches test
+TEST(SearchTests, NoMatches) {
+    std::vector<std::string> files = {
+        "fileA.txt",
+        "fileB.txt",
+        "fileC.txt"
+    };
+
+    // No files should match the query "D"
+    auto results = search(files, "D");
+
+    // Check that no files were returned
+    ASSERT_EQ(results.size(), 0);
+>>>>>>> PASP-31-print-the-local-variable
+}
 
 
 

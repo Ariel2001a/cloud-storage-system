@@ -29,6 +29,7 @@ add_executable(runTests
     ICommand.cpp
     main_helper_tests.cpp
     test.cpp
+    GetCommand.cpp
 )
 
 target_link_libraries(runTests gtest_main)
