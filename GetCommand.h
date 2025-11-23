@@ -1,9 +1,8 @@
-<<<<<<< HEAD
+
 #ifndef GETCOMMAND_H
 #define GETCOMMAND_H
 
-=======
->>>>>>> PASP-27-create-decompress-function
+
 #include <iostream>
 #include <string>
 #include <map>
