@@ -12,6 +12,7 @@
 #include "ICommand.h"
 #include "GetCommand.h"
 
+
 TEST(fileManagerTest, CreateFileTest){
     FileManager fileM;
     EXPECT_TRUE(fileM.createFile("testfile.txt","HELLOW", std::ios_base::app));
@@ -76,6 +77,7 @@ TEST(GetCommandTests, FindEnvironmentVariableTest) {
     EXPECT_EQ(getcmd.findEnvironmentVariable(), expectedPath);
 }
 
+
 TEST(GetCommandTests, GetFileContentTest) {
     GetCommand getcmd("CONFIG_FILE");
     std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
@@ -111,6 +113,7 @@ TEST(SearchTests, SingleMatch) {
     EXPECT_EQ(results[0], "fileB.txt");
 }
 
+
 //multiple matches test
 TEST(SearchTests, multipleMatches) {
     std::vector<std::string> files = {
@@ -130,6 +133,7 @@ TEST(SearchTests, multipleMatches) {
 
 }
 
+
 // no matches test
 TEST(SearchTests, NoMatches) {
     std::vector<std::string> files = {
@@ -144,6 +148,7 @@ TEST(SearchTests, NoMatches) {
     // Check that no files were returned
     ASSERT_EQ(results.size(), 0);
 }
+
 
 
 // --- GoogleTest main ---
