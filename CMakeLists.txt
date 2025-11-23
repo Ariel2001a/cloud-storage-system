@@ -23,15 +23,4 @@ Compressor.cpp
 GetCommand.cpp
 )
 
-add_executable(runProgram
-EnvironmentManager.cpp    
-FileManager.cpp
-RleCompressor.cpp
-main.cpp
-search.cpp
-Compressor.cpp
-GetCommand.cpp
-ICommand.cpp
-)
-
 target_link_libraries(runTests gtest_main)
