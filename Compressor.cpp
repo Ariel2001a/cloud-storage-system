@@ -33,7 +33,6 @@ string Compressor::compress(const string& text){
             // Add the actual character
             compressedText += text[i];
 
-            count = 0;
         }
     }
     return compressedText;
