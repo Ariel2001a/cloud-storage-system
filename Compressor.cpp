@@ -19,22 +19,6 @@ string Compressor::compress(const string& text){
 
         count++;
 
-        // When sequence ends
-        if (i == text.length() - 1 || text[i] != text[i + 1]) {
-
-            // Add the count
-            compressedText += std::to_string(count);
-
-            // If the character is problematic, escape it with '-'
-            if (isdigit(text[i]) || text[i] == '-') {
-                compressedText += '-';
-            }
-
-            // Add the actual character
-            compressedText += text[i];
-
-            count = 0;
-        }
     }
     return compressedText;
 }
