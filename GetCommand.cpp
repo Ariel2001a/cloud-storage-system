@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> PASP-26-get-the-content-from-the-file
 #include <iostream>
 #include <string>
 #include <map>
