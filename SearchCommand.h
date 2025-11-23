@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SEARCHCOMMAND_H
+#define SEARCHCOMMAND_H
+
 #include "ICommand.h"
 #include "Compressor.h"
 #include <vector>
@@ -9,7 +11,8 @@ private:
     std::string folder;
     Compressor* comp;
 
-
+    //print search results
+    //void printResults(const std::vector<std::string>& results);
 
 public:
     // Constructor
@@ -21,3 +24,5 @@ public:
     // For tests: returns matching filenames
     std::vector<std::string> search(const std::string& query);
 };
+
+#endif // SEARCHCOMMAND_H
