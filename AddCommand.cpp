@@ -55,5 +55,6 @@ void AddCommand::run(const vector<string>& args)
         return;
     }
 
-
+    out << compressed;
+    out.close();
 }

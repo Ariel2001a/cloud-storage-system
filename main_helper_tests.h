@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "main.h"
-
 using std::string;
 using std::vector;
 

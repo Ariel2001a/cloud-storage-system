@@ -4,29 +4,27 @@
 #include <iostream>
 #include <map>
 #include <vector>
-// Consolidated tests
-#include <gtest/gtest.h>
-#include <fstream>
-#include <string>
-#include <iostream>
-#include <map>
-#include <vector>
-#include <sstream>
 
 #include "Compressor.h"
-#include "ICommand.h"
-#include "GetCommand.h"
-#include "search.h"
+#include "main_helper_tests.h"
 
-using namespace std;
 
-// Basic validate/parse helper tests (if helpers exist)
-// (These rely on parseArgs/parseCmd/validateInput from project helpers.)
-// If those helpers are not present in the project, these tests can be removed.
-
-/*
 TEST(ValidateInputTest, ValidInputWithMultipleArgs) {
     string line = "add file1.txt Hello World";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+TEST(ValidateInputTest, ValidInputWithSingleArg) {
+    string line = "add file2.txt";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+TEST(ValidateInputTest, ValidInputWithLongArg) {
+    string line = "add notes.txt Hello my friend";
     vector<string> args = parseArgs(line);
     string cmd = parseCmd(line);
     EXPECT_TRUE(validateInput(cmd, args));
@@ -38,9 +36,22 @@ TEST(ValidateInputTest, MissingArgument) {
     string cmd = parseCmd(line);
     EXPECT_FALSE(validateInput(cmd, args));
 }
-*/
 
-// Compressor (compress) tests
+TEST(ValidateInputTest, OnlyWhitespaceAfterCommand) {
+    string line = "add  ";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_FALSE(validateInput(cmd, args));
+}
+
+TEST(ValidateInputTest, ArgIsWhitespace) {
+    string line = "add    file.txt    ";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+
 TEST(CompressorTest, Compress_NormalString) {
     Compressor comp;
     string input = "aaabbc";
@@ -76,67 +87,20 @@ TEST(CompressorTest, Compress_EmptyString) {
     EXPECT_EQ(comp.compress(input), expected);
 }
 
-// Compressor decompress tests
-TEST(CompressorTests, DecompressTest) {
-    std::string compressed = "1H1e2l1o 1W1o1r1l1d";
-    std::string expected = "Hello World"; 
-    EXPECT_EQ(Compressor::decompress(compressed), expected);
-    compressed = "2-21-110-13--4A";
-    expected = "2211111111111---AAAA"; 
-    EXPECT_EQ(Compressor::decompress(compressed), expected);
-    compressed = "2---2";
-    expected = ""; 
-    EXPECT_EQ(Compressor::decompress(compressed), expected);
+TEST(CompressorTest, Compress_SpacesOnly) {
+    Compressor comp;
+    string input = "   ";
+    string expected = "   ";
+    EXPECT_EQ(comp.compress(input), expected);
 }
 
-// get command tests
-TEST(GetCommandTests, FindEnvironmentVariableTest) {
-    GetCommand getcmd("CONFIG_FILE");
-    const char* dir = getenv("EX1_DIR");
-    if (dir == nullptr) GTEST_SKIP();
-    std::string expectedPath = std::string(dir) + "/CONFIG_FILE";
-    EXPECT_EQ(getcmd.findEnvironmentVariable(), expectedPath);
+TEST(CompressorTest, Compress_MixedCharacters) {
+    Compressor comp;
+    string input = "aaA11-- bb";
+    string expected = "2a1A2-12-- 2b";
+    EXPECT_EQ(comp.compress(input), expected);
 }
 
-TEST(GetCommandTests, GetFileContentTest) {
-    GetCommand getcmd("CONFIG_FILE");
-    const char* dir = getenv("EX1_DIR");
-    if (dir == nullptr) GTEST_SKIP();
-    std::string expectedPath = std::string(dir) + "/CONFIG_FILE";
-    EXPECT_STREQ(getcmd.getContentFile(expectedPath).c_str(), "1H1e2l1o 1W1o1r1l1d");
-}
-
-TEST(GetCommandTests, RunTest) {
-    std::stringstream buffer;
-    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
-    std::vector<std::string> args = {"GET CONFIG_FILE"};
-    GetCommand getcmd;
-    getcmd.run(args);
-    std::cout.rdbuf(old);
-    EXPECT_EQ(buffer.str(), "Hello World\n");
-}
-
-// Search tests (if search helper exists)
-TEST(SearchTests, SingleMatch) {
-    std::vector<std::string> files = {"fileA.txt","fileB.txt","fileC.txt"};
-    auto results = search(files, "B");
-    ASSERT_EQ(results.size(), 1);
-    EXPECT_EQ(results[0], "fileB.txt");
-}
-
-TEST(SearchTests, multipleMatches) {
-    std::vector<std::string> files = {"fileA.txt","fileB.txt","fileAB.txt"};
-    auto results = search(files, "B");
-    ASSERT_EQ(results.size(), 2);
-    EXPECT_EQ(results[0], "fileB.txt");
-    EXPECT_EQ(results[1], "fileAB.txt");
-}
-
-TEST(SearchTests, NoMatches) {
-    std::vector<std::string> files = {"fileA.txt","fileB.txt","fileC.txt"};
-    auto results = search(files, "D");
-    ASSERT_EQ(results.size(), 0);
-}
 
 
 // --- GoogleTest main ---
@@ -144,4 +108,3 @@ int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
-

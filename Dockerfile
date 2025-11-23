@@ -5,7 +5,6 @@ RUN apt-get update && apt-get install -y cmake
 COPY . /usr/src/mytest
 
 WORKDIR /usr/src/mytest
-ENV EX1_DIR=/usr/src/mytest
 
 
 RUN mkdir build && mkdir -p /usr/src/mytest/newFiles
