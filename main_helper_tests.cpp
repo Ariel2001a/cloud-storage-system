@@ -3,47 +3,9 @@
 #include <vector>
 #include <sstream>
 
-#include "ICommand.h"
-#include "CommandManager.h"
-#include "AddCommand.h"
-#include "Compressor.h"
+#include "main.h"
 
-using namespace std;
-
-
-string parseCmd(const string& line);
-vector<string> parseArgs(const string& line);
-bool validateInput(const string& cmdName, const vector<string>& args);
 bool isWhitespaceOnly(const string& s);
-
-
-int main() {
-    
-    CommandManager manager;
-  
-    manager.registerCommand(new AddCommand());
-    
-
-    while (true) {
-        string line;
-        
-        getline(cin, line);
-      
-
-        if (line.empty()) continue;
-       
-
-        string cmdName = parseCmd(line);
-        vector<string> args = parseArgs(line);
-
-        if (!validateInput(cmdName, args)) {
-            continue;
-        }
-
-        manager.runCommand(cmdName, args);
-    }
-    return 0;
-}
 
 string parseCmd(const string& line) {
     istringstream iss(line); 
@@ -66,8 +28,6 @@ vector<string> parseArgs(const string& line) {
 
 bool validateInput(const string& cmdName, const vector<string>& args) {
 
-   
-
     if (cmdName.empty()) {
         return false;
     }
@@ -81,6 +41,7 @@ bool validateInput(const string& cmdName, const vector<string>& args) {
     }
 
     string fileName = args[0];
+
 
     if (isWhitespaceOnly(fileName)){
         return false;
