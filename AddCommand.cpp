@@ -34,27 +34,4 @@ void AddCommand::run(const vector<string>& args)
 
     string compressed = Compressor::compress(text);
 
-    // Get directory from environment variable
-    const char* folder = getenv("EX1_DIR");
-    if (!folder){
-         return;
-    }
-
-    // Create full file path
-    string fullPath = string(folder) + "/" + filename;
-
-    // Check if file already exists- do not overwrite
-    if (fs::exists(fullPath)) {
-        return;
-    }
-
-
-    // Failed to open file for writing- abort
-    ofstream out(fullPath);
-    if (!out) {
-        return;
-    }
-
-    out << compressed;
-    out.close();
 }
