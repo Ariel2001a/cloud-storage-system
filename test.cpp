@@ -6,10 +6,11 @@
 #include "EnvironmentManager.h"
 #include "RleCompressor.h"
 #include <map>
-#include "getcommand.h"
 #include <vector>
 #include "search.h"
-
+#include "Compressor.h"
+#include "ICommand.h"
+#include "GetCommand.h"
 
 TEST(fileManagerTest, CreateFileTest){
     FileManager fileM;
@@ -55,121 +56,94 @@ TEST(RLEcompressorTest, checkTextCompressedRLE){
 
 }
 
+TEST(CompressorTests, DecompressTest) {
+    std::string compressed = "1H1e2l1o 1W1o1r1l1d";;
+    std::string expected = "Hello World"; 
+    EXPECT_EQ(Compressor::decompress(compressed), expected);
+    compressed = "2-21-110-13--4A";
+    expected = "2211111111111---AAAA"; 
+    EXPECT_EQ(Compressor::decompress(compressed), expected);
+    compressed = "2---2";
+    expected = ""; 
+    EXPECT_EQ(Compressor::decompress(compressed), expected);
+}
+
 // get command tests
 
-TEST(FindEnvironmentVariableTest, HandlesExistingAndNonExistingVars) {
-    EXPECT_EQ(find_environment_variable("abc"), nullptr);
-    envMap["CONFIG_FILE"] = "config.txt";
-    EXPECT_STREQ(find_environment_variable("CONFIG_FILE"), "config.txt");
+TEST(GetCommandTests, FindEnvironmentVariableTest) {
+    GetCommand getcmd("CONFIG_FILE");
+    std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
+    EXPECT_EQ(getcmd.findEnvironmentVariable(), expectedPath);
 }
 
-TEST(GetFileContentTest, HandlesExistingAndNonExistingStrings) {
-    EXPECT_EQ(get_file_content("abc"), "");
-    envMap["CONFIG_FILE"] = "config.txt";
-    EXPECT_STREQ(get_file_content("CONFIG_FILE").c_str(), "Hello World");
+TEST(GetCommandTests, GetFileContentTest) {
+    GetCommand getcmd("CONFIG_FILE");
+    std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
+    EXPECT_STREQ(getcmd.getContentFile(expectedPath).c_str(), "1H1e2l1o 1W1o1r1l1d");
 }
-
-TEST(DecompressTest, HandlesDecompressStrings) {
-    EXPECT_STREQ(decompress("abc").c_str(), "");
-    EXPECT_STREQ(decompress("a12b3c1").c_str(), "aaaaaaaaaaaabbbc");
-    EXPECT_STREQ(decompress("b3a12c1").c_str(), "bbbaaaaaaaaaaaac");
-}
-
-TEST(LocalVariableTest, HandlesLocalVariableRetrieval) {
-    envMap["CONFIG_FILE"] = "config.txt";
-    EXPECT_STREQ(local_variable("CONFIG_FILE").c_str(), decompress("H1e1l2o1 W1o1r1l1d1").c_str());
-}
-
-TEST(LocalVariablePrintTest, PrintsCorrectValue) {
-    envMap["CONFIG_FILE"] = "config.txt";
-
-    get_file_content("CONFIG_FILE"); 
-
+TEST(GetCommandTests, RunTest) {
     std::stringstream buffer;
     std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
-
-    std::string value = local_variable("CONFIG_FILE");
-    std::cout << value;
-
+    std::vector<std::string> args = {"GET CONFIG_FILE"};
+    GetCommand getcmd;
+    getcmd.run(args);
     std::cout.rdbuf(old);
-
-    EXPECT_EQ(buffer.str(), "Hello World");
-
-    std::stringstream buffer2;
-    std::streambuf* old2 = std::cout.rdbuf(buffer2.rdbuf());
-    envMap["CONFIG_FILE2"] = "";
-    std::string value2 = local_variable("CONFIG_FILE2");
-    std::cout << value2;
-    std::cout.rdbuf(old2);
-    EXPECT_EQ(buffer2.str(), "");
+    EXPECT_EQ(buffer.str(), "Hello World\n");
 }
 
 // tests for search command
 
-TEST(SearchTests, SingleMatch_RLE) {
-    RleCompressor compressor;
+// single match test
+TEST(SearchTests, SingleMatch) {
+    std::vector<std::string> files = {
+        "fileA.txt",
+        "fileB.txt",
+        "fileC.txt"
+    };
 
-    std::string inputA = "AAAAAA";      // compresses to: "6A"
-    std::string inputB = "BBBBBB";      // compresses to: "6B"
-    std::string inputC = "CCCCCC";      // compresses to: "6C"
-
-    std::string f1 = compressor.compress(inputA);
-    std::string f2 = compressor.compress(inputB);
-    std::string f3 = compressor.compress(inputC);
-
-    std::vector<std::string> files = { f1, f2, f3 };
-
-    // Search inside the compressed outputs
-    auto results = search(files, "6B");
-
-    ASSERT_EQ(results.size(), 1);
-    EXPECT_EQ(results[0], f2);
-}
-
-TEST(SearchTests, MultipleMatches_RLE) {
-    RleCompressor compressor;
-
-    std::string inputA = "BBB";          // compresses to "3B"
-    std::string inputB = "BBBBBBBB";     // compresses to "8B"
-    std::string inputC = "NO MATCHES";   
-
-    std::string f1 = compressor.compress(inputA);
-    std::string f2 = compressor.compress(inputB);
-    std::string f3 = compressor.compress(inputC);
-
-    std::vector<std::string> files = { f1, f2, f3 };
-
-    
+    // Only "fileB.txt" should match
     auto results = search(files, "B");
 
-    ASSERT_EQ(results.size(), 2);
-    EXPECT_EQ(results[0], f1);
-    EXPECT_EQ(results[1], f2);
+    // 1. Check that exactly one file was returned
+    ASSERT_EQ(results.size(), 1);
+
+    // 2. Check that the returned file is correct
+    EXPECT_EQ(results[0], "fileB.txt");
 }
 
-TEST(SearchTests, NoMatches_RLE) {
+//multiple matches test
+TEST(SearchTests, multipleMatches) {
+    std::vector<std::string> files = {
+        "fileA.txt",
+        "fileB.txt",
+        "fileAB.txt"
+    };
 
+    auto results = search(files, "B");
 
-    RleCompressor compressor;
+    // Verify that there are exactly 2 matching files
+    ASSERT_EQ(results.size(), 2);
 
-    
-    std::string inputA = "AAAAA";
-    std::string inputB= "XXXXX";
-    std::string inputC= "123456";
+    // Verify the exact files, order does not matter
+    EXPECT_EQ(results[0], "fileB.txt");
+    EXPECT_EQ(results[1], "fileAB.txt");
 
-    std::string f1 = compressor.compress(inputA);
-    std::string f2 = compressor.compress(inputB);
-    std::string f3 = compressor.compress(inputC);
+}
 
-    
-    std::vector<std::string> files = { f1, f2, f3 };
+// no matches test
+TEST(SearchTests, NoMatches) {
+    std::vector<std::string> files = {
+        "fileA.txt",
+        "fileB.txt",
+        "fileC.txt"
+    };
 
-    auto results = search(files, "ZZZ");
+    // No files should match the query "D"
+    auto results = search(files, "D");
 
+    // Check that no files were returned
     ASSERT_EQ(results.size(), 0);
 }
-
-
 
 
 // --- GoogleTest main ---

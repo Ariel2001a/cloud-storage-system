@@ -6,7 +6,7 @@ using namespace std;
 
 class Compressor{
     public:
-        string compress(const string& text);
-        string decompress(const string& compressedText);
+        string static compress(const string& text);
+        string static decompress(const string& compressedText);
 };
 #endif
