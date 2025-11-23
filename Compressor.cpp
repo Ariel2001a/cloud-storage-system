@@ -4,21 +4,22 @@
 using namespace std;
 
 string Compressor::compress(const string& text){
-            int count=0;
+    string compressedText;       
+    int count=0;
         for(int i=0;i<text.length();i++){
              if (text[i] == ' ')
             {
-                compresssedText+=' ';
+                compressedText+=' ';
                 count=0;
                 continue;
             }
             count++;
             if(text[i]!=text[i+1]){
-                compresssedText+=std::to_string(count)+text[i];
+                compressedText+=std::to_string(count)+text[i];
                 count=0;
             }           
         }
-        return compresssedText;
+        return compressedText;
 };
 
 
