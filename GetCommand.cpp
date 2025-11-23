@@ -84,5 +84,5 @@ void GetCommand::run(const vector<string>& args) {
         return;
     }
 
-    cout << decompressed_content << endl;
+    std::cout << decompressed_content << std::endl;
 }
