@@ -68,7 +68,7 @@ void GetCommand::run(const vector<string>& args) {
     if (iss >> extra || cmd != "GET") {
         return;
     }
-    GetCommand getcmd(file);
+    GetCommand getcmd(fileName);
     string environment_variable_path = getcmd.findEnvironmentVariable();
     if (environment_variable_path.empty()) {
         return;
@@ -85,4 +85,8 @@ void GetCommand::run(const vector<string>& args) {
     }
 
     cout << decompressed_content << endl;
+}
+
+std::string getName(){
+    return "Get";
 }

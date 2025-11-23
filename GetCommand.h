@@ -16,4 +16,5 @@ class GetCommand : public ICommand {
         string findEnvironmentVariable(); 
         string getContentFile(const string& environment_variable_path);
         void run(const vector<string>& args) override;
+        std::string getName() const override;
 };
