@@ -21,19 +21,21 @@ string Compressor::compress(const string& text){
         return compresssedText;
 }
 
+
 string Compressor::decompress(const string& compress_content){
-        std::string decompressed_content;
+    std::string decompressed_content="";
     size_t i = 0;
 
     while (i < compress_content.length()) {
-        char current_char = compress_content[i++];
+        char char_for_expansion;
         int count = 0;
-
-        if (current_char == ' ') {
-            count = 1;
-        } 
+        if (compress_content[i] == ' ') {
+            decompressed_content += ' ';
+            i++;
+            continue;
+        }
         else {
-            if (i >= compress_content.length() || !(compress_content[i] >= '0' && compress_content[i] <= '9')) {
+            if (!(compress_content[i] >= '0' && compress_content[i] <= '9')) {
                 return "";
             }
 
@@ -41,10 +43,23 @@ string Compressor::decompress(const string& compress_content){
                 count = count * 10 + (compress_content[i] - '0');
                 i++;
             }
+
+            if (i >= compress_content.length()) {
+                return "";
+            }
+            char_for_expansion = compress_content[i];
+            if(char_for_expansion == '-') {
+                i++;
+                if (i >= compress_content.length()) {
+                    return "";
+                }
+                char_for_expansion = compress_content[i];
+            }
         }
-
-        decompressed_content.append(count, current_char);
+        decompressed_content.append(count, char_for_expansion);
+        if(i < compress_content.length()){
+            i++;
+        }
     }
-
     return decompressed_content;
-}
+};
