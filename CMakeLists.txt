@@ -14,14 +14,13 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 add_executable(runTests
-getcommand.cpp 
 EnvironmentManager.cpp    
 FileManager.cpp
 RleCompressor.cpp
 test.cpp
 search.cpp
-#Compressor.cpp
-
+Compressor.cpp
+GetCommand.cpp
 )
 
 target_link_libraries(runTests gtest_main)
