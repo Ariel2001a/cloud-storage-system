@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <string>
 #include <map>
@@ -10,57 +11,64 @@ using namespace std;
 #include <sstream>
 #include "SearchCommand.h"
 
-// constructor
+// Constructor: initializes the command name as "get"
 GetCommand::GetCommand(): ICommand("get"){}
 
-// The function recieve the file name and return the full path of the envirionment variable of the file
+// Get the full path of a file using the EX1_DIR environment variable
+// Returns empty string if the environment variable is not set
 string GetCommand::findEnvironmentVariable(const string& fileName) {
-    const char* folder = getenv("EX1_DIR");
-    if (!folder) return "";
-    return string(folder) + "/" + fileName;
+    const char* folder = getenv("EX1_DIR");  // retrieve environment variable
+    if (!folder) return "";                  // return empty if variable is not found
+    return string(folder) + "/" + fileName;  // append the file name to the folder path
 }
 
-// The function recieve the envirionment variable of the file and return the compressed content 
+// Read the compressed content of a file from disk
+// Returns the content as a single string, or empty string if file cannot be read
 string GetCommand::getContentFile(const string& environment_variable_path) {
     string compress_content;
     ifstream file(environment_variable_path);
         
     if (!file) {
-        return "";
+        return "";  // return empty if file cannot be opened
     }
 
+    // Read the file line by line and append each line to compress_content
     string line;
     while (getline(file, line)) {
          compress_content += line;
     }
     file.close();
 
-    return compress_content;
+    return compress_content;  // return the full compressed content
 } 
 
-// The run function recieve the command's args and print the decompressed content of the file
-// that asked for in the command. 
+// Run function: execute the "get" command
+// Receives command arguments and prints the decompressed content of the requested file
 void GetCommand::run(const vector<string>& args) {
     if (args.size() != 1) {
-        return;
+        return;  // invalid arguments, exit
     }
 
     string file = args[0];
 
+    // Find the full path to the file using the environment variable
     string environment_variable_path = findEnvironmentVariable(file);
     if (environment_variable_path.empty()) {
-        return;
+        return;  // file path not found, exit
     }
 
+    // Read the compressed content from the file
     string compress_content = getContentFile(environment_variable_path);
     if (compress_content.empty()) {
-        return;
+        return;  // file is empty or cannot be read, exit
     }
 
+    // Decompress the content using Compressor
     string decompressed_content = Compressor::decompress(compress_content);
     if (decompressed_content.empty()) {
-        return;
+        return;  // decompression failed, exit
     }
 
+    // Print the decompressed content to the console
     cout << decompressed_content << endl;
 }

@@ -24,4 +24,4 @@ class CommandManager{
         bool runCommand(const string& commandName, const vector<string>& args);
 };
 
-#endif
+#endif//COMANDMANAGER_H

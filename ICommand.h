@@ -29,4 +29,4 @@ class ICommand{
         // Constructor to initialize command name
         ICommand(const string& cmdName);
 };
-#endif
+#endif //#ifndef COMMAND_H

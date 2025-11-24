@@ -18,4 +18,4 @@ class AddCommand: public ICommand{
         //execute add command
         void run(const vector<string>& args) override;
 };
-#endif
+#endif //ADDCOMMAND_H

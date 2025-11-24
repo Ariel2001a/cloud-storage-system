@@ -47,25 +47,34 @@ string Compressor::decompress(const string& compress_content){
     while (i < compress_content.length()) {
         char char_for_expansion;
         int count = 0;
+
+         // If current character is a space, just add it to output and continue
         if (compress_content[i] == ' ') {
             decompressed_content += ' ';
             i++;
             continue;
         }
         else {
+
+            // If the current character is not a digit, the compressed format is invalid
             if (!(compress_content[i] >= '0' && compress_content[i] <= '9')) {
                 return "";
             }
 
+            // Parse number: consecutive digits represent the repeat count
             while (i < compress_content.length() && compress_content[i] >= '0' && compress_content[i] <= '9') {
                 count = count * 10 + (compress_content[i] - '0');
                 i++;
             }
 
+            // If we reached the end without a character to expand, return empty (error)
             if (i >= compress_content.length()) {
                 return "";
             }
+            
             char_for_expansion = compress_content[i];
+
+            // Handle escaped characters: if current char is '-', skip it and take next char
             if(char_for_expansion == '-') {
                 i++;
                 if (i >= compress_content.length()) {
@@ -74,7 +83,11 @@ string Compressor::decompress(const string& compress_content){
                 char_for_expansion = compress_content[i];
             }
         }
+
+        // Append 'count' copies of char_for_expansion to output
         decompressed_content.append(count, char_for_expansion);
+
+        // Move to next character
         if(i < compress_content.length()){
             i++;
         }

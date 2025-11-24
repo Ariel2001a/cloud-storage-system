@@ -11,7 +11,7 @@ RUN mkdir build && mkdir -p /usr/src/mytest/newFiles
 WORKDIR /usr/src/mytest/build
 
 RUN cmake .. && make
-
+#folder of created and saved files
 ENV EX1_DIR=/usr/src/mytest/newFiles
 
 

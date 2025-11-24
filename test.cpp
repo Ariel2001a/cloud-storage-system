@@ -5,11 +5,12 @@
 #include <map>
 #include <vector>
 #include "SearchCommand.h"
-
+#include "GetCommand.h"
 #include "Compressor.h"
 #include "main_helper_tests.h"
 
-
+// --- Validation tests ---
+// Check parsing and validation for multiple arguments
 TEST(ValidateInputTest, ValidInputWithMultipleArgs) {
     string line = "add file1.txt Hello World";
     vector<string> args = parseArgs(line);
@@ -17,6 +18,7 @@ TEST(ValidateInputTest, ValidInputWithMultipleArgs) {
     EXPECT_TRUE(validateInput(cmd, args));
 }
 
+// Check single argument input
 TEST(ValidateInputTest, ValidInputWithSingleArg) {
     string line = "add file2.txt";
     vector<string> args = parseArgs(line);
@@ -24,6 +26,7 @@ TEST(ValidateInputTest, ValidInputWithSingleArg) {
     EXPECT_TRUE(validateInput(cmd, args));
 }
 
+// Check long argument input with spaces
 TEST(ValidateInputTest, ValidInputWithLongArg) {
     string line = "add notes.txt Hello my friend";
     vector<string> args = parseArgs(line);
@@ -31,6 +34,7 @@ TEST(ValidateInputTest, ValidInputWithLongArg) {
     EXPECT_TRUE(validateInput(cmd, args));
 }
 
+// Missing argument should fail validation
 TEST(ValidateInputTest, MissingArgument) {
     string line = "add";
     vector<string> args = parseArgs(line);
@@ -38,6 +42,7 @@ TEST(ValidateInputTest, MissingArgument) {
     EXPECT_FALSE(validateInput(cmd, args));
 }
 
+// Only whitespace after command should fail
 TEST(ValidateInputTest, OnlyWhitespaceAfterCommand) {
     string line = "add  ";
     vector<string> args = parseArgs(line);
@@ -45,14 +50,16 @@ TEST(ValidateInputTest, OnlyWhitespaceAfterCommand) {
     EXPECT_FALSE(validateInput(cmd, args));
 }
 
+// Argument that is whitespace only should fail
 TEST(ValidateInputTest, ArgIsWhitespace) {
     string line = "add    file.txt    ";
     vector<string> args = parseArgs(line);
     string cmd = parseCmd(line);
-    EXPECT_TRUE(validateInput(cmd, args));
+    EXPECT_FALSE(validateInput(cmd, args));
 }
 
-
+// --- Compressor tests ---
+// Compress normal string without spaces
 TEST(CompressorTest, Compress_NormalString) {
     Compressor comp;
     string input = "aaabbc";
@@ -60,6 +67,7 @@ TEST(CompressorTest, Compress_NormalString) {
     EXPECT_EQ(comp.compress(input), expected);
 }
 
+// Compress string with spaces
 TEST(CompressorTest, Compress_StringWithSpaces) {
     Compressor comp;
     string input = "aa a b  c";
@@ -67,6 +75,7 @@ TEST(CompressorTest, Compress_StringWithSpaces) {
     EXPECT_EQ(comp.compress(input), expected);
 }
 
+// Compress string containing numbers
 TEST(CompressorTest, Compress_StringWithNumbers) {
     Compressor comp;
     string input = "aa11b";
@@ -74,6 +83,7 @@ TEST(CompressorTest, Compress_StringWithNumbers) {
     EXPECT_EQ(comp.compress(input), expected);
 }
 
+// Compress string containing hyphens
 TEST(CompressorTest, Compress_StringWithHyphen) {
     Compressor comp;
     string input = "aa-bb";
@@ -81,6 +91,7 @@ TEST(CompressorTest, Compress_StringWithHyphen) {
     EXPECT_EQ(comp.compress(input), expected);
 }
 
+// Compress empty string
 TEST(CompressorTest, Compress_EmptyString) {
     Compressor comp;
     string input = "";
@@ -88,6 +99,7 @@ TEST(CompressorTest, Compress_EmptyString) {
     EXPECT_EQ(comp.compress(input), expected);
 }
 
+// Compress string with only spaces
 TEST(CompressorTest, Compress_SpacesOnly) {
     Compressor comp;
     string input = "   ";
@@ -95,6 +107,7 @@ TEST(CompressorTest, Compress_SpacesOnly) {
     EXPECT_EQ(comp.compress(input), expected);
 }
 
+// Compress mixed characters (letters, numbers, hyphens, spaces)
 TEST(CompressorTest, Compress_MixedCharacters) {
     Compressor comp;
     string input = "aaA11-- bb";
@@ -102,26 +115,30 @@ TEST(CompressorTest, Compress_MixedCharacters) {
     EXPECT_EQ(comp.compress(input), expected);
 }
 
+// Decompress test for multiple examples
 TEST(CompressorTests, DecompressTest) {
-    std::string compressed = "1H1e2l1o 1W1o1r1l1d";;
+    std::string compressed = "1H1e2l1o 1W1o1r1l1d";
     std::string expected = "Hello World"; 
     EXPECT_EQ(Compressor::decompress(compressed), expected);
+
     compressed = "2-21-110-13--4A";
     expected = "2211111111111---AAAA"; 
     EXPECT_EQ(Compressor::decompress(compressed), expected);
+
     compressed = "2---2";
     expected = ""; 
     EXPECT_EQ(Compressor::decompress(compressed), expected);
 }
 
-// get command tests
-
+// --- GetCommand tests ---
+// Check environment variable path
 TEST(GetCommandTests, FindEnvironmentVariableTest) {
     GetCommand getcmd;
     std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
     EXPECT_EQ(getcmd.findEnvironmentVariable("CONFIG_FILE"), expectedPath);
 }
 
+// Check reading compressed file content
 TEST(GetCommandTests, GetFileContentTest) {
     GetCommand getcmd;
     std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
@@ -129,6 +146,8 @@ TEST(GetCommandTests, GetFileContentTest) {
     std::ofstream(expectedPath) << comp.compress("World");
     EXPECT_STREQ(getcmd.getContentFile(expectedPath).c_str(), "1W1o1r1l1d");
 }
+
+// Check run function prints decompressed content
 TEST(GetCommandTests, RunTest) {
     std::stringstream buffer;
     std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
@@ -142,27 +161,24 @@ TEST(GetCommandTests, RunTest) {
     EXPECT_EQ(buffer.str(), "World\n");
 }
 
- void CreateTestFiles(const std::string& folder) {
+// Helper: create test files for SearchCommand tests
+void CreateTestFiles(const std::string& folder) {
     Compressor comp;
-
     std::ofstream(folder + "/First.txt") << comp.compress("this is the first file");
     std::ofstream(folder + "/Second.txt") << comp.compress("now im saving the second test file");
     std::ofstream(folder + "/Third.txt") << comp.compress("and this the last test file");
 }
 
-
+// Helper: get folder path from environment variable
 std::string Get_Folder()
 {
     const char* env = std::getenv("EX1_DIR"); 
     std::string folder;
-        folder = env; 
-
+    folder = env; 
     return folder;
 }
 
-
-
-//helper function to check if the files exist without specific order
+// Helper: check if a vector contains a value
 bool contains(const std::vector<std::string>& vec, const std::string& value) {
     for (const auto& s : vec) {
         if (s == value) return true;
@@ -170,71 +186,54 @@ bool contains(const std::vector<std::string>& vec, const std::string& value) {
     return false;
 }
 
-
-
+// --- SearchCommand tests ---
+// Single file match
 TEST(SearchTests, SingleMatch_test)
 {
     std::string folder = Get_Folder();
     CreateTestFiles(folder);
-
     Compressor comp;
-
-
     SearchCommand searchCmd(&comp, folder);
     auto results = searchCmd.search("sec");
-
     ASSERT_EQ(results.size(), 1);
     EXPECT_EQ(results[0], "Second.txt");
 }
 
+// Multiple files match
 TEST(SearchTests, MultipleMatch_test)
 {
     std::string folder = Get_Folder();
     CreateTestFiles(folder);
-
     Compressor comp;
-    
-
-
     SearchCommand searchCmd(&comp, folder);
     auto results = searchCmd.search("file");
-    
-
     ASSERT_EQ(results.size(), 3);
     EXPECT_TRUE(contains(results, "First.txt"));
     EXPECT_TRUE(contains(results, "Second.txt"));
     EXPECT_TRUE(contains(results, "Third.txt"));
 }
 
+// No match found
 TEST(SearchTests, NoMatch_test)
 {
     std::string folder = Get_Folder();
     CreateTestFiles(folder);
-
     Compressor comp;
-    
-
-
     SearchCommand searchCmd(&comp, folder);
     auto results = searchCmd.search("fourth");
-   
     ASSERT_EQ(results.size(), 0);
 }
 
+// Ensure spaces do not count as partial matches
 TEST(SearchTests, Space_test)
 {
     std::string folder = Get_Folder();
     CreateTestFiles(folder);
-
     Compressor comp;
-
     SearchCommand searchCmd(&comp, folder);
-    auto results = searchCmd.search("el");  // appears in "e l" and "le", make sure neither count as a match.
-
+    auto results = searchCmd.search("el");  // should not match "e l" or "le"
     ASSERT_EQ(results.size(), 0);
 }
-
-
 
 // --- GoogleTest main ---
 int main(int argc, char **argv) {

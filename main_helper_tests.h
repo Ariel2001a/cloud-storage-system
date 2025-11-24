@@ -1,5 +1,5 @@
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef MAIN_HELPER_TESTS_H
+#define MAIN_HELPER_TESTS_H
 
 #include <string>
 #include <vector>
@@ -20,4 +20,4 @@ bool validateInput(const string& cmdName, const vector<string>& args);
 // Check if a string contains only whitespace characters
 bool isWhitespaceOnly(const string& s);
 
-#endif 
+#endif //MAIN_HELPER_TESTS_H

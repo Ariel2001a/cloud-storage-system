@@ -15,4 +15,4 @@ class Compressor{
 
         
 };
-#endif
+#endif //COMPRESSOR_H
