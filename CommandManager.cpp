@@ -6,7 +6,6 @@
 #include <iostream>
 
 
-
 using namespace std;
 
 // Registers a command with the command manager

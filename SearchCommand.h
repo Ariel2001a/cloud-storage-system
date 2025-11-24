@@ -12,7 +12,7 @@ private:
     Compressor* comp;
 
     //print search results
-    //void printResults(const std::vector<std::string>& results);
+    void printResults(const std::vector<std::string>& results);
 
 public:
     // Constructor
@@ -24,5 +24,4 @@ public:
     // For tests: returns matching filenames
     std::vector<std::string> search(const std::string& query);
 };
-
 #endif // SEARCHCOMMAND_H

@@ -14,4 +14,6 @@ RUN cmake .. && make
 
 ENV EX1_DIR=/usr/src/mytest/newFiles
 
+
 CMD [ "./MyProgram" ]
+

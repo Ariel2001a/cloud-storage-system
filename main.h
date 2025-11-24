@@ -2,13 +2,16 @@
 #include <string>
 #include <vector>
 #include <sstream>
-
+#include "GetCommand.h"
 #include "ICommand.h"
 #include "CommandManager.h"
 #include "AddCommand.h"
 #include "Compressor.h"
+#include "SearchCommand.h"
 
 using namespace std;
+
+std::string Get_Folder();
 
 class main {
     public:

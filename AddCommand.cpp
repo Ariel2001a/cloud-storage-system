@@ -1,5 +1,6 @@
 #include "ICommand.h"
 #include "AddCommand.h"
+#include "SearchCommand.h"
 #include <vector>
 #include <string>
 #include <iostream>
@@ -57,4 +58,10 @@ void AddCommand::run(const vector<string>& args)
 
     out << compressed;
     out.close();
+
+    for (const auto& entry : fs::directory_iterator(folder)) {
+        if (fs::is_regular_file(entry)) {
+                cout << entry.path().filename().string() <<endl;
+        }
+    }
 }

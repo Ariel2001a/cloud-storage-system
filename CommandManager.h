@@ -16,13 +16,12 @@ class CommandManager{
         map<string, ICommand*> commands;
 
     public:
-    
+
     // Registers a command with the command manager
         void registerCommand(ICommand* command);
 
     // Runs a command by name with the provided arguments
         bool runCommand(const string& commandName, const vector<string>& args);
-    
 };
 
 #endif

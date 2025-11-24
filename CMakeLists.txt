@@ -11,8 +11,9 @@ add_executable(MyProgram
     Compressor.cpp
     AddCommand.cpp
     ICommand.cpp
+    GetCommand.cpp
+    SearchCommand.cpp
 )
-
 include(FetchContent)
 FetchContent_Declare(
     googletest
@@ -27,8 +28,10 @@ add_executable(runTests
     Compressor.cpp
     AddCommand.cpp
     ICommand.cpp
+    GetCommand.cpp
     main_helper_tests.cpp
     test.cpp
+    SearchCommand.cpp
 )
 
 target_link_libraries(runTests gtest_main)
