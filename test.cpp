@@ -126,20 +126,20 @@ TEST(GetCommandTests, GetFileContentTest) {
     GetCommand getcmd;
     std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
     Compressor comp;
-    std::ofstream(expectedPath) << comp.compress("Hello World");
-    EXPECT_STREQ(getcmd.getContentFile(expectedPath).c_str(), "1H1e2l1o 1W1o1r1l1d");
+    std::ofstream(expectedPath) << comp.compress("World");
+    EXPECT_STREQ(getcmd.getContentFile(expectedPath).c_str(), "1W1o1r1l1d");
 }
 TEST(GetCommandTests, RunTest) {
     std::stringstream buffer;
     std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
     std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
     Compressor comp;
-    std::ofstream(expectedPath) << comp.compress("Hello World");
+    std::ofstream(expectedPath) << comp.compress("World");
     GetCommand getcmd;
     std::vector<std::string> args = {"CONFIG_FILE"};
     getcmd.run(args);
     std::cout.rdbuf(old);
-    EXPECT_EQ(buffer.str(), "Hello World\n");
+    EXPECT_EQ(buffer.str(), "World\n");
 }
 
  void CreateTestFiles(const std::string& folder) {
