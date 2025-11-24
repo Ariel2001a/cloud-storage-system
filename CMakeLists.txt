@@ -5,14 +5,18 @@ project(MyExample)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/test)
+
+
 add_executable(MyProgram
-    main.cpp
-    CommandManager.cpp
-    Compressor.cpp
-    AddCommand.cpp
-    ICommand.cpp
-    GetCommand.cpp
-    SearchCommand.cpp
+    src/main.cpp
+    src/CommandManager.cpp
+    src/Compressor.cpp
+    src/AddCommand.cpp
+    src/ICommand.cpp
+    src/GetCommand.cpp
+    src/SearchCommand.cpp
 )
 include(FetchContent)
 FetchContent_Declare(
@@ -24,14 +28,14 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 add_executable(runTests
-    CommandManager.cpp
-    Compressor.cpp
-    AddCommand.cpp
-    ICommand.cpp
-    GetCommand.cpp
-    main_helper_tests.cpp
-    test.cpp
-    SearchCommand.cpp
+    src/CommandManager.cpp
+    src/Compressor.cpp
+    src/AddCommand.cpp
+    src/ICommand.cpp
+    src/GetCommand.cpp
+    test/main_helper_tests.cpp
+    test/test.cpp
+    src/SearchCommand.cpp
 )
 
 target_link_libraries(runTests gtest_main)
