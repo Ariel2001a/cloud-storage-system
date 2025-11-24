@@ -1,3 +1,6 @@
+#ifndef GETCOMMAND_H
+#define GETCOMMAND_H
+
 #include <iostream>
 #include <string>
 #include <map>
@@ -6,15 +9,12 @@ using namespace std;
 #include "ICommand.h"
 #include "Compressor.h"
 
-class GetCommand : public ICommand {
-    private:
-        string fileName;
-    
+class GetCommand : public ICommand {    
     public:
-        GetCommand() = default;
-        GetCommand(const string& name_file);
-        string findEnvironmentVariable(); 
+        GetCommand();
+        string findEnvironmentVariable(const string& fileName); 
         string getContentFile(const string& environment_variable_path);
         void run(const vector<string>& args) override;
-        std::string getName() const override;
 };
+
+#endif

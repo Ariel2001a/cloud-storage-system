@@ -26,7 +26,7 @@ void SearchCommand::run(const std::vector<std::string>& args) {
 }
 
 
- 
+
 //returns vector of matching filenames
 std::vector<std::string> SearchCommand::search(const std::string& query) {
     std::vector<std::string> results;

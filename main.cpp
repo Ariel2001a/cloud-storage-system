@@ -2,13 +2,26 @@
 #include <string>
 #include <vector>
 #include <sstream>
-
+#include "GetCommand.h"
 #include "ICommand.h"
 #include "CommandManager.h"
 #include "AddCommand.h"
 #include "Compressor.h"
+#include "SearchCommand.h"
 
 using namespace std;
+
+
+
+
+std::string Get_Folder()
+{
+    const char* env = std::getenv("EX1_DIR"); 
+    std::string folder;
+        folder = env; 
+
+    return folder;
+}
 
 
 string parseCmd(const string& line);
@@ -18,20 +31,27 @@ bool isWhitespaceOnly(const string& s);
 
 
 int main() {
+
+
+
+Compressor comp;
+std::string folderPath = Get_Folder();
+
+
+
     
     CommandManager manager;
-  
     manager.registerCommand(new AddCommand());
-    
+    manager.registerCommand(new GetCommand());
+    manager.registerCommand(new SearchCommand(&comp, folderPath));
+      
 
     while (true) {
         string line;
         
         getline(cin, line);
       
-
         if (line.empty()) continue;
-       
 
         string cmdName = parseCmd(line);
         vector<string> args = parseArgs(line);

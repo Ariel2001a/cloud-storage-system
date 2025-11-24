@@ -8,27 +8,12 @@ using namespace std;
 #include "GetCommand.h"
 #include <filesystem>
 #include <sstream>
+#include "SearchCommand.h"
 
-map<string, string> m;
-GetCommand::GetCommand(const string& name_file){
-    fileName = name_file;
-    const char* folder = getenv("EX1_DIR");
-    if (!folder){
-         return;
-    }
 
-    string fullPath = string(folder) + "/" + fileName;
-    std::ofstream file(fullPath);
-    if (!file) {
-        return;
-    }
+GetCommand::GetCommand(): ICommand("get"){}
 
-    string content = "1H1e2l1o 1W1o1r1l1d";
-    file << content;
-    file.close();
-}
-
-string GetCommand::findEnvironmentVariable() {
+string GetCommand::findEnvironmentVariable(const string& fileName) {
     const char* folder = getenv("EX1_DIR");
     if (!folder) return "";
     return string(folder) + "/" + fileName;
@@ -37,7 +22,7 @@ string GetCommand::findEnvironmentVariable() {
 string GetCommand::getContentFile(const string& environment_variable_path) {
     string compress_content;
     ifstream file(environment_variable_path);
-            
+        
     if (!file) {
         return "";
     }
@@ -51,30 +36,20 @@ string GetCommand::getContentFile(const string& environment_variable_path) {
     return compress_content;
 } 
 
+
 void GetCommand::run(const vector<string>& args) {
     if (args.size() != 1) {
         return;
     }
 
-    std::string full = args[0];
-    std::istringstream iss(full);
-    string cmd, file;
+    string file = args[0];
 
-    if (!(iss >> cmd >> file)) {
-        return;
-    }
-
-    std::string extra;
-    if (iss >> extra || cmd != "GET") {
-        return;
-    }
-    GetCommand getcmd(fileName);
-    string environment_variable_path = getcmd.findEnvironmentVariable();
+    string environment_variable_path = findEnvironmentVariable(file);
     if (environment_variable_path.empty()) {
         return;
     }
 
-    string compress_content = getcmd.getContentFile(environment_variable_path);
+    string compress_content = getContentFile(environment_variable_path);
     if (compress_content.empty()) {
         return;
     }
@@ -85,8 +60,4 @@ void GetCommand::run(const vector<string>& args) {
     }
 
     cout << decompressed_content << endl;
-}
-
-std::string getName(){
-    return "Get";
 }

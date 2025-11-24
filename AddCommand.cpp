@@ -1,5 +1,6 @@
 #include "ICommand.h"
 #include "AddCommand.h"
+#include "SearchCommand.h"
 #include <vector>
 #include <string>
 #include <iostream>

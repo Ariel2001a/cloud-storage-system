@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include "SearchCommand.h"
 
 #include "Compressor.h"
 #include "main_helper_tests.h"
@@ -122,7 +123,6 @@ std::string Get_Folder()
 
     return folder;
 }
-
 
 
 

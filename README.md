@@ -10,6 +10,7 @@ Key functionalities
 - Search command : Gets a text query. search for files containing the query and return a list of file names
 
 
+
 Setup
 
 1. Clone the repository - https://github.com/Ariel2001a/Project-exercise1
