@@ -10,15 +10,17 @@ using namespace std;
 #include <sstream>
 #include "SearchCommand.h"
 
-
+// constructor
 GetCommand::GetCommand(): ICommand("get"){}
 
+// The function recieve the file name and return the full path of the envirionment variable of the file
 string GetCommand::findEnvironmentVariable(const string& fileName) {
     const char* folder = getenv("EX1_DIR");
     if (!folder) return "";
     return string(folder) + "/" + fileName;
 }
 
+// The function recieve the envirionment variable of the file and return the compressed content 
 string GetCommand::getContentFile(const string& environment_variable_path) {
     string compress_content;
     ifstream file(environment_variable_path);
@@ -36,7 +38,8 @@ string GetCommand::getContentFile(const string& environment_variable_path) {
     return compress_content;
 } 
 
-
+// The run function recieve the command's args and print the decompressed content of the file
+// that asked for in the command. 
 void GetCommand::run(const vector<string>& args) {
     if (args.size() != 1) {
         return;

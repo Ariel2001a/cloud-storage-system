@@ -136,17 +136,17 @@ bool contains(const std::vector<std::string>& vec, const std::string& value) {
 
 
 
-    TEST(SearchTests, SingleMatch_test)
+TEST(SearchTests, SingleMatch_test)
 {
     std::string folder = Get_Folder();
     CreateTestFiles(folder);
 
     Compressor comp;
-    
+
 
     SearchCommand searchCmd(&comp, folder);
     auto results = searchCmd.search("sec");
-   
+
     ASSERT_EQ(results.size(), 1);
     EXPECT_EQ(results[0], "Second.txt");
 }
