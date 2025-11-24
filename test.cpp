@@ -102,8 +102,45 @@ TEST(CompressorTest, Compress_MixedCharacters) {
     EXPECT_EQ(comp.compress(input), expected);
 }
 
+TEST(CompressorTests, DecompressTest) {
+    std::string compressed = "1H1e2l1o 1W1o1r1l1d";;
+    std::string expected = "Hello World"; 
+    EXPECT_EQ(Compressor::decompress(compressed), expected);
+    compressed = "2-21-110-13--4A";
+    expected = "2211111111111---AAAA"; 
+    EXPECT_EQ(Compressor::decompress(compressed), expected);
+    compressed = "2---2";
+    expected = ""; 
+    EXPECT_EQ(Compressor::decompress(compressed), expected);
+}
 
+// get command tests
 
+TEST(GetCommandTests, FindEnvironmentVariableTest) {
+    GetCommand getcmd;
+    std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
+    EXPECT_EQ(getcmd.findEnvironmentVariable("CONFIG_FILE"), expectedPath);
+}
+
+TEST(GetCommandTests, GetFileContentTest) {
+    GetCommand getcmd;
+    std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
+    Compressor comp;
+    std::ofstream(expectedPath) << comp.compress("Hello World");
+    EXPECT_STREQ(getcmd.getContentFile(expectedPath).c_str(), "1H1e2l1o 1W1o1r1l1d");
+}
+TEST(GetCommandTests, RunTest) {
+    std::stringstream buffer;
+    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
+    std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
+    Compressor comp;
+    std::ofstream(expectedPath) << comp.compress("Hello World");
+    GetCommand getcmd;
+    std::vector<std::string> args = {"CONFIG_FILE"};
+    getcmd.run(args);
+    std::cout.rdbuf(old);
+    EXPECT_EQ(buffer.str(), "Hello World\n");
+}
 
  void CreateTestFiles(const std::string& folder) {
     Compressor comp;
@@ -112,7 +149,6 @@ TEST(CompressorTest, Compress_MixedCharacters) {
     std::ofstream(folder + "/Second.txt") << comp.compress("now im saving the second test file");
     std::ofstream(folder + "/Third.txt") << comp.compress("and this the last test file");
 }
-
 
 
 std::string Get_Folder()
@@ -191,8 +227,6 @@ TEST(SearchTests, Space_test)
     CreateTestFiles(folder);
 
     Compressor comp;
-    
-
 
     SearchCommand searchCmd(&comp, folder);
     auto results = searchCmd.search("el");  // appears in "e l" and "le", make sure neither count as a match.
