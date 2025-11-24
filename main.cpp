@@ -32,14 +32,9 @@ bool isWhitespaceOnly(const string& s);
 
 int main() {
 
-
-
 Compressor comp;
 std::string folderPath = Get_Folder();
 
-
-
-    
     CommandManager manager;
     manager.registerCommand(new AddCommand());
     manager.registerCommand(new GetCommand());
@@ -85,8 +80,6 @@ vector<string> parseArgs(const string& line) {
 }
 
 bool validateInput(const string& cmdName, const vector<string>& args) {
-
-   
 
     if (cmdName.empty()) {
         return false;
