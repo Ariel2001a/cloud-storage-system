@@ -74,7 +74,13 @@ string parseCmd(const string& line) {
     istringstream iss(line);
     string cmd;
     iss >> cmd;
-    return cmd;
+    string cmd_low_case;
+    int i=0;
+    while(i<cmd.size()){
+        cmd_low_case+=tolower((unsigned char)cmd[i]);
+        i++;
+    }
+    return cmd_low_case;
 }
 
 // --- Extract arguments from a line ---
