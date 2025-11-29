@@ -58,4 +58,5 @@ void AddCommand::run(const vector<string>& args)
 
     out << compressed;
     out.close();
+    cout<<"201 Created"<<endl;
 }
