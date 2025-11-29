@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "SearchCommand.h"
 #include <filesystem>
 #include <fstream>
@@ -12,6 +13,7 @@ SearchCommand::SearchCommand(Compressor* compPtr, const std::string& folderPath)
 // Print the search results to the console
 // Results are printed in a single line separated by spaces
 void SearchCommand::printResults(const std::vector<std::string>& results) {
+         std::cout << "200 Ok\n\n";
     for (size_t i = 0; i < results.size(); ++i) {
         std::cout << results[i];
         if (i != results.size() - 1) std::cout << " ";
@@ -30,12 +32,41 @@ void SearchCommand::run(const std::vector<std::string>& args) {
 
 
 
+int avoid_duplicates (const std::string& filename, const std::vector<std::string>& results )
+{
+    if (std::find(results.begin(), results.end(), filename) == results.end())
+    {
+        return 1;
+    }
+    return 0;
+}
+
+
+
+
+
 // Search function: returns a vector of filenames containing the query
 std::vector<std::string> SearchCommand::search(const std::string& query) {
     std::vector<std::string> results;
 
     namespace fs = std::filesystem;
     fs::path dir(folder);
+
+    for (const auto& entry : fs::directory_iterator(dir))
+          {
+              std::string temp = entry.path().filename();
+
+              if (temp.find(query) != std::string::npos)
+            results.push_back(entry.path().filename().string());
+
+
+
+          }
+
+
+
+
+
 
     // Iterate over all files in the directory
     for (const auto& entry : fs::directory_iterator(dir)) {
@@ -45,11 +76,11 @@ std::vector<std::string> SearchCommand::search(const std::string& query) {
         buffer << file.rdbuf();
         std::string fileContents = buffer.str();
 
-        // Decompress the content before searching
-        std::string temp = comp->decompress(fileContents);
+         std::string temp = comp->decompress(fileContents);
+        std::string temp_name = entry.path().filename();
 
         // If the query is found in the decompressed content, add filename to results
-        if (temp.find(query) != std::string::npos)
+        if ((temp.find(query) != std::string::npos) && avoid_duplicates(temp_name,results))
             results.push_back(entry.path().filename().string());
     }
 

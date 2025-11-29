@@ -167,6 +167,7 @@ void CreateTestFiles(const std::string& folder) {
     std::ofstream(folder + "/First.txt") << comp.compress("this is the first file");
     std::ofstream(folder + "/Second.txt") << comp.compress("now im saving the second test file");
     std::ofstream(folder + "/Third.txt") << comp.compress("and this the last test file");
+    std::ofstream(folder + "/Fourth.txt") << comp.compress("Fourth");
 }
 
 // Helper: get folder path from environment variable
@@ -233,6 +234,32 @@ TEST(SearchTests, Space_test)
     SearchCommand searchCmd(&comp, folder);
     auto results = searchCmd.search("el");  // should not match "e l" or "le"
     ASSERT_EQ(results.size(), 0);
+}
+
+
+//test search by file name
+TEST(SearchTests, search_By_name)
+{
+    std::string folder = Get_Folder();
+    CreateTestFiles(folder);
+    Compressor comp;
+    SearchCommand searchCmd(&comp, folder);
+    auto results = searchCmd.search("Third");  
+    ASSERT_EQ(results.size(), 1);
+     EXPECT_TRUE(contains(results, "Third.txt"));
+
+}
+
+//ensure no double files in search results
+TEST(SearchTests, no_doubles)
+{
+    std::string folder = Get_Folder();
+    CreateTestFiles(folder);
+    Compressor comp;
+    SearchCommand searchCmd(&comp, folder);
+    auto results = searchCmd.search("Fourth");  // finds once for name search and also in content search, make sure it doesnt appear twice in results
+    ASSERT_EQ(results.size(), 1);
+     EXPECT_TRUE(contains(results, "Fourth.txt"));
 }
 
 // --- GoogleTest main ---
