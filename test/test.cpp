@@ -158,7 +158,7 @@ TEST(GetCommandTests, RunTest) {
     std::vector<std::string> args = {"CONFIG_FILE"};
     getcmd.run(args);
     std::cout.rdbuf(old);
-    EXPECT_EQ(buffer.str(), "World\n");
+    EXPECT_EQ(buffer.str(), "200 OK\n\n\nWorld\n");
 }
 
 // Helper: create test files for SearchCommand tests
