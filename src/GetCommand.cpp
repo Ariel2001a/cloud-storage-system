@@ -46,7 +46,8 @@ string GetCommand::getContentFile(const string& environment_variable_path) {
 // Receives command arguments and prints the decompressed content of the requested file
 void GetCommand::run(const vector<string>& args) {
     if (args.size() != 1) {
-        return;  // invalid arguments, exit
+         cout << "400 Bad Request"<< endl;  // invalid arguments, print 400 bad request
+         return;
     }
 
     // Check if the file exists in the directory specified by EX1_DIR

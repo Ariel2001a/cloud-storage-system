@@ -58,6 +58,91 @@ TEST(ValidateInputTest, ArgIsWhitespace) {
     EXPECT_FALSE(validateInput(cmd, args));
 }
 
+TEST(ValidateInputTest, ValidInputWithUppercaseCommand) {
+    string line = "POST file3.txt Content";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseAddCommand1) {
+    string line = "PosT file3.txt Content";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseAddCommand2) {
+    string line = "POst file3.txt Content";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseAddCommand3) {
+    string line = "pOST file3.txt Content";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseGetCommand1) {
+    string line = "GeT file3.txt Content";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseGetCommand2) {
+    string line = "GEt file3.txt Content";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseGetCommand3) {
+    string line = "gET file3.txt Content";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseGetCommand4) {
+    string line = "GET file3.txt Content";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseSearchCommand1) {
+    string line = "SeArcH file3.txt Content";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseSearchCommand2) {
+    string line = "SEarch file3.txt Content";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseSearchCommand3) {
+    string line = "seaRCH file3.txt Content";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseSearchCommand4) {
+    string line = "SEARCH file3.txt Content";
+    vector<string> args = parseArgs(line);
+    string cmd = parseCmd(line);
+    EXPECT_TRUE(validateInput(cmd, args));
+}
+
+
 // --- Compressor tests ---
 // Compress normal string without spaces
 TEST(CompressorTest, Compress_NormalString) {
@@ -132,6 +217,17 @@ TEST(CompressorTests, DecompressTest) {
 
 // --- GetCommand tests ---
 // Check environment variable path
+TEST(GetCommandTests, InvalidGetCommandTest) {
+    std::stringstream buffer3;
+    std::streambuf* old3 = std::cout.rdbuf(buffer3.rdbuf());
+    GetCommand getcmd3;
+    std::vector<std::string> args3 = {};
+    getcmd3.run(args3);
+    std::cout.rdbuf(old3);
+    EXPECT_EQ(buffer3.str(), "400 Bad Request\n");
+    
+}
+
 TEST(GetCommandTests, FindEnvironmentVariableTest) {
     GetCommand getcmd;
     std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
@@ -159,6 +255,17 @@ TEST(GetCommandTests, RunTest) {
     getcmd.run(args);
     std::cout.rdbuf(old);
     EXPECT_EQ(buffer.str(), "200 OK\n\n\nWorld\n");
+}
+
+
+TEST(GetCommandTest, ValidInputButNonExistentFile) {
+    std::stringstream buffer2;
+    std::streambuf* old2 = std::cout.rdbuf(buffer2.rdbuf());
+    GetCommand getcmd2;
+    std::vector<std::string> args2 = {"NON_EXISTENT_FILE"};
+    getcmd2.run(args2);
+    std::cout.rdbuf(old2);
+    EXPECT_EQ(buffer2.str(), "404 Not found\n");
 }
 
 // Helper: create test files for SearchCommand tests
