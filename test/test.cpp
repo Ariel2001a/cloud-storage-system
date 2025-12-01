@@ -364,10 +364,43 @@ TEST(SearchTests, no_doubles)
     CreateTestFiles(folder);
     Compressor comp;
     SearchCommand searchCmd(&comp, folder);
-    auto results = searchCmd.search("Fourth");  // finds once for name search and also in content search, make sure it doesnt appear twice in results
+    auto results = searchCmd.search("Fourth");  // finds it in name search and also in content search, make sure it doesnt appear twice in results
     ASSERT_EQ(results.size(), 1);
      EXPECT_TRUE(contains(results, "Fourth.txt"));
 }
+
+
+   //Tests for delete function
+   TEST(DeleteTests, simple_delete)
+   {
+   deletecommand deleteCMD;
+    std::stringstream buffer;
+    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
+
+    deleteCMD.run({"First.txt"});
+    std::cout.rdbuf(old);
+
+    EXPECT_EQ(buffer.str(), "204 No Content\n");
+
+   }
+
+  
+
+   TEST(DeleteTests,illegal_delete)
+ {
+    std::string folder = Get_Folder();
+    CreateTestFiles(folder);
+    deletecommand deleteCMD;
+    std::stringstream buffer;
+    std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
+
+    deleteCMD.run({"Fifth.txt"});// do not exist
+    std::cout.rdbuf(old);
+
+    EXPECT_EQ(buffer.str(), "404 Not Found\n");
+}
+
+
 
 // --- GoogleTest main ---
 int main(int argc, char **argv) {
