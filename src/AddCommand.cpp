@@ -17,7 +17,7 @@ namespace fs = filesystem;
 
 
 //AddCommand constructor
-AddCommand::AddCommand() : ICommand("add") {}
+AddCommand::AddCommand() : ICommand("post") {}
 
 //Execute add command
 void AddCommand::run(const vector<string>& args)

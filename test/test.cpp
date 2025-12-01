@@ -59,35 +59,28 @@ TEST(ValidateInputTest, ArgIsWhitespace) {
 }
 
 TEST(ValidateInputTest, ValidInputWithUppercaseCommand) {
-    string line = "ADD file3.txt Content";
+    string line = "POST file3.txt Content";
     vector<string> args = parseArgs(line);
     string cmd = parseCmd(line);
     EXPECT_TRUE(validateInput(cmd, args));
 }
 
 TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseAddCommand1) {
-    string line = "AdD file3.txt Content";
+    string line = "PosT file3.txt Content";
     vector<string> args = parseArgs(line);
     string cmd = parseCmd(line);
     EXPECT_TRUE(validateInput(cmd, args));
 }
 
 TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseAddCommand2) {
-    string line = "ADd file3.txt Content";
+    string line = "POst file3.txt Content";
     vector<string> args = parseArgs(line);
     string cmd = parseCmd(line);
     EXPECT_TRUE(validateInput(cmd, args));
 }
 
 TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseAddCommand3) {
-    string line = "aDD file3.txt Content";
-    vector<string> args = parseArgs(line);
-    string cmd = parseCmd(line);
-    EXPECT_TRUE(validateInput(cmd, args));
-}
-
-TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseAddCommand4) {
-    string line = "ADD file3.txt Content";
+    string line = "pOST file3.txt Content";
     vector<string> args = parseArgs(line);
     string cmd = parseCmd(line);
     EXPECT_TRUE(validateInput(cmd, args));
@@ -224,6 +217,17 @@ TEST(CompressorTests, DecompressTest) {
 
 // --- GetCommand tests ---
 // Check environment variable path
+TEST(GetCommandTests, InvalidGetCommandTest) {
+    std::stringstream buffer3;
+    std::streambuf* old3 = std::cout.rdbuf(buffer3.rdbuf());
+    GetCommand getcmd3;
+    std::vector<std::string> args3 = {};
+    getcmd3.run(args3);
+    std::cout.rdbuf(old3);
+    EXPECT_EQ(buffer3.str(), "400 Bad Request\n");
+    
+}
+
 TEST(GetCommandTests, FindEnvironmentVariableTest) {
     GetCommand getcmd;
     std::string expectedPath = std::string(getenv("EX1_DIR")) + "/CONFIG_FILE";
