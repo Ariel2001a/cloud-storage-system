@@ -46,10 +46,27 @@ string GetCommand::getContentFile(const string& environment_variable_path) {
 // Receives command arguments and prints the decompressed content of the requested file
 void GetCommand::run(const vector<string>& args) {
     if (args.size() != 1) {
-        return;  // invalid arguments, exit
+         cout << "400 Bad Request"<< endl;  // invalid arguments, print 400 bad request
+         return;
     }
 
+    // Check if the file exists in the directory specified by EX1_DIR
+    const char* dir = getenv("EX1_DIR");
     string file = args[0];
+    bool found = false;
+
+    for (const auto& entry : std::filesystem::directory_iterator(dir)) {
+        if (entry.path().filename().string() == file) {
+            found = true;
+            break;
+        }
+    }
+
+    // If the file is not found, print "404 Not found" and exit
+    if (!found) {
+        cout << "404 Not found" << endl;
+        return;
+    }
 
     // Find the full path to the file using the environment variable
     string environment_variable_path = findEnvironmentVariable(file);
@@ -68,6 +85,8 @@ void GetCommand::run(const vector<string>& args) {
     if (decompressed_content.empty()) {
         return;  // decompression failed, exit
     }
+
+    cout << "200 OK\n\n"<< endl;
 
     // Print the decompressed content to the console
     cout << decompressed_content << endl;

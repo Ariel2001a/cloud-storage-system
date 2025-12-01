@@ -88,15 +88,6 @@ string parseCmd(const string& line) {
     return cmd_low_case;
 }
 
-
-// --- Extract the command name (first word) from a line ---
-string parseCmd(const string& line) {
-    istringstream iss(line);
-    string cmd;
-    iss >> cmd;
-    return cmd;
-}
-
 // --- Extract arguments from a line ---
 // Returns first argument as file name and second argument as content (if exists)
 vector<string> parseArgs(const string& line, const string& cmdName) {
