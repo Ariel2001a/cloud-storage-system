@@ -17,6 +17,7 @@ add_executable(MyProgram
     src/ICommand.cpp
     src/GetCommand.cpp
     src/SearchCommand.cpp
+     src/deletecommand.cpp
 )
 include(FetchContent)
 FetchContent_Declare(
@@ -36,6 +37,7 @@ add_executable(runTests
     test/main_helper_tests.cpp
     test/test.cpp
     src/SearchCommand.cpp
+    src/deletecommand.cpp
 )
 
 target_link_libraries(runTests gtest_main)

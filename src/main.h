@@ -11,6 +11,7 @@
 #include "AddCommand.h"
 #include "Compressor.h"
 #include "SearchCommand.h"
+#include "deletecommand.h"
 
 using namespace std;
 

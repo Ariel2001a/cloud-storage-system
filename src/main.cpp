@@ -8,6 +8,7 @@
 #include "AddCommand.h"
 #include "Compressor.h"
 #include "SearchCommand.h"
+#include "deletecommand.h"
 
 using namespace std;
 
@@ -43,6 +44,7 @@ int main() {
     manager.registerCommand(new AddCommand());
     manager.registerCommand(new GetCommand());
     manager.registerCommand(new SearchCommand(&comp, folderPath));
+    manager.registerCommand(new deletecommand());
 
     // --- Main loop to read user input ---
     while(true) {
