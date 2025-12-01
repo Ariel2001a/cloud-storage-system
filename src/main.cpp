@@ -10,6 +10,7 @@
 #include "SearchCommand.h"
 #include "deletecommand.h"
 
+
 using namespace std;
 
 // --- Get folder path from environment variable ---
@@ -71,6 +72,23 @@ int main() {
     return 0;
 }
 
+// --- Extract the command name (first word) from a line in lowercase---
+string parseCmd(const string& line) {
+    istringstream iss(line);
+    string cmd;
+    iss >> cmd;
+
+    // Convert command to lowercase
+    string cmd_low_case;
+    int i=0;
+    while(i<cmd.size()){
+        cmd_low_case+=tolower((unsigned char)cmd[i]);
+        i++;
+    }
+    return cmd_low_case;
+}
+
+
 // --- Extract the command name (first word) from a line ---
 string parseCmd(const string& line) {
     istringstream iss(line);
@@ -114,3 +132,4 @@ bool isWhitespaceOnly(const string& s) {
             return false;
     return true;
 }
+
