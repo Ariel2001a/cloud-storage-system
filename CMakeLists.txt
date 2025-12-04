@@ -23,7 +23,7 @@ add_executable(MyProgram
     src/Parser.cpp
 
 )
-#[[
+
 include(FetchContent)
 FetchContent_Declare(
     googletest
@@ -40,7 +40,6 @@ FetchContent_MakeAvailable(googletest)
     src/AddCommand.cpp
     src/ICommand.cpp
     src/GetCommand.cpp
-    test/main_helper_tests.cpp
     test/test.cpp
     src/SearchCommand.cpp
     src/ConsoleCommunication.cpp
@@ -50,4 +49,3 @@ FetchContent_MakeAvailable(googletest)
 )
 
 target_link_libraries(runTests gtest_main)
-]]

@@ -60,13 +60,13 @@ string GetCommand::run(const vector<string>& args) {
     // Read the compressed content from the file
     string compress_content = getContentFile(environment_variable_path);
     if (compress_content.empty()) {
-        return "";  // file is empty or cannot be read, exit
+        return string(SUCCESS_GET)+ "\n"; 
     }
 
     // Decompress the content using Compressor
     string decompressed_content = Compressor::decompress(compress_content);
     if (decompressed_content.empty()) {
-        return "";  // decompression failed, exit
+        return string(SUCCESS_GET)+ "\n";
     }
 
     return string(SUCCESS_GET)+ decompressed_content;  // return success message with content
