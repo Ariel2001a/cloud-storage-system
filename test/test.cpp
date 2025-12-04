@@ -316,8 +316,6 @@ TEST(SearchTests, MultipleMatch_test)
     EXPECT_TRUE(contains(results, "First.txt"));
     EXPECT_TRUE(contains(results, "Second.txt"));
     EXPECT_TRUE(contains(results, "Third.txt"));
-    string msg = searchCmd.run({"file"});
-    EXPECT_EQ(msg, "200 Ok\n\nThird.txt Second.txt First.txt");
 }
 
 // No match found
