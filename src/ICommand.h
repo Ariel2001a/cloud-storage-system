@@ -19,7 +19,6 @@ class ICommand{
 // Must be implemented by derived commands
         virtual string run(const vector<string>& args)=0;
 
-    protected:
         string GetFolderPath();
 };
 #endif //#ifndef COMMAND_H

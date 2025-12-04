@@ -12,141 +12,154 @@
 #include "Parser.h"
 #include "ICommand.h"
 #include "AddCommand.h"
+#include "Config.h"
 
 using namespace std;
 
 // --- Validation tests ---
 // Check parsing and validation for multiple arguments
 TEST(ValidateInputTest, ValidInputWithMultipleArgs) {
-    string line = "add file1.txt Hello World";
+    string line = "post file1.txt Hello World";
+    string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
+    EXPECT_TRUE(Parser::validateInput(cmd, args));
+}
+
+// Check single argument input
+TEST(ValidateInputTest, ValidInputWithSingleArg) {
+    string line = "post file2.txt";
+    string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
+    EXPECT_TRUE(Parser::validateInput(cmd, args));
+}
+
+// Check long argument input with spaces
+TEST(ValidateInputTest, ValidInputWithLongArg) {
+    string line = "post notes.txt Hello my friend";
+    string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
+    EXPECT_TRUE(Parser::validateInput(cmd, args));
+}
+
+// Missing argument should fail validation
+TEST(ValidateInputTest, MissingArgument) {
+    string line = "post";
     string cmd = Parser::parseCmd(line);
     vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_FALSE(Parser::validateInput(cmd, args));
 }
 
-// Check single argument input
-TEST(ValidateInputTest, ValidInputWithSingleArg) {
-    string line = "add file2.txt";
-    vector<string> args = Parser::parseArgs(line);
-    string cmd = Parser::parseCmd(line);
-    EXPECT_FALSE(Parser::validateInput(cmd, args));
-}
-
-// Check long argument input with spaces
-TEST(ValidateInputTest, ValidInputWithLongArg) {
-    string line = "add notes.txt Hello my friend";
-    vector<string> args = Parser::parseArgs(line);
-    string cmd = Parser::parseCmd(line);
-    EXPECT_FALSE(Parser::validateInput(cmd, args));
-}
-
-// Missing argument should fail validation
-TEST(ValidateInputTest, MissingArgument) {
-    string line = "add";
-    vector<string> args = Parser::parseArgs(line);
-    string cmd = Parser::parseCmd(line);
-    EXPECT_FALSE(Parser::validateInput(cmd, args));
-}
-
 // Only whitespace after command should fail
 TEST(ValidateInputTest, OnlyWhitespaceAfterCommand) {
-    string line = "add  ";
-    vector<string> args = Parser::parseArgs(line);
+    string line = "post  ";
     string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_FALSE(Parser::validateInput(cmd, args));
 }
 
 // Argument that is whitespace only should fail
 TEST(ValidateInputTest, ArgIsWhitespace) {
-    string line = "add    file.txt    ";
-    vector<string> args = Parser::parseArgs(line);
+    string line = "post    file.txt    ";
     string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_FALSE(Parser::validateInput(cmd, args));
 }
 
 
 TEST(ValidateInputTest, ValidInputWithUppercaseCommand) {
     string line = "POST file3.txt Content";
-    vector<string> args = Parser::parseArgs(line);
     string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_TRUE(Parser::validateInput(cmd, args));
 }
 
 TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseAddCommand1) {
     string line = "PosT file3.txt Content";
-    vector<string> args = Parser::parseArgs(line);
     string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_TRUE(Parser::validateInput(cmd, args));
 }
 
 TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseAddCommand2) {
     string line = "POst file3.txt Content";
-    vector<string> args = Parser::parseArgs(line);
     string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_TRUE(Parser::validateInput(cmd, args));
 }
 
 TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseAddCommand3) {
     string line = "pOST file3.txt Content";
-    vector<string> args = Parser::parseArgs(line);
     string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_TRUE(Parser::validateInput(cmd, args));
 }
 
 TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseGetCommand1) {
     string line = "GeT file3.txt Content";
-    vector<string> args = Parser::parseArgs(line);
     string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_TRUE(Parser::validateInput(cmd, args));
 }
 
 TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseGetCommand2) {
     string line = "GEt file3.txt Content";
-    vector<string> args = Parser::parseArgs(line);
     string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_TRUE(Parser::validateInput(cmd, args));
 }
 
 TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseGetCommand3) {
     string line = "gET file3.txt Content";
-    vector<string> args = Parser::parseArgs(line);
     string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_TRUE(Parser::validateInput(cmd, args));
 }
 
 TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseGetCommand4) {
     string line = "GET file3.txt Content";
-    vector<string> args = Parser::parseArgs(line);
     string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_TRUE(Parser::validateInput(cmd, args));
 }
 
 TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseSearchCommand1) {
     string line = "SeArcH file3.txt Content";
-    vector<string> args = Parser::parseArgs(line);
     string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_TRUE(Parser::validateInput(cmd, args));
 }
 
 TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseSearchCommand2) {
     string line = "SEarch file3.txt Content";
-    vector<string> args = Parser::parseArgs(line);
     string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_TRUE(Parser::validateInput(cmd, args));
 }
 
 TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseSearchCommand3) {
     string line = "seaRCH file3.txt Content";
-    vector<string> args = Parser::parseArgs(line);
     string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_TRUE(Parser::validateInput(cmd, args));
 }
 
 TEST(ValidateInputTest, ValidInputWithUpperAndLowercaseSearchCommand4) {
     string line = "SEARCH file3.txt Content";
-    vector<string> args = Parser::parseArgs(line);
     string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
     EXPECT_TRUE (Parser::validateInput(cmd, args));
+}
+
+
+TEST(AddCommandTest, AddNewFileAndDuplicateAdd) {
+    string line = "post notes.txt my friend";
+    string cmd = Parser::parseCmd(line);
+    vector<string> args = Parser::parseArgs(line,cmd);
+    AddCommand addcmd;
+    string msg= addcmd.run(args);
+    EXPECT_EQ(msg, "201 Created");
+    string msg1= addcmd.run(args);
+    EXPECT_EQ(msg1, "404 Not Found");
 }
 
 
@@ -232,7 +245,7 @@ TEST(GetCommandTests, InvalidGetCommandTest) {
     GetCommand getcmd3;
     std::vector<std::string> args3 = {};
     string msg= getcmd3.run(args3);
-    EXPECT_EQ(msg, "400 Bad Request\n");
+    EXPECT_EQ(msg, "400 Bad Request");
     
 }
 
@@ -251,7 +264,7 @@ TEST(GetCommandTests, RunTest) {
     GetCommand getcmd;
     vector<string> args = {"CONFIG_FILE"};
     string msg= getcmd.run(args);
-    EXPECT_EQ(msg, "200 OK\n\n\nWorld\n");
+    EXPECT_EQ(msg, "200 Ok\n\nWorld");
 }
 
 
@@ -259,7 +272,7 @@ TEST(GetCommandTest, ValidInputButNonExistentFile) {
     GetCommand getcmd2;
     std::vector<std::string> args2 = {"NON_EXISTENT_FILE"};
     string msg= getcmd2.run(args2);
-    EXPECT_EQ(msg, "404 Not found\n");
+    EXPECT_EQ(msg, "404 Not Found");
 }
 
 // Helper: create test files for SearchCommand tests
@@ -283,44 +296,53 @@ bool contains(const std::vector<std::string>& vec, const std::string& value) {
 TEST(SearchTests, SingleMatch_test)
 {
     SearchCommand searchCmd;
-    std::string folder = searchCmd.Get_Folder();
+    std::string folder = searchCmd.GetFolderPath();
     CreateTestFiles(folder);
     auto results = searchCmd.search("sec");
     ASSERT_EQ(results.size(), 1);
     EXPECT_EQ(results[0], "Second.txt");
+    string msg = searchCmd.run({"sec"});
+    EXPECT_EQ(msg, "200 Ok\n\nSecond.txt");
 }
 
 // Multiple files match
 TEST(SearchTests, MultipleMatch_test)
 {
     SearchCommand searchCmd;
-    std::string folder = searchCmd.Get_Folder();
+    std::string folder = searchCmd.GetFolderPath();
     CreateTestFiles(folder);
     auto results = searchCmd.search("file");
     ASSERT_EQ(results.size(), 3);
     EXPECT_TRUE(contains(results, "First.txt"));
     EXPECT_TRUE(contains(results, "Second.txt"));
     EXPECT_TRUE(contains(results, "Third.txt"));
+    string msg = searchCmd.run({"file"});
+    EXPECT_EQ(msg, "200 Ok\n\nThird.txt Second.txt First.txt");
 }
 
 // No match found
 TEST(SearchTests, NoMatch_test)
 {
     SearchCommand searchCmd;
-    std::string folder = searchCmd.Get_Folder();
+    std::string folder = searchCmd.GetFolderPath();
     CreateTestFiles(folder);
     auto results = searchCmd.search("fourth");
     ASSERT_EQ(results.size(), 0);
+    string msg = searchCmd.run({"fourth"});
+    EXPECT_EQ(msg, LOGICAL_PROBLEM);
 }
 
 // Ensure spaces do not count as partial matches
 TEST(SearchTests, Space_test)
 {
     SearchCommand searchCmd;
-    std::string folder = searchCmd.Get_Folder();
+    std::string folder = searchCmd.GetFolderPath();
     CreateTestFiles(folder);
     auto results = searchCmd.search("el");  // should not match "e l" or "le"
     ASSERT_EQ(results.size(), 0);
+    string msg = searchCmd.run({"el"});
+    EXPECT_EQ(msg, LOGICAL_PROBLEM);
+    
 }
 
 
@@ -328,11 +350,13 @@ TEST(SearchTests, Space_test)
 TEST(SearchTests, search_By_name)
 {
     SearchCommand searchCmd;
-    std::string folder = searchCmd.Get_Folder();
+    std::string folder = searchCmd.GetFolderPath();
     CreateTestFiles(folder);
     auto results = searchCmd.search("Third");  
     ASSERT_EQ(results.size(), 1);
     EXPECT_TRUE(contains(results, "Third.txt"));
+    string msg = searchCmd.run({"Third"});
+    EXPECT_EQ(msg, "200 Ok\n\nThird.txt");
 
 }
 
@@ -340,11 +364,13 @@ TEST(SearchTests, search_By_name)
 TEST(SearchTests, no_doubles)
 {
     SearchCommand searchCmd;
-    std::string folder = searchCmd.Get_Folder();
+    std::string folder = searchCmd.GetFolderPath();
     CreateTestFiles(folder);
     auto results = searchCmd.search("Fourth");  // finds it in name search and also in content search, make sure it doesnt appear twice in results
     ASSERT_EQ(results.size(), 1);
     EXPECT_TRUE(contains(results, "Fourth.txt"));
+    string msg = searchCmd.run({"Fourth"});
+    EXPECT_EQ(msg, "200 Ok\n\nFourth.txt");
 }
 
 
@@ -355,7 +381,7 @@ TEST(SearchTests, no_doubles)
 
     string msg= deleteCMD.run({"First.txt"});
 
-    EXPECT_EQ(msg, "204 No Content\n");
+    EXPECT_EQ(msg, "204 No Content");
    }
 
   
@@ -363,10 +389,10 @@ TEST(SearchTests, no_doubles)
    TEST(DeleteTests,illegal_delete)
  {
     deletecommand deleteCMD;
-    std::string folder = deleteCMD.Get_Folder();
+    std::string folder = deleteCMD.GetFolderPath();
     CreateTestFiles(folder);
     string msg= deleteCMD.run({"Fifth.txt"});// do not exist
-    EXPECT_EQ(msg, "404 Not Found\n");
+    EXPECT_EQ(msg, "404 Not Found");
 }
 
 

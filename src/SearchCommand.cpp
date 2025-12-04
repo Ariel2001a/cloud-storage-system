@@ -29,6 +29,9 @@ string SearchCommand::resultsMessage(const std::vector<std::string>& results) {
 string SearchCommand::run(const std::vector<std::string>& args) {
 
     std::vector<std::string> results = search(args[0]); // search for query in all files
+    if (results.empty()) {
+        return LOGICAL_PROBLEM; // no results found
+    }
     string msg= resultsMessage(results); // print matched filenames
     return string(SUCCESS_SEARCH) + msg;
 }
