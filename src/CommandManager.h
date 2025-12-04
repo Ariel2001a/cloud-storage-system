@@ -18,10 +18,10 @@ class CommandManager{
     public:
 
     // Registers a command with the command manager
-        void registerCommand(ICommand* command);
+        void registerCommand(const string& command_name, ICommand* command);
 
     // Runs a command by name with the provided arguments
-        bool runCommand(const string& commandName, const vector<string>& args);
+        string runCommand(const string& commandName, const vector<string>& args);
 };
 
 #endif//COMANDMANAGER_H

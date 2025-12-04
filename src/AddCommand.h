@@ -16,6 +16,6 @@ class AddCommand: public ICommand{
     //constructor
         AddCommand();
         //execute add command
-        void run(const vector<string>& args) override;
+        string run(const vector<string>& args) override;
 };
 #endif //ADDCOMMAND_H

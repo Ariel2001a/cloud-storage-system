@@ -1,5 +1,8 @@
 #include "CommandManager.h"
 #include "ICommand.h"
+#include "Config.h"
+
+
 #include <string>
 #include <map>
 #include <vector>
@@ -9,17 +12,16 @@
 using namespace std;
 
 // Registers a command with the command manager
-void CommandManager::registerCommand(ICommand* command){
-    commands[command->getName()]=command;
+void CommandManager::registerCommand(const string& command_name,ICommand* command){
+    commands[command_name]=command;
 }
 
 // Runs a command by name with the provided arguments
-bool CommandManager::runCommand(const string& commandName, const vector<string>& args){
+string CommandManager::runCommand(const string& commandName, const vector<string>& args){
     // Check if the command exists
     if(commands.find(commandName) != commands.end()){
         // Execute the command with the provided arguments
-        commands[commandName]->run(args);
-        return true;
+        return commands[commandName]->run(args);
     }
-    return false;
+    return INVALID_COMMAND;
 }
