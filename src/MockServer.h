@@ -4,6 +4,7 @@
 #include "Server.h"
 #include <queue>
 #include <mutex>
+#include <condition_variable>
 
 class MockServer : public Server {
 public:
