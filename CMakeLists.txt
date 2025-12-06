@@ -46,6 +46,7 @@ FetchContent_MakeAvailable(googletest)
     src/deletecommand.cpp
     src/CommandFactory.cpp
     src/Parser.cpp
+    src/Server.cpp
 )
 
 target_link_libraries(runTests gtest_main gmock gmock_main pthread)

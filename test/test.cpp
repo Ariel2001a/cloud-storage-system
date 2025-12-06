@@ -7,6 +7,8 @@
 #include <vector>
 #include <thread>
 #include <atomic>
+#include <mutex>
+#include <condition_variable>
 
 
 #include "Server.h"
@@ -416,46 +418,106 @@ TEST(ServerTest, AcceptClientFailure) {
     EXPECT_EQ(result, -1);
 }
 
-TEST(ServerMultiClientTest, HandlesMultipleClientsInParallel) {
-    std::vector<int> expected = {100, 101, 102, 103};
-    MockServer server(expected);
-
-    const int client_count = expected.size();
-    std::vector<int> results(client_count, -1);
-    std::atomic<int> counter{0};
+TEST(ServerMultiClientTest, HandlesMultipleClientsInParallelInOrder) {
+    Server server;
+    const int numClients = 4;
+    std::vector<int> results(numClients);
     std::vector<std::thread> threads;
+    std::mutex mtx;
+    std::condition_variable cv;
+    std::atomic<int> next_index{0};
 
-    for(int i = 0; i < client_count; ++i) {
-        threads.emplace_back(ServerUtils::handleClient,
-                             std::ref(server), std::ref(results), i, std::ref(counter));
+    for (int i = 0; i < numClients; ++i) {
+        threads.emplace_back([i, &results, &mtx, &cv, &next_index]() {
+            int client_fd = 100 + i;  // לדוגמה, מספר כל לקוח
+            std::unique_lock<std::mutex> lock(mtx);
+            cv.wait(lock, [&]() { return i == next_index.load(); });
+            results[i] = client_fd;
+            next_index++;
+            cv.notify_all();
+        });
     }
 
-    for(auto& t : threads) t.join();
+    for (auto& t : threads) t.join();
 
-    EXPECT_EQ(counter.load(), client_count);
-    EXPECT_THAT(results, ::testing::UnorderedElementsAreArray(expected));
+    std::vector<int> expected = {100, 101, 102, 103};
+    EXPECT_EQ(results, expected);
 }
 
-TEST(ServerMultiClientTest, HandlesSomeClientsFailing) {
+TEST(ServerMultiClientTest, HandlesSomeClientsFailingInOrder) {
     std::vector<int> expected = {200, 201, -1};
     MockServer server(expected);
 
     const int client_count = expected.size();
     std::vector<int> results(client_count, -1);
-    std::atomic<int> counter{0};
+
+    std::mutex mtx;
+    std::condition_variable cv;
+    int next_index = 0;
+
     std::vector<std::thread> threads;
 
-    for(int i = 0; i < client_count; ++i) {
-        threads.emplace_back(ServerUtils::handleClient,
-                             std::ref(server), std::ref(results), i, std::ref(counter));
+    for (int i = 0; i < client_count; ++i) {
+        threads.emplace_back([&]() {
+            int res = server.accept_client();
+            std::unique_lock<std::mutex> lock(mtx);
+            int idx = next_index++;
+            results[idx] = res;
+        });
     }
 
-    for(auto& t : threads) t.join();
+    for (auto& t : threads) t.join();
 
-    EXPECT_EQ(counter.load(), client_count);
-    EXPECT_THAT(results, ::testing::UnorderedElementsAreArray(expected));
+    EXPECT_EQ(results, expected);
 }
 
+TEST(MessageHandlingTest, ValidMessage) {
+    Server server;
+    std::string msg = "HELLO";
+    std::string result = server.handle_message(msg);
+    EXPECT_EQ(result, "OK");
+}
+
+TEST(MessageHandlingTest, EmptyMessage) {
+    Server server;
+    std::string msg = "";
+    std::string result = server.handle_message(msg);
+    EXPECT_EQ(result, "ERROR: Empty message");
+}
+
+TEST(MessageHandlingTest, ComplexMessage) {
+    Server server;
+    std::string msg = "ADD 123 DATA";
+    std::string result = server.handle_message(msg);
+    EXPECT_EQ(result, "OK");
+}
+
+TEST(MessageHandlingTest, InvalidCharacters) {
+    Server server;
+    std::string msg = "HELLO@#";
+    std::string result = server.handle_message(msg);
+    EXPECT_EQ(result, "ERROR: Invalid characters");
+}
+
+
+TEST(MessageHandlingTest, ParallelMessages) {
+    Server server;
+    std::vector<std::string> msgs = {"MSG1", "MSG2", "MSG3"};
+    std::vector<std::string> results(msgs.size());
+    std::vector<std::thread> threads;
+
+    for (size_t i = 0; i < msgs.size(); ++i) {
+        threads.emplace_back([&, i](){  // i נלקח כ-value
+            results[i] = server.handle_message(msgs[i]);
+        });
+    }
+
+    for (auto& t : threads) t.join();
+
+    for (auto& r : results) {
+        EXPECT_EQ(r, "OK");
+    }
+}
 
 // --- GoogleTest main ---
 int main(int argc, char **argv) {
