@@ -405,82 +405,55 @@ TEST(SearchTests, no_doubles)
 //--- socker tests ---
 
 TEST(ServerTest, AcceptClientSuccess) {
-    MockServer server;
-
-    EXPECT_CALL(server, accept_client())
-        .WillOnce(Return(5));
-
+    MockServer server({5});
     int result = server.accept_client();
     EXPECT_EQ(result, 5);
 }
 
 TEST(ServerTest, AcceptClientFailure) {
-    MockServer server;
-
-    EXPECT_CALL(server, accept_client())
-        .WillOnce(Return(-1));
-
+    MockServer server({-1});
     int result = server.accept_client();
     EXPECT_EQ(result, -1);
 }
 
-
 TEST(ServerMultiClientTest, HandlesMultipleClientsInParallel) {
-    MockServer server;
+    std::vector<int> expected = {100, 101, 102, 103};
+    MockServer server(expected);
 
-    EXPECT_CALL(server, accept_client())
-        .WillOnce(Return(100))
-        .WillOnce(Return(101))
-        .WillOnce(Return(102))
-        .WillOnce(Return(103));
-
-    const int client_count = 4;
+    const int client_count = expected.size();
     std::vector<int> results(client_count, -1);
     std::atomic<int> counter{0};
-
     std::vector<std::thread> threads;
 
     for(int i = 0; i < client_count; ++i) {
-        threads.emplace_back(ServerUtils::handleClient, std::ref(server), std::ref(results), i, std::ref(counter));
+        threads.emplace_back(ServerUtils::handleClient,
+                             std::ref(server), std::ref(results), i, std::ref(counter));
     }
 
-    for(auto& t : threads) {
-        t.join();
-    }
+    for(auto& t : threads) t.join();
 
     EXPECT_EQ(counter.load(), client_count);
-    EXPECT_EQ(results[0], 100);
-    EXPECT_EQ(results[1], 101);
-    EXPECT_EQ(results[2], 102);
-    EXPECT_EQ(results[3], 103);
+    EXPECT_THAT(results, ::testing::UnorderedElementsAreArray(expected));
 }
 
 TEST(ServerMultiClientTest, HandlesSomeClientsFailing) {
-    MockServer server;
+    std::vector<int> expected = {200, 201, -1};
+    MockServer server(expected);
 
-    EXPECT_CALL(server, accept_client())
-        .WillOnce(Return(200))
-        .WillOnce(Return(201))
-        .WillOnce(Return(-1));
-
-    const int client_count = 3;
+    const int client_count = expected.size();
     std::vector<int> results(client_count, -1);
     std::atomic<int> counter{0};
-
     std::vector<std::thread> threads;
 
     for(int i = 0; i < client_count; ++i) {
-        threads.emplace_back(ServerUtils::handleClient, std::ref(server), std::ref(results), i, std::ref(counter));
+        threads.emplace_back(ServerUtils::handleClient,
+                             std::ref(server), std::ref(results), i, std::ref(counter));
     }
 
-    for(auto& t : threads) {
-        t.join();
-    }
+    for(auto& t : threads) t.join();
 
     EXPECT_EQ(counter.load(), client_count);
-    EXPECT_EQ(results[0], 200);
-    EXPECT_EQ(results[1], 201);
-    EXPECT_EQ(results[2], -1);
+    EXPECT_THAT(results, ::testing::UnorderedElementsAreArray(expected));
 }
 
 
