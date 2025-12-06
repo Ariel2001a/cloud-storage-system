@@ -1,6 +1,9 @@
 #include "ICommand.h"
 #include "AddCommand.h"
 #include "SearchCommand.h"
+#include "Compressor.h"
+#include "Config.h"
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -9,7 +12,6 @@
 #include <sys/stat.h>
 #include <filesystem>
 
-#include "Compressor.h"
 
 
 using namespace std;
@@ -17,10 +19,10 @@ namespace fs = filesystem;
 
 
 //AddCommand constructor
-AddCommand::AddCommand() : ICommand("post") {}
+AddCommand::AddCommand() : ICommand() {}
 
 //Execute add command
-void AddCommand::run(const vector<string>& args)
+string AddCommand::run(const vector<string>& args)
 {
     string filename = args[0];
     string text;
@@ -35,28 +37,24 @@ void AddCommand::run(const vector<string>& args)
 
     string compressed = Compressor::compress(text);
 
-    // Get directory from environment variable
-    const char* folder = getenv("EX1_DIR");
-    if (!folder){
-         return;
-    }
 
     // Create full file path
-    string fullPath = string(folder) + "/" + filename;
+    string fullPath = ICommand::GetFolderPath() + "/" + filename;
 
     // Check if file already exists- do not overwrite
     if (fs::exists(fullPath)) {
-        return;
+        return LOGICAL_PROBLEM;
     }
 
 
     // Failed to open file for writing- abort
     ofstream out(fullPath);
     if (!out) {
-        return;
+        return SERVER_ERROR;
     }
 
     out << compressed;
     out.close();
-    cout<<"201 Created"<<endl;
+    
+    return SUCCESS_ADD;
 }

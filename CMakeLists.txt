@@ -17,8 +17,13 @@ add_executable(MyProgram
     src/ICommand.cpp
     src/GetCommand.cpp
     src/SearchCommand.cpp
-     src/deletecommand.cpp
+    src/ConsoleCommunication.cpp
+    src/deletecommand.cpp
+    src/CommandFactory.cpp
+    src/Parser.cpp
+
 )
+
 include(FetchContent)
 FetchContent_Declare(
     googletest
@@ -28,16 +33,19 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(runTests
+
+ add_executable(runTests
     src/CommandManager.cpp
     src/Compressor.cpp
     src/AddCommand.cpp
     src/ICommand.cpp
     src/GetCommand.cpp
-    test/main_helper_tests.cpp
     test/test.cpp
     src/SearchCommand.cpp
+    src/ConsoleCommunication.cpp
     src/deletecommand.cpp
+    src/CommandFactory.cpp
+    src/Parser.cpp
 )
 
 target_link_libraries(runTests gtest_main)

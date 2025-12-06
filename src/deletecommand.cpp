@@ -2,6 +2,9 @@
 #include "AddCommand.h"
 #include "SearchCommand.h"
 #include "deletecommand.h"
+#include "Compressor.h"
+#include "Config.h"
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -9,41 +12,34 @@
 #include <cstdlib>
 #include <sys/stat.h>
 #include <filesystem>
-#include "main.h"
 
-#include "Compressor.h"
 
 
 
 //delete command constructor
-deletecommand::deletecommand() : ICommand("delete") {}
+deletecommand::deletecommand() : ICommand() {}
 
 
-void deletecommand::run(const std::vector<std::string>& args) {
-    if (args.empty()) return;
+string deletecommand::run(const std::vector<std::string>& args) {
 
     namespace fs = std::filesystem;
-    fs::path dir(Get_Folder());
+    string dir = ICommand::GetFolderPath();
 
     std::string filename =args[0]; // search for query in all files
     
 
-for (const auto& entry : fs::directory_iterator(dir))
-          {
-              std::string temp = entry.path().filename();
-
-              if (temp.find(filename) != std::string::npos)
+    for (const auto& entry : fs::directory_iterator(dir))
               {
-                fs::remove(entry.path());
-                
-                 std::cout << "204 No Content\n";
+                  std::string temp = entry.path().filename();
 
-                return;
+                  if (temp.find(filename) != std::string::npos)
+                  {
+                    fs::remove(entry.path());
+                    return SUCCESS_DELETE;
+                  }
+
               }
-        
-
-          }
- std::cout << "404 Not Found\n";
+    return LOGICAL_PROBLEM;
 
 }
 

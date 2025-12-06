@@ -19,7 +19,7 @@ class GetCommand : public ICommand {
         //return the compressed content
         string getContentFile(const string& environment_variable_path);
         // Overrides ICommand run, execute the get command 
-        void run(const vector<string>& args) override;
+        string run(const vector<string>& args) override;
 };
 
 #endif // GETCOMMAND.H
