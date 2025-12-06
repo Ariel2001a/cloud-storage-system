@@ -1,10 +1,14 @@
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <fstream>
 #include <string>
 #include <iostream>
 #include <map>
 #include <vector>
 
+
+#include "Server.h"
+#include "MockServer.h"
 #include "SearchCommand.h"
 #include "GetCommand.h"
 #include "deletecommand.h"
@@ -15,6 +19,8 @@
 #include "Config.h"
 
 using namespace std;
+using ::testing::_;
+using ::testing::Return;
 
 // --- Validation tests ---
 // Check parsing and validation for multiple arguments
@@ -392,6 +398,32 @@ TEST(SearchTests, no_doubles)
     string msg= deleteCMD.run({"Fifth.txt"});// do not exist
     EXPECT_EQ(msg, "404 Not Found");
 }
+
+
+//--- socker tests ---
+
+TEST(ServerTest, AcceptClientSuccess) {
+    MockServer server;
+
+    EXPECT_CALL(server, accept_client())
+        .WillOnce(Return(5));
+
+    int result = server.accept_client();
+    EXPECT_EQ(result, 5);
+}
+
+TEST(ServerTest, AcceptClientFailure) {
+    MockServer server;
+
+    EXPECT_CALL(server, accept_client())
+        .WillOnce(Return(-1));
+
+    int result = server.accept_client();
+    EXPECT_EQ(result, -1);
+}
+
+
+
 
 
 

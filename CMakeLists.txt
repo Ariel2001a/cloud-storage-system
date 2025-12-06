@@ -48,4 +48,4 @@ FetchContent_MakeAvailable(googletest)
     src/Parser.cpp
 )
 
-target_link_libraries(runTests gtest_main)
+target_link_libraries(runTests gtest_main gmock gmock_main pthread)
