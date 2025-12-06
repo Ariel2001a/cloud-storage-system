@@ -5,6 +5,8 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <thread>
+#include <atomic>
 
 
 #include "Server.h"
@@ -423,8 +425,63 @@ TEST(ServerTest, AcceptClientFailure) {
 }
 
 
+TEST(ServerMultiClientTest, HandlesMultipleClientsInParallel) {
+    MockServer server;
 
+    EXPECT_CALL(server, accept_client())
+        .WillOnce(Return(100))
+        .WillOnce(Return(101))
+        .WillOnce(Return(102))
+        .WillOnce(Return(103));
 
+    const int client_count = 4;
+    std::vector<int> results(client_count, -1);
+    std::atomic<int> counter{0};
+
+    std::vector<std::thread> threads;
+
+    for(int i = 0; i < client_count; ++i) {
+        threads.emplace_back(ServerUtils::handleClient, std::ref(server), std::ref(results), i, std::ref(counter));
+    }
+
+    for(auto& t : threads) {
+        t.join();
+    }
+
+    EXPECT_EQ(counter.load(), client_count);
+    EXPECT_EQ(results[0], 100);
+    EXPECT_EQ(results[1], 101);
+    EXPECT_EQ(results[2], 102);
+    EXPECT_EQ(results[3], 103);
+}
+
+TEST(ServerMultiClientTest, HandlesSomeClientsFailing) {
+    MockServer server;
+
+    EXPECT_CALL(server, accept_client())
+        .WillOnce(Return(200))
+        .WillOnce(Return(201))
+        .WillOnce(Return(-1));
+
+    const int client_count = 3;
+    std::vector<int> results(client_count, -1);
+    std::atomic<int> counter{0};
+
+    std::vector<std::thread> threads;
+
+    for(int i = 0; i < client_count; ++i) {
+        threads.emplace_back(ServerUtils::handleClient, std::ref(server), std::ref(results), i, std::ref(counter));
+    }
+
+    for(auto& t : threads) {
+        t.join();
+    }
+
+    EXPECT_EQ(counter.load(), client_count);
+    EXPECT_EQ(results[0], 200);
+    EXPECT_EQ(results[1], 201);
+    EXPECT_EQ(results[2], -1);
+}
 
 
 // --- GoogleTest main ---
