@@ -5,6 +5,8 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <thread>
+#include <atomic>
 
 
 #include "Server.h"
@@ -403,28 +405,56 @@ TEST(SearchTests, no_doubles)
 //--- socker tests ---
 
 TEST(ServerTest, AcceptClientSuccess) {
-    MockServer server;
-
-    EXPECT_CALL(server, accept_client())
-        .WillOnce(Return(5));
-
+    MockServer server({5});
     int result = server.accept_client();
     EXPECT_EQ(result, 5);
 }
 
 TEST(ServerTest, AcceptClientFailure) {
-    MockServer server;
-
-    EXPECT_CALL(server, accept_client())
-        .WillOnce(Return(-1));
-
+    MockServer server({-1});
     int result = server.accept_client();
     EXPECT_EQ(result, -1);
 }
 
+TEST(ServerMultiClientTest, HandlesMultipleClientsInParallel) {
+    std::vector<int> expected = {100, 101, 102, 103};
+    MockServer server(expected);
 
+    const int client_count = expected.size();
+    std::vector<int> results(client_count, -1);
+    std::atomic<int> counter{0};
+    std::vector<std::thread> threads;
 
+    for(int i = 0; i < client_count; ++i) {
+        threads.emplace_back(ServerUtils::handleClient,
+                             std::ref(server), std::ref(results), i, std::ref(counter));
+    }
 
+    for(auto& t : threads) t.join();
+
+    EXPECT_EQ(counter.load(), client_count);
+    EXPECT_THAT(results, ::testing::UnorderedElementsAreArray(expected));
+}
+
+TEST(ServerMultiClientTest, HandlesSomeClientsFailing) {
+    std::vector<int> expected = {200, 201, -1};
+    MockServer server(expected);
+
+    const int client_count = expected.size();
+    std::vector<int> results(client_count, -1);
+    std::atomic<int> counter{0};
+    std::vector<std::thread> threads;
+
+    for(int i = 0; i < client_count; ++i) {
+        threads.emplace_back(ServerUtils::handleClient,
+                             std::ref(server), std::ref(results), i, std::ref(counter));
+    }
+
+    for(auto& t : threads) t.join();
+
+    EXPECT_EQ(counter.load(), client_count);
+    EXPECT_THAT(results, ::testing::UnorderedElementsAreArray(expected));
+}
 
 
 // --- GoogleTest main ---
