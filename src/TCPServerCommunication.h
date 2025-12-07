@@ -9,12 +9,13 @@ class TCPServerCommunication : public ICommunication {
 public: 
     TCPServerCommunication(int port);
     ~TCPServerCommunication();
-    string read() override;
-    void write(const string& message) override;
+    string read(int client_socket);
+    void write(int client_socket, const string& message);
+
+    int acceptClient();
 
 private:
     int server_socket;
-    int client_socket;
 };
 
 #endif // TCP_SERVER_COMMUNICATION_H

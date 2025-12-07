@@ -17,7 +17,7 @@ class HandleClient {
 public:
 
     static CommandManager init();
-    static string HandleClient::processClient(const string& line, CommandManager& manager);
+    static string processClient(const string& line, CommandManager& manager, mutex& manager_mutex);
 
 };
 

@@ -13,7 +13,5 @@ using namespace std;
 class ICommunication {
 public:
     virtual ~ICommunication() = default;
-    virtual string read()=0;
-    virtual void write(const string& message)=0;
 };
 #endif //ICOMMUNICATION_H

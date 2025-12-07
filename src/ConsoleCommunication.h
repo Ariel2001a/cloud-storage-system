@@ -8,8 +8,8 @@ using namespace std;
 class ConsoleCommunication : public ICommunication {
 public: 
     ConsoleCommunication();
-    string read() override;
-    void write(const string& message) override;
+    string read();
+    void write(const string& message);
 };
 
 #endif // CONSOLE_COMMUNICATION_H

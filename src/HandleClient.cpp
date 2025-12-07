@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <mutex>
 
 #include "HandleClient.h"
 #include "CommandFactory.h"
@@ -22,7 +23,7 @@ CommandManager HandleClient::init() {
     return manager;
 }
 
-string HandleClient::processClient(const string& line, CommandManager& manager) {
+string HandleClient::processClient(const string& line, CommandManager& manager, mutex& manager_mutex) {
 
     string cmdName = Parser::parseCmd(line); // extract command
     vector<string> args;
@@ -34,5 +35,11 @@ string HandleClient::processClient(const string& line, CommandManager& manager) 
         return INVALID_COMMAND;
     }
 
-   return manager.runCommand(cmdName, args); 
+    string response;
+    {
+        std::lock_guard<std::mutex> lock(manager_mutex);
+        response = manager.runCommand(cmdName, args);
+    }
+
+    return response;
 }

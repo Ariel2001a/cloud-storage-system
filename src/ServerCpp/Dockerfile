@@ -6,7 +6,6 @@ COPY . /usr/src/app
 
 WORKDIR /usr/src/app
 
-
 RUN mkdir build && mkdir -p /usr/src/app/newFiles
 WORKDIR /usr/src/app/build
 

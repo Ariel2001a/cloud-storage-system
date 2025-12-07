@@ -10,7 +10,6 @@ include_directories(${CMAKE_SOURCE_DIR}/test)
 
 
 add_executable(MyProgram
-    src/main.cpp
     src/CommandManager.cpp
     src/Compressor.cpp
     src/AddCommand.cpp
@@ -21,8 +20,20 @@ add_executable(MyProgram
     src/deletecommand.cpp
     src/CommandFactory.cpp
     src/Parser.cpp
-
+    src/Server.cpp
+    src/TCPServerCommunication.cpp
+    src/RealServer.cpp
+    src/HandleClient.cpp
 )
+
+add_executable(TCPClientCPP
+    src/tcp_c.cpp
+)
+
+ add_executable(TCPClientPY
+    src/TCP_Client.py
+)
+
 
 include(FetchContent)
 FetchContent_Declare(
@@ -34,7 +45,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 
- add_executable(runTests
+add_executable(runTests
     src/CommandManager.cpp
     src/Compressor.cpp
     src/AddCommand.cpp
@@ -48,5 +59,6 @@ FetchContent_MakeAvailable(googletest)
     src/Parser.cpp
     src/Server.cpp
 )
+
 
 target_link_libraries(runTests gtest_main gmock gmock_main pthread)

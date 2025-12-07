@@ -16,10 +16,8 @@ def main():
             print(f"Failed to connect to server: {e}")
             return
 
-        print(f"Connected to server {SERVER_IP}:{SERVER_PORT}")
-
         while True:
-            cmd_line = input("Enter command with arguments (type 'quit' to exit): ")
+            cmd_line = input()
 
             if cmd_line.lower() == 'quit':
                 break
@@ -33,9 +31,8 @@ def main():
             try:
                 data = s.recv(4096)
                 if not data:
-                    print("Server closed the connection")
                     break
-                print("Server response:", data.decode('utf-8'))
+                print(data.decode('utf-8'))
             except Exception as e:
                 print(f"Error receiving data: {e}")
                 break
