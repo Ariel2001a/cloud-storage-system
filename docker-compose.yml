@@ -10,7 +10,7 @@ services:
     volumes:
       - ./data:/usr/src/data    
     environment:
-      - DIR=/usr/src/data    
+      - EX1_DIR=/usr/src/data    
     networks:
       - local
 

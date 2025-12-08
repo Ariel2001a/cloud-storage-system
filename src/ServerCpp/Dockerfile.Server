@@ -27,3 +27,6 @@ EXPOSE 3782
 
 
 ENTRYPOINT ["./ServerCpp"]
+
+
+
