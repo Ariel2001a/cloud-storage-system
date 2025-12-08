@@ -9,32 +9,6 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/test)
 
 
-add_executable(MyProgram
-    src/CommandManager.cpp
-    src/Compressor.cpp
-    src/AddCommand.cpp
-    src/ICommand.cpp
-    src/GetCommand.cpp
-    src/SearchCommand.cpp
-    src/ConsoleCommunication.cpp
-    src/deletecommand.cpp
-    src/CommandFactory.cpp
-    src/Parser.cpp
-    src/Server.cpp
-    src/TCPServerCommunication.cpp
-    src/RealServer.cpp
-    src/HandleClient.cpp
-)
-
-add_executable(TCPClientCPP
-    src/tcp_c.cpp
-)
-
- add_executable(TCPClientPY
-    src/TCP_Client.py
-)
-
-
 include(FetchContent)
 FetchContent_Declare(
     googletest
@@ -58,7 +32,9 @@ add_executable(runTests
     src/CommandFactory.cpp
     src/Parser.cpp
     src/Server.cpp
+    src/TCPServerCommunication.cpp
+    src/HandleClient.cpp
 )
 
 
-target_link_libraries(runTests gtest_main gmock gmock_main pthread)
+target_link_libraries(runTests gtest_main pthread)

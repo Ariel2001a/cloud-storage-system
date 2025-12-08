@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
+//#include <gmock/gmock.h>
 #include <fstream>
 #include <string>
 #include <iostream>
@@ -8,7 +8,16 @@
 #include <thread>
 #include <atomic>
 #include <mutex>
+#include <chrono>
 #include <condition_variable>
+#include <sys/socket.h>
+#include <stdio.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <cstdlib>
+#include <map>
+
 
 
 #include "Server.h"
@@ -21,10 +30,13 @@
 #include "ICommand.h"
 #include "AddCommand.h"
 #include "Config.h"
+#include "TCPServerCommunication.h"
+#include "HandleClient.h"
+#include "CommandManager.h"
 
 using namespace std;
-using ::testing::_;
-using ::testing::Return;
+//using ::testing::_;
+//using ::testing::Return;
 
 // --- Validation tests ---
 // Check parsing and validation for multiple arguments
@@ -406,9 +418,140 @@ TEST(SearchTests, no_doubles)
 
 //--- socker tests ---
 
+TEST(TCPServerTest, HelpCommandInSingleTest) {
+    std::mutex manager_mutex;
+    CommandManager manager = HandleClient::init();
+    TCPServerCommunication server(6000);
+
+    std::thread serverThread([&]() {
+        int client_socket = server.acceptClient();
+        std::string message = server.read(client_socket);
+        std::string response = HandleClient::processClient(message, manager, manager_mutex);
+        server.write(client_socket, response);
+        close(client_socket);
+    });
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    ASSERT_GT(sock, 0);
+
+    sockaddr_in addr{};
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(6000);
+    inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr);
+
+    ASSERT_EQ(connect(sock, (sockaddr*)&addr, sizeof(addr)), 0);
+
+    const std::string cmd = "POST help help";
+    send(sock, cmd.c_str(), cmd.size(), 0);
+
+    char buffer[4096] = {0};
+    int n = recv(sock, buffer, sizeof(buffer), 0);
+    ASSERT_GT(n, 0);
+
+    std::string response(buffer, n);
+    EXPECT_EQ(response, SUCCESS_ADD);
+
+    close(sock);
+    serverThread.join();
+}
+
+TEST(TCPServerTest, MultipleClientsDifferentCommands) {
+    std::mutex manager_mutex;
+    CommandManager manager = HandleClient::init();
+    TCPServerCommunication server(6001);
+
+    std::thread serverThread([&]() {
+        for (int i = 0; i < 8; ++i) {
+            int client_socket = server.acceptClient();
+            std::thread([client_socket, &manager, &manager_mutex, &server]() {
+                std::string message = server.read(client_socket);
+                std::string response = HandleClient::processClient(message, manager, manager_mutex);
+                server.write(client_socket, response);
+                close(client_socket);
+            }).detach();
+        }
+    });
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    const std::string commands[8] = {
+        "POST test2 This is a socket test-file",
+        "GET test2",
+        "SEARCH st2",
+        "SEARCH socket",
+        "POST test2 test2",
+        "DELETE test2",
+        "DELETE test2",
+        "GET test2"
+    };
+
+    const std::map<std::string, std::string> expectedResponses = {
+        {"POST test2 This is a socket test-file", "201 Created"},
+        {"GET test2", "200 Ok\n\nThis is a socket test-file"},
+        {"SEARCH st2", "200 Ok\n\ntest2"},
+        {"SEARCH socket", "200 Ok\n\ntest2"},
+        {"POST test2 test2", "404 Not Found"},
+        {"DELETE test2", "204 No Content"},
+        {"DELETE test2", "404 Not Found"},
+        {"GET test2", "404 Not Found"}
+    };
+
+    std::mutex order_mutex;
+    std::condition_variable cv;
+    int nextClientId = 0;
+
+    auto clientTask = [&](int clientId) {
+        std::unique_lock<std::mutex> lock(order_mutex);
+        cv.wait(lock, [&] { return clientId == nextClientId; });
+        nextClientId++;
+        cv.notify_all();
+        lock.unlock();
+
+        int sock = socket(AF_INET, SOCK_STREAM, 0);
+        ASSERT_GT(sock, 0);
+
+        sockaddr_in addr{};
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(6001);
+        inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr);
+
+        ASSERT_EQ(connect(sock, (sockaddr*)&addr, sizeof(addr)), 0);
+
+        std::string cmd = commands[clientId];
+        send(sock, cmd.c_str(), cmd.size(), 0);
+
+        char buffer[4096] = {0};
+        int n = recv(sock, buffer, sizeof(buffer), 0);
+        ASSERT_GT(n, 0);
+
+        std::string response(buffer, n);
+        EXPECT_EQ(response, expectedResponses.at(cmd));
+
+        close(sock);
+    };
+
+    std::thread clientThreads[8];
+    for (int i = 0; i < 8; ++i) {
+        clientThreads[i] = std::thread(clientTask, i);
+    }
+
+    for (int i = 0; i < 8; ++i) {
+        clientThreads[i].join();
+    }
+
+    serverThread.join();
+}
+
+
+
+
+/*
+
 TEST(ServerTest, AcceptClientSuccess) {
-    MockServer server({5});
-    int result = server.accept_client();
+    TCPServerCommunication tcpComm(0);
+    tcp_client_socket = tcpComm.acceptClient(); // מחובר ללקוח כלשהו
     EXPECT_EQ(result, 5);
 }
 
@@ -518,6 +661,7 @@ TEST(MessageHandlingTest, ParallelMessages) {
         EXPECT_EQ(r, "OK");
     }
 }
+*/
 
 // --- GoogleTest main ---
 int main(int argc, char **argv) {
