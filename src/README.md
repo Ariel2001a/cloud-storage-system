@@ -132,7 +132,6 @@ DELETE second // illegal delete with CAPS
 
 
 
-
 ## File Structure 📁
 
 - AddCommand.h / AddCommand.cpp : defines the AddCommand class
