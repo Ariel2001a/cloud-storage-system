@@ -1,15 +1,17 @@
+version: "3.9"
+
 services:
   tests:
     build:
       context: ..
       dockerfile: test/Dockerfile
     volumes:
-      - testdata:/usr/src/app/newFiles
+      - ./newFiles:/usr/src/app/newFiles
     networks:
       - local
 
 volumes:
-  testdata:
+  newFiles:
 
 networks:
   local:
