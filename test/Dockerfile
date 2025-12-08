@@ -2,17 +2,13 @@ FROM gcc:latest
 
 RUN apt-get update && apt-get install -y cmake
 
-COPY . /usr/src/app
+COPY ./test /usr/src/app/test
+COPY ./src /usr/src/app/src
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/mytest/test
+RUN mkdir -p build
 
-
-RUN mkdir build && mkdir -p /usr/src/app/newFiles
-WORKDIR /usr/src/app/build
-
+WORKDIR /usr/src/app/test/build
 RUN cmake .. && make
-#folder of created and saved files
+
 ENV EX1_DIR=/usr/src/app/newFiles
-
-
-CMD [ "./MyProgram" ]

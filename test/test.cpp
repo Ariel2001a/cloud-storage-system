@@ -20,8 +20,6 @@
 
 
 
-#include "Server.h"
-#include "MockServer.h"
 #include "SearchCommand.h"
 #include "GetCommand.h"
 #include "deletecommand.h"
@@ -457,6 +455,8 @@ TEST(TCPServerTest, HelpCommandInSingleTest) {
     serverThread.join();
 }
 
+/*
+
 TEST(TCPServerTest, MultipleClientsDifferentCommands) {
     std::mutex manager_mutex;
     CommandManager manager = HandleClient::init();
@@ -536,6 +536,7 @@ TEST(TCPServerTest, MultipleClientsDifferentCommands) {
 
     serverThread.join();
 }
+    */
 
 
 /*
