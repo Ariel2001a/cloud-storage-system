@@ -9,6 +9,7 @@ This is the second task out of a full google drive clone project.
 - Get command : Gets file name. find the file in the folder, decompress it and return it
 - Search command : Gets a text query. search for files containing the query or has the query in the name and return a list of file names
 - Delete command : Gets a file name. finds it in the folder and deletes it.
+- TCP-based clients and server : supporting data transmission and multi-client connections.
 
 
 
@@ -16,8 +17,7 @@ This is the second task out of a full google drive clone project.
 
 1. Clone the repository - https://github.com/Ariel2001a/Project-exercise1/tree/EX2
 2. Make sure u have c++17 compiler
-3. docker build -t myproject .
-
+3. 
     * run the server 
        
        -  docker compose up server
@@ -73,60 +73,16 @@ Dependencies
  
 ## Run example 🏃‍♂️
 
-post first this is file number one // successfull post 1
-201 Created 
-post second here is another file  // successfull post 2
-201 Created
-post third and this is the last file // successfull post 3
-201 Created
-post first // post file with name already exists
-404 Not Found // gets error
-POsT first  // post written with CAPS for file with name already exists 
-404 Not Found
-POsT fourth // successfull post with CAPS
-201 Created
-get first // successfull get
-200 Ok
 
-this is file number one
-get SECOND 
-404 Not Found
-GET third // successfull get with CAPS 
-200 Ok
-
-and this is the last file
-search first // successfull search by name 
-200 Ok
-
-first
-search file //successfull multiple match search
-200 Ok
-
-second third first
-SEARCH third // successfull search with CAPS 
-200 Ok
-
-third
-search is i // search with spaces
-200 Ok
-
-third first
-delete first // successfull delete
-204 No Content
-delete first // illegal delete 
-404 Not Found
-DELete second // delete with CAPS
-204 No Content
-DELETE second // illegal delete with CAPS 
-404 Not Found
+-- ![Run example](images/Run_example.png) --
 
 
 
 ## clients and servers running examples 📡 📤
 
--- ![running server and client](images/multi_clients.png) --
+-- ![multiple clients](images/multi_clients.png) --
 
--- ![multiple clients](images/my_image.png) -- 
+-- ![?](images/my_image.png) -- 
 
 -- ![alt text](images/my_image.png) --
 
@@ -165,9 +121,16 @@ DELETE second // illegal delete with CAPS
 
 - CMakeLists.txt : builds the project and creates the executables
 
-- dockerfile : sets up the Docker environment for compiling and testing
+- docker-compose.yml/ dockerfile.server/clients : Docker configuration files for building and running the server and client containers.
 
 - main.h / main.cpp : program entry point; reads input and runs the commands
+
+- Server.cpp : TCP server handling multiple client connections and processing commands.
+
+- tcp_c.cpp : C++ TCP client for communicating with the server.
+
+- TCP_Client.py : Python TCP client for interacting with the server.
+
 
 
 
