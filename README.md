@@ -124,7 +124,7 @@ DELETE second // illegal delete with CAPS
 
 ## clients and servers running examples 📡 📤
 
--- ![running server and client](images/my_image.png) --
+-- ![running server and client](images/multi_clients.png) --
 
 -- ![multiple clients](images/my_image.png) -- 
 
