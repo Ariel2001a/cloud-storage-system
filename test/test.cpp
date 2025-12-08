@@ -462,19 +462,22 @@ TEST(TCPServerTest, MultipleClientsDifferentCommands) {
     CommandManager manager = HandleClient::init();
     TCPServerCommunication server(6001);
 
+    std::mutex client_mutex;
     std::thread serverThread([&]() {
         for (int i = 0; i < 8; ++i) {
             int client_socket = server.acceptClient();
             std::thread([client_socket, &manager, &manager_mutex, &server]() {
                 std::string message = server.read(client_socket);
+                client_mutex.lock();
                 std::string response = HandleClient::processClient(message, manager, manager_mutex);
+                client_mutex.unlock();
                 server.write(client_socket, response);
                 close(client_socket);
             }).detach();
         }
     });
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(200)); // זמן שהסרבר מוכן
 
     const std::string commands[8] = {
         "POST test2 This is a socket test-file",
@@ -498,17 +501,7 @@ TEST(TCPServerTest, MultipleClientsDifferentCommands) {
         {"GET test2", "404 Not Found"}
     };
 
-    std::mutex order_mutex;
-    std::condition_variable cv;
-    int nextClientId = 0;
-
     auto clientTask = [&](int clientId) {
-        std::unique_lock<std::mutex> lock(order_mutex);
-        cv.wait(lock, [&] { return clientId == nextClientId; });
-        nextClientId++;
-        cv.notify_all();
-        lock.unlock();
-
         int sock = socket(AF_INET, SOCK_STREAM, 0);
         ASSERT_GT(sock, 0);
 
@@ -543,8 +536,6 @@ TEST(TCPServerTest, MultipleClientsDifferentCommands) {
 
     serverThread.join();
 }
-
-
 
 
 /*

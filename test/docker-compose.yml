@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: tests/Dockerfile
+    entrypoint: ["./Server"]
+    command: ["6000","1024","1","2"]
+    ports:
+      - "6000:6000"
+    volumes:
+      - testdata:/usr/src/data
+    networks:
+      - local
+
+  tests:
+    build:
+      context: ..
+      dockerfile: tests/Dockerfile
+    depends_on:
+      - server
+    network_mode: "service:server"
+volumes:
+  testdata:
+    driver: local
+networks:
+  local:
+    driver: bridge

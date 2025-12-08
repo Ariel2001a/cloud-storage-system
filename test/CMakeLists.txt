@@ -25,7 +25,7 @@ add_executable(runTests
     src/AddCommand.cpp
     src/ICommand.cpp
     src/GetCommand.cpp
-    test/test.cpp
+    testtest.cpp
     src/SearchCommand.cpp
     src/ConsoleCommunication.cpp
     src/deletecommand.cpp
