@@ -2,20 +2,22 @@ services:
   server:
     build:
       context: ./src
-      dockerfile: ServerCpp/Dockerfile
+      dockerfile: ServerCpp/Dockerfile.Server
     entrypoint: ["./ServerCpp"]
     command: ["3782"]
     ports:
       - "3782:3782"
     volumes:
       - ./data:/usr/src/data    
+    environment:
+      - EX1_DIR=/usr/src/data    
     networks:
       - local
 
   client_python:
     build:
       context: ./src/ClientPython
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.clientPY
     entrypoint: ["python3","TCP_Client.py"]
     command: ["server","3782"]
     depends_on:
@@ -26,7 +28,7 @@ services:
   client_cpp:
     build:
       context: ./src/ClientCpp
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.clientCPP
     entrypoint: ["./tcp_c"]
     command: ["server", "3782"]
     depends_on:
