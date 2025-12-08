@@ -15,8 +15,9 @@ COPY ServerCpp/RealServer.cpp .
 # Copy all other .cpp 
 COPY *.cpp .
 
-# Copy all header files
+#Copy all header files
 COPY *.h .
+
 
 
 RUN g++ -std=c++17 -pthread -o ServerCpp *.cpp

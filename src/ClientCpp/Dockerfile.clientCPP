@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 # Copy the correct client source
 COPY tcp_c.cpp .
 
-# Compile
+#Compile
 RUN g++ -std=c++17 -o tcp_c tcp_c.cpp
 
 ENTRYPOINT ["./tcp_c"]
