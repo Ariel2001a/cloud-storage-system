@@ -2,7 +2,7 @@ services:
   server:
     build:
       context: ./src
-      dockerfile: ServerCpp/Dockerfile.Server
+      dockerfile: ServerCpp/Dockerfile
     entrypoint: ["./ServerCpp"]
     command: ["3782"]
     ports:
@@ -17,24 +17,28 @@ services:
   client_python:
     build:
       context: ./src/ClientPython
-      dockerfile: Dockerfile.clientPY
-    entrypoint: ["python3","TCP_Client.py"]
-    command: ["server","3782"]
+      dockerfile: Dockerfile
+    entrypoint: ["python3", "TCP_Client.py"]
+    command: ["172.28.0.2", "3782"]
     depends_on:
       - server
     networks:
       - local
+    stdin_open: true   
+    tty: true          
 
   client_cpp:
     build:
       context: ./src/ClientCpp
-      dockerfile: Dockerfile.clientCPP
+      dockerfile: Dockerfile
     entrypoint: ["./tcp_c"]
-    command: ["server", "3782"]
+    command: ["172.28.0.2", "3782"]
     depends_on:
       - server
     networks:
       - local
+    stdin_open: true  
+    tty: true         
 
 networks:
   local:

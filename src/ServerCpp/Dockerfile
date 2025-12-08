@@ -1,17 +1,32 @@
+
 FROM gcc:latest
 
-RUN apt-get update && apt-get install -y cmake
 
-COPY . /usr/src/app
+RUN apt-get update && \
+    apt-get install -y make && \
+    apt-get clean
+
 
 WORKDIR /usr/src/app
 
-RUN mkdir build && mkdir -p /usr/src/app/newFiles
-WORKDIR /usr/src/app/build
 
-RUN cmake .. && make
-#folder of created and saved files
-ENV EX1_DIR=/usr/src/app/newFiles
+COPY ServerCpp/RealServer.cpp .
+
+# Copy all other .cpp 
+COPY *.cpp .
+
+#Copy all header files
+COPY *.h .
 
 
-CMD [ "./MyProgram" ]
+
+RUN g++ -std=c++17 -pthread -o ServerCpp *.cpp
+
+# Expose server port
+EXPOSE 3782
+
+
+ENTRYPOINT ["./ServerCpp"]
+
+
+
