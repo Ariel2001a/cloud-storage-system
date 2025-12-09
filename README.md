@@ -77,7 +77,7 @@ Dependencies
 
 ## clients and servers running examples 📡 📤
 
--- ![multiple clients](images/multi_clients.png) --
+-- ![multiple clients](images/multi_clients.jpg) --
 
 
 
