@@ -20,7 +20,8 @@ This is the second task out of a full google drive clone project.
 3. 
     * run the server 
        
-       -  docker compose up server
+       -  docker compose build
+       -  docker compose up
 
 
    * run clients 
@@ -38,26 +39,17 @@ Test cover:
 * Delete command tests - simple delete for successfull delete and illegal delete for an attempt to delete a file that do not exist.
 * Sockers tests - These tests verify that the server correctly accepts clients, handles multiple clients in order, and properly manages cases where some client connections fail.
 
-![tests passed image](images/my_image.png)
-
-
+![tests passed image](images/tests_passed.png)
 
 
 ## Tests - clean destination folder and run 🧹
 
-1. docker build -t myproject .
-2. docker run -it --rm -v mydata:/usr/src/mytest/newFiles myproject /bin/bash
-3. Make sure your destination folder is empty : 
-   - ls /usr/src/mytest/newFiles
-   - rm /usr/src/mytest/newFiles/*
-4. Run with - ./runTests
-
-
-## in case of your folder is already empty
-## Tests run without cleaning the folder 
-
-1. docker build -t myproject .
-2. docker run --rm myproject ./runTests
+     1. cd test
+     2. docker compose run --rm tests bash
+     3. ls /usr/src/app/newFiles
+     4. rm /usr/src/app/newFiles/*
+     5. docker compose build
+     6. docker compose run --rm tests ./runTests
 
 
 ## Usage 💻
