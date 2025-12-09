@@ -5,11 +5,10 @@ This is the second task out of a full google drive clone project.
 
 
 ## Key functionalities 📂
-- Post command : Gets file name and content. compress the file using RLE compression and adds it to a folder using enviroment variable
+- Post command : Gets file name and content. compress the file using RLE compression and adss it to a folder using enviroment variable
 - Get command : Gets file name. find the file in the folder, decompress it and return it
 - Search command : Gets a text query. search for files containing the query or has the query in the name and return a list of file names
 - Delete command : Gets a file name. finds it in the folder and deletes it.
-- TCP-based clients and server : supporting data transmission and multi-client connections.
 
 
 
@@ -17,16 +16,16 @@ This is the second task out of a full google drive clone project.
 
 1. Clone the repository - https://github.com/Ariel2001a/Project-exercise1/tree/EX2
 2. Make sure u have c++17 compiler
-3. 
+3. docker build -t myproject .
+
     * run the server 
-       
-       -  docker compose build
-       -  docker compose up
+       - 
+       - 
 
 
-   * run clients (seperated terminals)
-       - docker compose run --rm --service-ports client_cpp
-       - docker compose run --rm --service-ports client_python
+   * run clients 
+       -
+       -
 
 
 
@@ -37,31 +36,36 @@ Test cover:
 * Get command tests - file creation test, folder creation test .
 * Search command tests - single match, no match and multiple match tests. 
 * Delete command tests - simple delete for successfull delete and illegal delete for an attempt to delete a file that do not exist.
-* Sockets tests - These tests verify that the server correctly accepts clients, handles multiple clients in order, and properly manages cases where some client connections fail.
+* Sockers tests - These tests verify that the server correctly accepts clients, handles multiple clients in order, and properly manages cases where some client connections fail.
 
-![tests passed image](images/tests_passed.png)
+![tests passed image](images/my_image.png)
+
+
 
 
 ## Tests - clean destination folder and run 🧹
 
-     1. cd test
-     2. docker compose run --rm tests bash
-     3. ls /usr/src/app/newFiles
-     4. rm /usr/src/app/newFiles/*
-     5. exit
-     6. docker compose build
-     7. docker compose run --rm tests ./runTests
+1. docker build -t myproject .
+2. docker run -it --rm -v mydata:/usr/src/mytest/newFiles myproject /bin/bash
+3. Make sure your destination folder is empty : 
+   - ls /usr/src/mytest/newFiles
+   - rm /usr/src/mytest/newFiles/*
+4. Run with - ./runTests
+
+
+## in case of your folder is already empty
+## Tests run without cleaning the folder 
+
+1. docker build -t myproject .
+2. docker run --rm myproject ./runTests
 
 
 ## Usage 💻
 
--POST [File name] [File content]
-
--Get [File name] 
-
--Search [Your Query]
-
--Delete [File name]
+POST [File name] [File content]
+Get [File name] 
+Search [Your Query]
+Delete [File name]
 
 Dependencies
 
@@ -69,28 +73,66 @@ Dependencies
  
 ## Run example 🏃‍♂️
 
+post first this is file number one // successfull post 1
+201 Created 
+post second here is another file  // successfull post 2
+201 Created
+post third and this is the last file // successfull post 3
+201 Created
+post first // post file with name already exists
+404 Not Found // gets error
+POsT first  // post written with CAPS for file with name already exists 
+404 Not Found
+POsT fourth // successfull post with CAPS
+201 Created
+get first // successfull get
+200 Ok
 
+this is file number one
+get SECOND 
+404 Not Found
+GET third // successfull get with CAPS 
+200 Ok
 
--- ![Run example](images/Run_example.png) --
+and this is the last file
+search first // successfull search by name 
+200 Ok
+
+first
+search file //successfull multiple match search
+200 Ok
+
+second third first
+SEARCH third // successfull search with CAPS 
+200 Ok
+
+third
+search is i // search with spaces
+200 Ok
+
+third first
+delete first // successfull delete
+204 No Content
+delete first // illegal delete 
+404 Not Found
+DELete second // delete with CAPS
+204 No Content
+DELETE second // illegal delete with CAPS 
+404 Not Found
 
 
 
 ## clients and servers running examples 📡 📤
 
--- ![multiple clients](images/multi_clients.jpg) --
+-- ![running server and client](images/my_image.png) --
 
+-- ![multiple clients](images/my_image.png) -- 
 
-
+-- ![alt text](images/my_image.png) --
 
 
 
 ## File Structure 📁
-
-
-
-
--- ![Project folder structure diagram](images/diagram.png) --
-
 
 - AddCommand.h / AddCommand.cpp : defines the AddCommand class
 
@@ -104,36 +146,30 @@ Dependencies
 
 - CommandFactory.cpp / CommandFactory.h : registers different command objects with a CommandManager so they can be executed by name at runtime.
 
-- ConsoleCommunication.cpp / ConsoleCommunication.h : a class that reads input from the console and writes output to it.
+- consoleCommunication.cpp / ConsoleCommunication.h : a class that reads input from the console and writes output to it.
 
-- ICommand.cpp / ICommand.h : base interface for all commands
+- ICommand.h : base interface for all commands
 
 - Config.h : This header file defines constant strings for command names and corresponding response messages.
 
 - Compressor.h / Compressor.cpp : does RLE compression and decompression
 
-- Parser.cpp / Parser.h : extracts the command, arguments, and query from an input line, validates the input, and handles special cases
+- parser.cpp / parser.h : extracts the command, arguments, and query from an input line, validates the input, and handles special cases
 
 - tcp_c.cpp : a client implemented in CPP
 
 - TCP_Client.py : a client implemented in Python
 
-- CMakeLists.txt : creates the executables for tests
+- main_helper_tests.h / main_helper_tests.cpp : helper code for running the tests
 
-- docker-compose.yml/ dockerfiles for server/clients : Docker configuration files for building and running the server and client containers.
+- CMakeLists.txt : builds the project and creates the executables
 
-- RealServer.cpp : TCP server handling multiple client connections and processing commands.
+- dockerfile : sets up the Docker environment for compiling and testing
 
-- handleClient.cpp/HandleClient.h : responsible to handle the clients
-
-- TCPserverCommunication.cpp / TCPserverCommunication.h : responsible for the communication with the sockets
-
-- ICommunication.h: Interface for all communication classes
-
-- test.cpp / docker-compose.yml(for tests) : tests to check codes functionallity
+- main.h / main.cpp : program entry point; reads input and runs the commands
 
 
- 
+
 
 
 
@@ -215,22 +251,6 @@ As a result:
 - The system allows for adding new forms of communication without touching existing logic
 
 - The design fully adheres to the Open/Closed Principle
-
-
-## "Did the fact that input/output comes from sockets instead of the console require you to modify code that was supposed to be 'closed for modification but open for extension'?"
-
-
-Yes.
-
-As mentioned in previous questions, we created a new interface called ICommunication, which is inherited by all classes responsible for handling communication.
-
-Now, there are two classes that implement this interface:
-
-ConsoleCommunication – handles reading from and writing to the console.
-
-TCPServerCommunication – handles input and output coming from sockets.
-
-This design ensures that in the future, we can add new types of communication without modifying the existing code, keeping the system closed for modification but open for extension.
 
 
 
