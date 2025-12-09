@@ -47,7 +47,7 @@ Test cover:
      1. cd test
      2. docker compose run --rm tests bash
      3. ls /usr/src/app/newFiles
-     4. rm /usr/src/app/newFiles/*
+     4. rm -f /usr/src/app/newFiles/*
      5. exit
      6. docker compose build
      7. docker compose run --rm tests ./runTests
