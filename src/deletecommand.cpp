@@ -1,3 +1,8 @@
+// deletecommand.cpp
+// This class implements the ICommand interface for the "delete" command.
+// It searches for a file matching the given name in the target directory
+// and deletes it if found, returning the appropriate response code.
+
 #include "ICommand.h"
 #include "AddCommand.h"
 #include "SearchCommand.h"
@@ -16,22 +21,27 @@
 
 
 
-//delete command constructor
 deletecommand::deletecommand() : ICommand() {}
 
-
+// Execute the delete command
+// Args: vector of strings containing command arguments (e.g., filename)
+// Returns: a string indicating success or logical failure
 string deletecommand::run(const std::vector<std::string>& args) {
 
     namespace fs = std::filesystem;
+
+    // Get the folder path from the base ICommand class
     string dir = ICommand::GetFolderPath();
 
-    std::string filename =args[0]; // search for query in all files
+    // The filename to delete
+    std::string filename =args[0]; 
     
-
+    // Iterate through the files in the directory
     for (const auto& entry : fs::directory_iterator(dir))
               {
                   std::string temp = entry.path().filename();
 
+                  // Check if the file matches the target filename
                   if (temp.find(filename) != std::string::npos)
                   {
                     fs::remove(entry.path());
@@ -39,6 +49,7 @@ string deletecommand::run(const std::vector<std::string>& args) {
                   }
 
               }
+    // If no matching file is found, return logical error response
     return LOGICAL_PROBLEM;
 
 }

@@ -411,7 +411,8 @@ TEST(SearchTests, no_doubles)
 }
 
 
-//--- socker tests ---
+// --- Socket Tests ---
+// This test checks the server's ability to handle a single client sending a "help" command.
 
 TEST(TCPServerTest, HelpCommandInSingleTest) {
     std::mutex manager_mutex;
