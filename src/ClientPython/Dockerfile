@@ -1,5 +1,5 @@
 # Use the official Python 3 image as the base
-ROM python:3
+FROM python:3
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app

@@ -7,13 +7,14 @@
 #include <string.h>
 #include <cstdlib>
 
+
 using namespace std;
 
 int main(int argc, char* argv[]) {
 
     // make sure we got IP and port
     if (argc != 3) {
-        cout << SERVER_ERROR << endl;
+        cout << "500 Internal Server Error" << endl;
         return 1;
     }
 
@@ -24,7 +25,7 @@ int main(int argc, char* argv[]) {
     // create a TCP socket
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0) {
-        cout << SERVER_ERROR << endl;
+        cout << "500 Internal Server Error" << endl;
     }
 
     // fill server address info
@@ -36,7 +37,7 @@ int main(int argc, char* argv[]) {
 
     // try to connect to the server
     if (connect(sock, (struct sockaddr *) &sin, sizeof(sin)) < 0) {
-        cout << SERVER_ERROR << endl;
+        cout << "500 Internal Server Error" << endl;
     }
 
     // main loop: read user input, send to server, get response
@@ -49,7 +50,7 @@ int main(int argc, char* argv[]) {
         // send it to the server
         int sent_bytes = send(sock, line.c_str(), line.size(), 0);
         if (sent_bytes < 0) {
-            cout << SERVER_ERROR << endl;
+            cout << "500 Internal Server Error" << endl;
             break;
         }
 
@@ -66,7 +67,7 @@ int main(int argc, char* argv[]) {
         }
         // error reading
         else if (read_bytes < 0) {
-            cout << SERVER_ERROR << endl;
+            cout << "500 Internal Server Error" << endl;
             break;
         }
         // got data, print it
