@@ -11,9 +11,6 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 
-
-
-
     if (argc != 3) {
     std::cerr << "Usage: ./client <server_ip> <port>\n";
     return 1;
