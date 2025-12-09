@@ -5,7 +5,7 @@ This is the second task out of a full google drive clone project.
 
 
 ## Key functionalities 📂
-- Post command : Gets file name and content. compress the file using RLE compression and adss it to a folder using enviroment variable
+- Post command : Gets file name and content. compress the file using RLE compression and adds it to a folder using enviroment variable
 - Get command : Gets file name. find the file in the folder, decompress it and return it
 - Search command : Gets a text query. search for files containing the query or has the query in the name and return a list of file names
 - Delete command : Gets a file name. finds it in the folder and deletes it.
@@ -24,9 +24,9 @@ This is the second task out of a full google drive clone project.
        -  docker compose up
 
 
-   * run clients 
+   * run clients (seperated terminals)
        - docker compose run --rm --service-ports client_cpp
-       - docker compose run --rm --service-ports client_py
+       - docker compose run --rm --service-ports client_python
 
 
 
@@ -37,7 +37,7 @@ Test cover:
 * Get command tests - file creation test, folder creation test .
 * Search command tests - single match, no match and multiple match tests. 
 * Delete command tests - simple delete for successfull delete and illegal delete for an attempt to delete a file that do not exist.
-* Sockers tests - These tests verify that the server correctly accepts clients, handles multiple clients in order, and properly manages cases where some client connections fail.
+* Sockets tests - These tests verify that the server correctly accepts clients, handles multiple clients in order, and properly manages cases where some client connections fail.
 
 ![tests passed image](images/tests_passed.png)
 
@@ -48,22 +48,27 @@ Test cover:
      2. docker compose run --rm tests bash
      3. ls /usr/src/app/newFiles
      4. rm /usr/src/app/newFiles/*
-     5. docker compose build
-     6. docker compose run --rm tests ./runTests
+     5. exit
+     6. docker compose build
+     7. docker compose run --rm tests ./runTests
 
 
 ## Usage 💻
 
-POST [File name] [File content]
-Get [File name] 
-Search [Your Query]
-Delete [File name]
+-POST [File name] [File content]
+
+-Get [File name] 
+
+-Search [Your Query]
+
+-Delete [File name]
 
 Dependencies
 
 - c++17 standard library
  
 ## Run example 🏃‍♂️
+
 
 
 -- ![Run example](images/Run_example.png) --
@@ -74,14 +79,18 @@ Dependencies
 
 -- ![multiple clients](images/multi_clients.png) --
 
--- ![?](images/my_image.png) -- 
 
--- ![alt text](images/my_image.png) --
 
 
 
 
 ## File Structure 📁
+
+
+
+
+-- ![Project folder structure diagram](images/diagram.png) --
+
 
 - AddCommand.h / AddCommand.cpp : defines the AddCommand class
 
@@ -95,37 +104,36 @@ Dependencies
 
 - CommandFactory.cpp / CommandFactory.h : registers different command objects with a CommandManager so they can be executed by name at runtime.
 
-- consoleCommunication.cpp / ConsoleCommunication.h : a class that reads input from the console and writes output to it.
+- ConsoleCommunication.cpp / ConsoleCommunication.h : a class that reads input from the console and writes output to it.
 
-- ICommand.h : base interface for all commands
+- ICommand.cpp / ICommand.h : base interface for all commands
 
 - Config.h : This header file defines constant strings for command names and corresponding response messages.
 
 - Compressor.h / Compressor.cpp : does RLE compression and decompression
 
-- parser.cpp / parser.h : extracts the command, arguments, and query from an input line, validates the input, and handles special cases
+- Parser.cpp / Parser.h : extracts the command, arguments, and query from an input line, validates the input, and handles special cases
 
 - tcp_c.cpp : a client implemented in CPP
 
 - TCP_Client.py : a client implemented in Python
 
-- main_helper_tests.h / main_helper_tests.cpp : helper code for running the tests
+- CMakeLists.txt : creates the executables for tests
 
-- CMakeLists.txt : builds the project and creates the executables
+- docker-compose.yml/ dockerfiles for server/clients : Docker configuration files for building and running the server and client containers.
 
-- docker-compose.yml/ dockerfile.server/clients : Docker configuration files for building and running the server and client containers.
+- RealServer.cpp : TCP server handling multiple client connections and processing commands.
 
-- main.h / main.cpp : program entry point; reads input and runs the commands
+- handleClient.cpp/HandleClient.h : responsible to handle the clients
 
-- Server.cpp : TCP server handling multiple client connections and processing commands.
+- TCPserverCommunication.cpp / TCPserverCommunication.h : responsible for the communication with the sockets
 
-- tcp_c.cpp : C++ TCP client for communicating with the server.
+- ICommunication.h: Interface for all communication classes
 
-- TCP_Client.py : Python TCP client for interacting with the server.
-
-
+- test.cpp / docker-compose.yml(for tests) : tests to check codes functionallity
 
 
+ 
 
 
 
