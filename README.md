@@ -209,6 +209,22 @@ As a result:
 - The design fully adheres to the Open/Closed Principle
 
 
+## "Did the fact that input/output comes from sockets instead of the console require you to modify code that was supposed to be 'closed for modification but open for extension'?"
+
+
+Yes.
+
+As mentioned in previous questions, we created a new interface called ICommunication, which is inherited by all classes responsible for handling communication.
+
+Now, there are two classes that implement this interface:
+
+ConsoleCommunication – handles reading from and writing to the console.
+
+TCPServerCommunication – handles input and output coming from sockets.
+
+This design ensures that in the future, we can add new types of communication without modifying the existing code, keeping the system closed for modification but open for extension.
+
+
 
 ## Authors ✍️
 
