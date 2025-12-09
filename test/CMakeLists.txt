@@ -1,17 +1,22 @@
+# CMake minimum version required and project definition
 cmake_minimum_required(VERSION 3.10)
 
 project(MyExample)
 
+# Set the C++ standard for the project
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Define the project root folder
 set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR}/..)
 
+# Include directories for headers
 include_directories(
     ${PROJECT_ROOT}/src
     ${PROJECT_ROOT}/test
 )
 
+# Fetch and make GoogleTest available for unit testing
 include(FetchContent)
 FetchContent_Declare(
     googletest
@@ -20,6 +25,7 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+# List all source files for the project (production code + tests)
 set(SOURCE_FILES
     ${PROJECT_ROOT}/src/CommandManager.cpp
     ${PROJECT_ROOT}/src/Compressor.cpp
@@ -36,9 +42,13 @@ set(SOURCE_FILES
     ${PROJECT_ROOT}/test/test.cpp;
 )
 
+# Create an executable from the source files
 add_executable(runTests ${SOURCE_FILES})
 
+# Link required libraries (GoogleTest and pthread)
 target_link_libraries(runTests PRIVATE gtest_main pthread)
 
+
+# Enable testing and define the test target
 enable_testing()
 add_test(NAME runTests COMMAND runTests)
