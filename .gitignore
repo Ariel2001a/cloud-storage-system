@@ -1,5 +1,0 @@
-docker compose run --rm --service-ports client_cpp
-
-docker compose run --rm --service-ports client_python
-
-docker compose up --build

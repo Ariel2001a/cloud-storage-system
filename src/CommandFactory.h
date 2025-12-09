@@ -1,3 +1,8 @@
+// CommandFactory.h
+// This class is responsible for creating and registering all commands
+// with the CommandManager. It provides a centralized way to initialize
+// the available commands in the system.
+
 #ifndef   COMMANDFACTORY_H
 #define   COMMANDFACTORY_H
 
@@ -10,6 +15,8 @@
 class CommandFactory {
     public:
         CommandFactory();
+
+        // Create and register all commands in the given CommandManager
         void createCommands(CommandManager& manager);
 };
 
