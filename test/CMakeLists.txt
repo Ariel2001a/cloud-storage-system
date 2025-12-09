@@ -33,7 +33,7 @@ set(SOURCE_FILES
     ${PROJECT_ROOT}/src/Parser.cpp
     ${PROJECT_ROOT}/src/TCPServerCommunication.cpp
     ${PROJECT_ROOT}/src/HandleClient.cpp
-    ${PROJECT_ROOT}/test/test.cpp
+    ${PROJECT_ROOT}/test/test.cpp;
 )
 
 add_executable(runTests ${SOURCE_FILES})
