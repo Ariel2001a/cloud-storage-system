@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include <fstream>
 #include <string>
 #include <iostream>
@@ -8,11 +7,18 @@
 #include <thread>
 #include <atomic>
 #include <mutex>
+#include <chrono>
 #include <condition_variable>
+#include <sys/socket.h>
+#include <stdio.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <cstdlib>
+#include <map>
 
 
-#include "Server.h"
-#include "MockServer.h"
+
 #include "SearchCommand.h"
 #include "GetCommand.h"
 #include "deletecommand.h"
@@ -21,10 +27,11 @@
 #include "ICommand.h"
 #include "AddCommand.h"
 #include "Config.h"
+#include "TCPServerCommunication.h"
+#include "HandleClient.h"
+#include "CommandManager.h"
 
 using namespace std;
-using ::testing::_;
-using ::testing::Return;
 
 // --- Validation tests ---
 // Check parsing and validation for multiple arguments
@@ -406,118 +413,45 @@ TEST(SearchTests, no_doubles)
 
 //--- socker tests ---
 
-TEST(ServerTest, AcceptClientSuccess) {
-    MockServer server({5});
-    int result = server.accept_client();
-    EXPECT_EQ(result, 5);
+TEST(TCPServerTest, HelpCommandInSingleTest) {
+    std::mutex manager_mutex;
+    CommandManager manager = HandleClient::init();
+    TCPServerCommunication server(6000);
+
+    std::thread serverThread([&]() {
+        int client_socket = server.acceptClient();
+        std::string message = server.read(client_socket);
+        std::string response = HandleClient::processClient(message, manager, manager_mutex);
+        server.write(client_socket, response);
+        close(client_socket);
+    });
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    ASSERT_GT(sock, 0);
+
+    sockaddr_in addr{};
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(6000);
+    inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr);
+
+    ASSERT_EQ(connect(sock, (sockaddr*)&addr, sizeof(addr)), 0);
+
+    const std::string cmd = "POST help help";
+    send(sock, cmd.c_str(), cmd.size(), 0);
+
+    char buffer[4096] = {0};
+    int n = recv(sock, buffer, sizeof(buffer), 0);
+    ASSERT_GT(n, 0);
+
+    std::string response(buffer, n);
+    EXPECT_EQ(response, SUCCESS_ADD);
+
+    close(sock);
+    serverThread.join();
 }
 
-TEST(ServerTest, AcceptClientFailure) {
-    MockServer server({-1});
-    int result = server.accept_client();
-    EXPECT_EQ(result, -1);
-}
-
-TEST(ServerMultiClientTest, HandlesMultipleClientsInParallelInOrder) {
-    Server server;
-    const int numClients = 4;
-    std::vector<int> results(numClients);
-    std::vector<std::thread> threads;
-    std::mutex mtx;
-    std::condition_variable cv;
-    std::atomic<int> next_index{0};
-
-    for (int i = 0; i < numClients; ++i) {
-        threads.emplace_back([i, &results, &mtx, &cv, &next_index]() {
-            int client_fd = 100 + i;  // לדוגמה, מספר כל לקוח
-            std::unique_lock<std::mutex> lock(mtx);
-            cv.wait(lock, [&]() { return i == next_index.load(); });
-            results[i] = client_fd;
-            next_index++;
-            cv.notify_all();
-        });
-    }
-
-    for (auto& t : threads) t.join();
-
-    std::vector<int> expected = {100, 101, 102, 103};
-    EXPECT_EQ(results, expected);
-}
-
-TEST(ServerMultiClientTest, HandlesSomeClientsFailingInOrder) {
-    std::vector<int> expected = {200, 201, -1};
-    MockServer server(expected);
-
-    const int client_count = expected.size();
-    std::vector<int> results(client_count, -1);
-
-    std::mutex mtx;
-    std::condition_variable cv;
-    int next_index = 0;
-
-    std::vector<std::thread> threads;
-
-    for (int i = 0; i < client_count; ++i) {
-        threads.emplace_back([&]() {
-            int res = server.accept_client();
-            std::unique_lock<std::mutex> lock(mtx);
-            int idx = next_index++;
-            results[idx] = res;
-        });
-    }
-
-    for (auto& t : threads) t.join();
-
-    EXPECT_EQ(results, expected);
-}
-
-TEST(MessageHandlingTest, ValidMessage) {
-    Server server;
-    std::string msg = "HELLO";
-    std::string result = server.handle_message(msg);
-    EXPECT_EQ(result, "OK");
-}
-
-TEST(MessageHandlingTest, EmptyMessage) {
-    Server server;
-    std::string msg = "";
-    std::string result = server.handle_message(msg);
-    EXPECT_EQ(result, "ERROR: Empty message");
-}
-
-TEST(MessageHandlingTest, ComplexMessage) {
-    Server server;
-    std::string msg = "ADD 123 DATA";
-    std::string result = server.handle_message(msg);
-    EXPECT_EQ(result, "OK");
-}
-
-TEST(MessageHandlingTest, InvalidCharacters) {
-    Server server;
-    std::string msg = "HELLO@#";
-    std::string result = server.handle_message(msg);
-    EXPECT_EQ(result, "ERROR: Invalid characters");
-}
-
-
-TEST(MessageHandlingTest, ParallelMessages) {
-    Server server;
-    std::vector<std::string> msgs = {"MSG1", "MSG2", "MSG3"};
-    std::vector<std::string> results(msgs.size());
-    std::vector<std::thread> threads;
-
-    for (size_t i = 0; i < msgs.size(); ++i) {
-        threads.emplace_back([&, i](){  // i נלקח כ-value
-            results[i] = server.handle_message(msgs[i]);
-        });
-    }
-
-    for (auto& t : threads) t.join();
-
-    for (auto& r : results) {
-        EXPECT_EQ(r, "OK");
-    }
-}
 
 // --- GoogleTest main ---
 int main(int argc, char **argv) {
