@@ -7,18 +7,60 @@
 #include <string.h>
 #include <cstdlib>
 #include <mutex>
-#include <thread>
+#include <pthread.h>
 
 #include "TCPServerCommunication.h"
 #include "HandleClient.h"
 #include "CommandManager.h"
+#include "Config.h"
 
 using namespace std;
 
+// ---------------------------------------------------------
+//     מבנה להעברת פרמטרים ל־pthread
+// ---------------------------------------------------------
+struct ThreadArgs {
+    int client_socket;
+    CommandManager* manager;
+    std::mutex* manager_mutex;
+    TCPServerCommunication* server_comm;
+};
+
+// ---------------------------------------------------------
+//      פונקציית Thread — מטפלת בלקוח אחד
+// ---------------------------------------------------------
+void* client_handler(void* arg) {
+    ThreadArgs* args = (ThreadArgs*)arg;
+
+    int client_socket = args->client_socket;
+    CommandManager* manager = args->manager;
+    std::mutex* manager_mutex = args->manager_mutex;
+    TCPServerCommunication* server_comm = args->server_comm;
+
+    while (true) {
+
+        std::string message = server_comm->read(client_socket);
+        if (message.empty())
+            break;
+
+        std::string response = HandleClient::processClient(message, *manager, *manager_mutex);
+
+        server_comm->write(client_socket, response);
+    }
+
+    close(client_socket);
+    delete args;  // חובה — אחרת דליפת זיכרון
+
+    return nullptr;
+}
+
+// ---------------------------------------------------------
+//                    פונקציית main — השרת
+// ---------------------------------------------------------
 int main(int argc, char* argv[]) {
 
     if (argc != 2) {
-        std::cerr << "Usage: ./server <port>\n";
+        std::cout << SERVER_ERROR << std::endl;
         return 1;
     }
 
@@ -34,21 +76,26 @@ int main(int argc, char* argv[]) {
 
         int client_socket = server_comm.acceptClient();
 
-        std::thread client_thread([client_socket, &manager, &manager_mutex, &server_comm]() {
+        // בניית מבנה args ל־pthread
+        ThreadArgs* args = new ThreadArgs{
+            client_socket,
+            &manager,
+            &manager_mutex,
+            &server_comm
+        };
 
-            while (true) {
-                string message = server_comm.read(client_socket);
-                if (message.empty()) break;
+        pthread_t tid;
 
-
-                string response = HandleClient::processClient(message, manager, manager_mutex);
-
-                server_comm.write(client_socket, response);
-            }
-
+        // יצירת thread חדש ללקוח
+        if (pthread_create(&tid, nullptr, client_handler, args) != 0) {
+            std::cout << SERVER_ERROR << std::endl;
             close(client_socket);
-        });
-        client_thread.detach();
+            delete args;
+            continue;
+        }
+
+        // שחרור אוטומטי של המשאבים כשה-thread מסיים
+        pthread_detach(tid);
     }
 
     return 0;
