@@ -12,7 +12,8 @@
 #include "TCPServerCommunication.h"
 #include "HandleClient.h"
 #include "CommandManager.h"
-
+ 
+// SERVER IMPLEMENTATION
 using namespace std;
 
 int main(int argc, char* argv[]) {
