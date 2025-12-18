@@ -7,6 +7,92 @@
 #include <string.h>
 #include <cstdlib>
 #include <mutex>
+
+#include "TCPServerCommunication.h"
+#include "HandleClient.h"
+#include "CommandManager.h"
+#include "Config.h"
+
+#include "ThreadPool.h"
+#include "ClientTask.h"
+
+using namespace std;
+
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        cout << SERVER_ERROR << endl;
+        return 1;
+    }
+
+    mutex manager_mutex;             
+    int server_port = atoi(argv[1]);
+
+    CommandManager manager = HandleClient::init();
+    TCPServerCommunication server_comm(server_port);
+
+    ThreadPool pool(4);
+
+    while (true) {
+        int client_socket = server_comm.acceptClient();  
+
+        pool.submit(new ClientTask(client_socket, &manager, &manager_mutex, &server_comm));
+    }
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*#include <iostream>
+#include <sys/socket.h>
+#include <stdio.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <string.h>
+#include <cstdlib>
+#include <mutex>
 #include <pthread.h>
 
 #include "TCPServerCommunication.h"
@@ -77,4 +163,4 @@ int main(int argc, char* argv[]) {
     }
 
     return 0;
-}
+}*/
