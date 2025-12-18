@@ -8,3 +8,10 @@ exports.createUser = (req, res) => {
     const newUser = User.createUser(first_name,last_name,email,password,profileImage)
     res.status(201).location(`/api/users/${newUser.id}`).json({ id: newUser.id })
 }
+
+exports.getUserById = (req, res) => {
+    const user = User.getUserById(parseInt(req.params.id))
+    if (!user)
+    return res.status (404).json({ error: 'User not found' })
+    res.json(user)
+}

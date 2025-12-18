@@ -7,6 +7,10 @@ const createUser = (first_name,last_name,email,password,image) => {
     return newUser
 }
 
+const getUserById = (id) =>  users.find(u => u.id===id)
+
+
 module.exports = {
-    createUser
+    createUser,
+    getUserById
 }
