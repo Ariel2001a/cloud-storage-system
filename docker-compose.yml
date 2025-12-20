@@ -1,57 +1,57 @@
-
-# Docker Compose configuration for a server and two client services (Python and C++)
+# Docker Compose configuration for a server, Node server, and two client services (Python and C++)
 services:
   server:
 
-    # Build the server container from a Dockerfile
+    # Build the C++ server container from a Dockerfile
     build:
       context: ./src
       dockerfile: ServerCpp/Dockerfile
 
-    # Command to start the server
     entrypoint: ["./ServerCpp"]
     command: ["3782"]
 
-    # Map the server port to the host
     ports:
       - "3782:3782"
 
-    # Mount a host folder into the container
     volumes:
       - ./data:/usr/src/data 
 
-    # Set environment variables for the container   
     environment:
       - EX1_DIR=/usr/src/data 
 
-    # Connect to a shared network   
+    networks:
+      - local
+
+  server_node:            # <-- NEW: Node server
+    build:
+      context: ./src/nodejs    # folder where your app.js is
+      dockerfile: Dockerfile   # Node Dockerfile
+    ports:
+      - "8080:3000"            # expose host port 8080 to container port 3000
+    volumes:
+      - ./src/nodejs:/usr/src/app
     networks:
       - local
 
   client_python:
 
-    # Build the Python client container
     build:
       context: ./src/ClientPython
       dockerfile: Dockerfile
 
-    # Command to start the client
     entrypoint: ["python3", "TCP_Client.py"]
     command: ["172.28.0.2", "3782"]
 
-    # Ensure the server starts first
     depends_on:
       - server
     networks:
       - local
 
-    # Keep stdin open and allocate a pseudo-TTY
     stdin_open: true   
     tty: true          
 
   client_cpp:
 
-    # Build the C++ client container
     build:
       context: ./src/ClientCpp
       dockerfile: Dockerfile
@@ -67,7 +67,6 @@ services:
     stdin_open: true  
     tty: true         
 
-# Define a shared network for all containers
 networks:
   local:
     driver: bridge
