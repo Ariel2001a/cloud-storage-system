@@ -1,6 +1,6 @@
 const net = require('net');
 
-const TCP_HOST = '127.0.0.1';
+const TCP_HOST = 'server';
 const TCP_PORT = 3782;
 
 class FileSocketClient {

@@ -24,12 +24,10 @@ services:
 
   server_node:            # <-- NEW: Node server
     build:
-      context: ./src/nodejs    # folder where your app.js is
+      context: ./src    # folder where your app.js is
       dockerfile: Dockerfile   # Node Dockerfile
     ports:
       - "8080:3000"            # expose host port 8080 to container port 3000
-    volumes:
-      - ./src/nodejs:/usr/src/app
     networks:
       - local
 
@@ -40,7 +38,7 @@ services:
       dockerfile: Dockerfile
 
     entrypoint: ["python3", "TCP_Client.py"]
-    command: ["172.28.0.2", "3782"]
+    command: ["server", "3782"]
 
     depends_on:
       - server
@@ -57,7 +55,7 @@ services:
       dockerfile: Dockerfile
 
     entrypoint: ["./tcp_c"]
-    command: ["172.28.0.2", "3782"]
+    command: ["server", "3782"]
 
     depends_on:
       - server
