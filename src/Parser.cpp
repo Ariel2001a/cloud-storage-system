@@ -41,8 +41,11 @@ string Parser::parseCmd(const string& line) {
 vector<string> Parser::parseArgs(const string& line, const string& cmdName) {
     vector<string> args;
 
-
- 
+    if(cmdName == "search") {
+        string query = Parser::parseQuery(line); // extract full query including spaces
+        args.push_back(query);
+        return args;
+    }
 
     size_t pos = line.find(' ');
     if(pos == string::npos) return args; // no arguments
@@ -52,27 +55,13 @@ vector<string> Parser::parseArgs(const string& line, const string& cmdName) {
 
     size_t first_space = rest.find(' ');
     if(first_space == string::npos) {
-        args.push_back(rest); // only user id present
+        args.push_back(rest); // only file id present
     } else {
-        string first = rest.substr(0, first_space); // user id
-
-        if(cmdName == "search") {
-            string query = Parser::parseQuery(rest); // extract full query including spaces
-            args.push_back(first);
-            args.push_back(query);
-            return args;
-        }
-        size_t second_space = rest.find(' ', first_space + 1);
-        if(second_space == string::npos) {
-            args.push_back(first); // user id
-        } else {
-            string second = rest.substr(first_space + 1, second_space - first_space - 1); // file id
-            string third= rest.substr(second_space + 1); //  content
+            string first = rest.substr(0, first_space); // file id
+            string second = rest.substr(first_space + 1); // content
             args.push_back(first);
             args.push_back(second);
-            args.push_back(third);
         }
-    }
     return args;
 }
 
@@ -91,4 +80,3 @@ bool Parser::isWhitespaceOnly(const string& s) {
             return false;
     return true;
 }
-

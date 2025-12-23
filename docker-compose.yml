@@ -1,73 +1,54 @@
-# Docker Compose configuration for a server, Node server, and two client services (Python and C++)
 services:
   server:
-
-    # Build the C++ server container from a Dockerfile
     build:
       context: ./src
       dockerfile: ServerCpp/Dockerfile
-
     entrypoint: ["./ServerCpp"]
     command: ["3782"]
-
     ports:
       - "3782:3782"
-
     volumes:
-      - ./data:/usr/src/data 
-
+      - ./data:/usr/src/data
     environment:
-      - EX1_DIR=/usr/src/data 
-
+      - EX1_DIR=/usr/src/data
     networks:
       - local
 
-  server_node:            # <-- NEW: Node server
+  server_node:
     build:
-      context: ./src    # folder where your app.js is
-      dockerfile: Dockerfile   # Node Dockerfile
+      context: ./src
+      dockerfile: Dockerfile
     ports:
-      - "8080:3000"            # expose host port 8080 to container port 3000
+      - "8080:8080"
     networks:
       - local
 
   client_python:
-
     build:
       context: ./src/ClientPython
       dockerfile: Dockerfile
-
     entrypoint: ["python3", "TCP_Client.py"]
     command: ["server", "3782"]
-
     depends_on:
       - server
     networks:
       - local
-
-    stdin_open: true   
-    tty: true          
+    stdin_open: true
+    tty: true
 
   client_cpp:
-
     build:
       context: ./src/ClientCpp
       dockerfile: Dockerfile
-
     entrypoint: ["./tcp_c"]
     command: ["server", "3782"]
-
     depends_on:
       - server
     networks:
       - local
-
-    stdin_open: true  
-    tty: true         
+    stdin_open: true
+    tty: true
 
 networks:
   local:
     driver: bridge
-    ipam:
-      config:
-        - subnet: "172.28.0.0/16"

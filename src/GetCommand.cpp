@@ -45,9 +45,9 @@ string GetCommand::run(const vector<string>& args) {
          return INVALID_COMMAND;
     }
 
-    string filename = args[0];
+    string fileId = args[0];
 
-    string environment_variable_path = ICommand::GetFolderPath() + "/" + filename;
+    string environment_variable_path = ICommand::GetFolderPath() + "/" + fileId;
 ;
 
     // Check if the file exists

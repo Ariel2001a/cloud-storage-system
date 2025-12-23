@@ -48,25 +48,12 @@ int avoid_duplicates (const std::string& filename, const std::vector<std::string
 }
 
 
-
-
-
 // Search function: returns a vector of filenames containing the query
 std::vector<std::string> SearchCommand::search(const std::string& query) {
     std::vector<std::string> results;
 
     namespace fs = std::filesystem;
     string dir = ICommand::GetFolderPath();
-
-    for (const auto& entry : fs::directory_iterator(dir))
-          {
-              std::string temp = entry.path().filename();
-
-              if (temp.find(query) != std::string::npos)
-            results.push_back(entry.path().filename().string());
-
-          }
-
 
     // Iterate over all files in the directory
     for (const auto& entry : fs::directory_iterator(dir)) {
@@ -76,7 +63,7 @@ std::vector<std::string> SearchCommand::search(const std::string& query) {
         buffer << file.rdbuf();
         std::string fileContents = buffer.str();
 
-         std::string temp = Compressor::decompress(fileContents);
+        std::string temp = Compressor::decompress(fileContents);
         std::string temp_name = entry.path().filename();
 
         // If the query is found in the decompressed content, add filename to results

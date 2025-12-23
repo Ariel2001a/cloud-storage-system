@@ -25,19 +25,15 @@ AddCommand::AddCommand() : ICommand() {}
 string AddCommand::run(const vector<string>& args)
 {
 
-    if (args.size() < 2) {
+    if (args.size() < 1) {
         return INVALID_COMMAND;
     }
-    
-    string userId = args[0];
-    string fileId = args[1];
+
+    string fileId = args[0];
     string text;
 
-    cout << "userId = " << userId << endl;
-    cout << "fileId = " << fileId << endl;
-
     // Concatenate remaining arguments as text
-    for (size_t i = 2; i < args.size(); i++) {
+    for (size_t i = 1; i < args.size(); i++) {
         text += args[i];
         if (i + 1 < args.size()){ 
             text += " ";
@@ -48,14 +44,7 @@ string AddCommand::run(const vector<string>& args)
 
 
     // Create full file path
-    string userFolderPath = ICommand::GetFolderPath() + "/" + userId;
-
-
-    // Ensure user directory exists
-    fs::create_directories(userFolderPath); 
-
-    string filePath = userFolderPath + "/" + fileId;
-
+    string filePath = ICommand::GetFolderPath() + "/" + fileId;
 
     // Failed to open file for writing- abort
     ofstream out(filePath);

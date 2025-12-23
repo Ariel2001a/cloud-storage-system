@@ -14,6 +14,6 @@ app.use(express.json());
 app.use('/api/users', UserRoutes);
 app.use('/api/files', filesRouter);
 
-app.listen(8080, () => {
+app.listen(8080,'0.0.0.0',()=> {
     console.log('Server is running on http://localhost:8080');
 });

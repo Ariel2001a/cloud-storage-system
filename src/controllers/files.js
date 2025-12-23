@@ -25,7 +25,7 @@ const createFileOrFolder = async (req, res) => {
     try {
         if (type === 'file') {
             const cppResponse = await fileSocket.sendCommand(
-                `POST ${userId} ${++filesCounter} ${content || ''}`
+                `POST ${++filesCounter} ${content || ''}`
             );
 
             if (cppResponse.includes("400")){
@@ -68,8 +68,14 @@ const createFileOrFolder = async (req, res) => {
 const getFiles = (req, res) => {
     const userId = req.headers['user-id'];
 
+    const user= User.getUserById(parseInt(userId))
+
     if (!userId) {
-        return res.status(401).send("User not logged in");
+        return res.status(401).json({error:'User not logged in'});
+    }
+    
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
     }
 
     const files = filesModel.getTopLevelFiles(userId);
