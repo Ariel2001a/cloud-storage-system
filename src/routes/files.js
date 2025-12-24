@@ -9,5 +9,6 @@ router.route('/')
 
 router.route('/:id')
         .get(filesController.getFileById)
+        .patch(filesController.patchFileById)
 
 module.exports = router;

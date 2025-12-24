@@ -100,3 +100,68 @@ exports.getFileById = (req, res) => {
     return res.status (404).json({ error: 'File not found' })
     res.json({file})
 }
+
+exports.patchFileById = async(req,res) =>{
+    const userId = req.headers['user-id'];
+
+    const user= User.getUserById(parseInt(userId))
+
+    if (!userId) {
+        return res.status(401).json({error:'User not logged in'});
+    }
+    
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+
+    let update = false
+    const file = filesModel.getFileById(userId,parseInt(req.params.id))
+    if (!file)
+        return res.status (404).json({ error: 'File not found' })
+    const {name, content} = req.body
+    if(name != null){
+        file.name = name
+        update = true
+    }
+    if(content!=null){
+        file.content = content
+        if (file.type === 'file'){
+            try{
+                const cppResponseDelete = await fileSocket.sendCommand(
+                    `DELETE ${file.id}`
+                );
+                
+                if (cppResponseDelete.includes("400")){
+                    return res.status(400).json({error:'Delete'});
+                }
+                if (cppResponseDelete.includes("500")) {
+                    return res.status(500).json({error:'Delete'});
+                }
+                
+                const cppResponsePost = await fileSocket.sendCommand(
+                    `POST ${file.id} ${content || ''}`
+                );
+
+                if (cppResponsePost.includes("400")){
+                    return res.status(400).json({error:'Post'});
+                }
+                if (cppResponsePost.includes("500")) {
+                    return res.status(500).json({error:'Post'});
+                }
+            }catch(error){
+                return res.status(500);
+            }
+        }
+        update = true
+    }
+
+    if ('parentId' in req.body) {
+        file.folderParent = req.body.parentId;
+        update = true;
+    }
+
+    if(update)
+        return res.status (204).end()
+
+    return res.status (400).json({ error: 'fields to update are required' })
+}

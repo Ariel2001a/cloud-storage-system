@@ -1,1 +1,60 @@
 node_modules
+
+curl -i -X POST http://localhost:8080/api/users \
+-H "Content-Type: application/json" \
+-d '{"first_name":"hello","last_name":"world","email":"djfke4444@gmail.com","password":"djfkeffff","image":"19.png"}'
+
+curl -i http://localhost:8080/api/users/1
+
+curl -i -X POST http://localhost:8080/api/users/tokens \
+-H "Content-Type: application/json" \
+-d '{"email":"djfke4444@gmail.com","password":"djfkeffff"}'
+
+
+curl -i -X GET http://localhost:8080/api/files \
+-H "user-id: 1"
+
+
+curl -i -X POST http://localhost:8080/api/files \
+-H "Content-Type: application/json" \
+-H "user-id: 1" \
+-d '{
+  "name": "documents",
+  "type": "folder",
+  "parentId": null
+}'
+
+curl -i -X POST http://localhost:8080/api/files \
+-H "Content-Type: application/json" \
+-H "user-id: 1" \
+-d '{
+  "name": "notes.txt",
+  "type": "file",
+  "content": "hello world",
+  "parentId": null
+}'
+
+
+curl -i -X POST http://localhost:8080/api/files \
+-H "Content-Type: application/json" \
+-H "user-id: 1" \
+-d '{
+  "name": "notesInFile.txt",
+  "type": "file",
+  "content": "hello world",
+  "parentId": 1
+}'
+
+
+curl -i -X GET http://localhost:8080/api/files/3 \
+-H "user-id: 1"
+
+
+curl -i -X PATCH http://localhost:8080/api/files/3 \
+-H "Content-Type: application/json" \
+-H "user-id: 1" \
+-d '{
+  "name": "updated_notes.txt",
+  "content": "this content was updated via PATCH",
+  "parentId": null
+}'

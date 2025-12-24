@@ -8,13 +8,13 @@ const getUserFiles = (userId) => {
 };
 
 const addFileOrFolder = (userId, file) => {
-    const files = getUserFiles(userId);
-    files.push(file);
+    if (!userFiles[userId]) userFiles[userId] = [];
+    userFiles[userId].push(file);
 };
 
 const getTopLevelFiles = (userId) => {
     const files = getUserFiles(userId);
-    return files.filter(item => !item.parentId && !item.folderId);
+    return files.filter(item => item.folderParent == null);
 };
 
 const getFileById = (user_id,id) =>  userFiles[user_id].find(f => f.id===id)
