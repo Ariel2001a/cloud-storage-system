@@ -3,7 +3,11 @@ const router = express.Router();
 
 const filesController = require('../controllers/files');
 
-router.post('/', filesController.createFileOrFolder);
-router.get('/', filesController.getFiles);
+router.route('/')
+        .post(filesController.createFileOrFolder)
+        .get(filesController.getFiles);
+
+router.route('/:id')
+        .get(filesController.getFileById)
 
 module.exports = router;

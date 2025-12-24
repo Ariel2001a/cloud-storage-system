@@ -17,8 +17,12 @@ const getTopLevelFiles = (userId) => {
     return files.filter(item => !item.parentId && !item.folderId);
 };
 
+const getFileById = (user_id,id) =>  userFiles[user_id].find(f => f.id===id)
+
+
 module.exports = {
     getUserFiles,
     addFileOrFolder,
-    getTopLevelFiles
+    getTopLevelFiles,
+    getFileById
 };
