@@ -174,6 +174,7 @@ exports.patchFileById = async(req,res) =>{
     return res.status (400).json({ error: 'fields to update are required' })
 }
 
+/* Deletes a file or folder by ID for a user */
 exports.deleteFileById = async(req,res) => {
     const userId = req.headers['user-id'];
 
