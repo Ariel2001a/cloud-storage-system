@@ -42,11 +42,11 @@ curl -i -X POST http://localhost:8080/api/files \
   "name": "notesInFile.txt",
   "type": "file",
   "content": "hello world",
-  "parentId": 1
+  "parentId": 2
 }'
 
 
-curl -i -X GET http://localhost:8080/api/files/3 \
+curl -i -X GET http://localhost:8080/api/files/1 \
 -H "user-id: 1"
 
 
@@ -58,3 +58,7 @@ curl -i -X PATCH http://localhost:8080/api/files/3 \
   "content": "this content was updated via PATCH",
   "parentId": null
 }'
+
+
+curl -i -X DELETE http://localhost:8080/api/files/4 \
+  -H "user-id: 1"
