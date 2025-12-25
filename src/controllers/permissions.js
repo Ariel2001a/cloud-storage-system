@@ -1,6 +1,6 @@
 const User = require('../models/users');
 const filesModel = require('../models/files');
-const { addPermission, PERMISSION_TYPES } = require('../models/permissions');
+const { addPermission, getPermissionsByFileId, PERMISSION_TYPES } = require('../models/permissions');
 
 async function createPermission(req, res) {
     const fileId = parseInt(req.params.id, 10);
@@ -36,12 +36,12 @@ async function createPermission(req, res) {
         return res.status(404).json({ error: 'Target user not found' });
     }
 
-    if (!PERMISSION_TYPES.includes(permission)) {
-        return res.status(400).json({ error: 'Invalid permission type' });
+    if (!PERMISSION_TYPES[file.type].includes(permission)) {
+        return res.status(400).json({ error: `Invalid permission type for ${file.type}` });
     }
 
 
-    const newPermission = addPermission({ userId, fileId, permission });
+    const newPermission = addPermission({ userId, fileId, permission, type: file.type });
     if (!newPermission) {
         return res.status(409).json({ error: 'Permission already exists' });
     }
@@ -49,4 +49,23 @@ async function createPermission(req, res) {
     return res.status(201).json(newPermission);
 }
 
-module.exports = { createPermission };
+
+const getPermissionsByFile = (req, res) => {
+    const ownerId = req.headers['user-id'];
+    const fileId = req.params.id;
+
+    const files = filesModel.getUserFiles(ownerId);
+    const file = files.find(f => f.id == fileId);
+
+    if (!file) {
+        return res.status(404).json({ error: "File or folder not found" });
+    }
+
+    const permissions = getPermissionsByFileId(fileId);
+
+    permissions.push({userId: file.ownerId || ownerId, fileId, permission: "owner"});
+
+    return res.status(200).json(permissions);
+};
+
+module.exports = { createPermission, getPermissionsByFile };

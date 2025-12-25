@@ -1,10 +1,13 @@
 const permissionsByFile = {}; 
 
-const PERMISSION_TYPES = ["read", "write", "execute"]; 
+const PERMISSION_TYPES = {
+    file: ["read", "write", "owner"],
+    folder: ["read", "write", "share", "owner"]
+}; 
 
-function addPermission({ userId, fileId, permission }) {
+function addPermission({ userId, fileId, permission,type }) {
 
-    if (!PERMISSION_TYPES.includes(permission)) {
+    if (!PERMISSION_TYPES[type].includes(permission)) {
         return null;
     }
 
@@ -29,8 +32,15 @@ function getPermissionsByFile(fileId) {
     return permissionsByFile[fileId] || [];
 }
 
+
+function getPermissionsByFileId(fileId) {
+    return permissionsByFile[fileId] || [];
+}
+
+
 module.exports = {
     addPermission,
     getPermissionsByFile,
+    getPermissionsByFileId,
     PERMISSION_TYPES
 };
