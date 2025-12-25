@@ -1,14 +1,36 @@
-const permissions= {}
+const permissionsByFile = {}; 
 
-function addPermission ({UserId, fileId, permission}) {
+const PERMISSION_TYPES = ["read", "write", "execute"]; 
 
-    if (!permissions[UserId]) {
-        permissions[UserId] = [];
+function addPermission({ userId, fileId, permission }) {
+
+    if (!PERMISSION_TYPES.includes(permission)) {
+        return null;
     }
 
-    const newPermission= {id: Date.now(), fileId, permission}
-    permissions[UserId].push(newPermission);
+    if (!permissionsByFile[fileId]) {
+        permissionsByFile[fileId] = [];
+    }
+
+
+    const exists = permissionsByFile[fileId].some(
+        p => p.userId === userId && p.permission === permission
+    );
+
+    if (exists) return null;
+
+    const newPermission = { id: Date.now(), userId, fileId, permission };
+    permissionsByFile[fileId].push(newPermission);
+
     return newPermission;
 }
 
-module.exports= {addPermission, permissions};
+function getPermissionsByFile(fileId) {
+    return permissionsByFile[fileId] || [];
+}
+
+module.exports = {
+    addPermission,
+    getPermissionsByFile,
+    PERMISSION_TYPES
+};
