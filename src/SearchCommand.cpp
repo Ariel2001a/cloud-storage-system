@@ -21,14 +21,18 @@ string SearchCommand::resultsMessage(const std::vector<std::string>& results) {
         msg+=results[i];
         if (i != results.size() - 1) msg+=" ";
     }
+
     return msg;
 }
 
 // Run function called by CommandManager
 // Takes the first argument as the search query and prints the results
 string SearchCommand::run(const std::vector<std::string>& args) {
+    string query = args[0];
+    query.erase(query.find_last_not_of(" \r\n\t") + 1);
+    query.erase(0, query.find_first_not_of(" \r\n\t"));
 
-    std::vector<std::string> results = search(args[0]); // search for query in all files
+    std::vector<std::string> results = search(query); // search for query in all files
     if (results.empty()) {
         return LOGICAL_PROBLEM; // no results found
     }
