@@ -2,7 +2,9 @@ const { fileSocket } = require('../FileSocketClient'); // import socket client t
 const filesModel = require('../models/files');         // import files model to store/retrieve files
 const User = require('../models/users')               // import user model
 
-let filesCounter = 0; // global counter for file/folder IDs
+
+const { addPermission } = require('../models/permissions');
+const { PERMISSION_TYPES } = require('../models/permissions');
 
 
 let filesCounter = 0;
@@ -52,7 +54,18 @@ const createFileOrFolder = async (req, res) => {
                 folderParent: parentId || null
             });
 
-            return res.status(201).location(`/api/files/${filesCounter}`).json({ id: filesCounter }); // respond with new file ID
+
+            const perms = PERMISSION_TYPES[type];
+            perms.forEach(p => {
+                addPermission({
+                    userId: parseInt(userId),
+                    fileId: filesCounter,
+                    permission: p,
+                    type
+                });
+            });
+
+            return res.status(201).location(`/api/files/${filesCounter}`).json({ id: filesCounter });
         }
 
         if (type === 'folder') {                    // handle folder creation
@@ -64,7 +77,18 @@ const createFileOrFolder = async (req, res) => {
                 folderParent: parentId || null
             });
 
-            return res.status(201).location(`/api/files/${filesCounter}`).json({ id: filesCounter }); // respond with new folder ID
+
+            const perms = PERMISSION_TYPES[type];
+            perms.forEach(p => {
+                addPermission({
+                    userId: parseInt(userId),
+                    fileId: filesCounter,
+                    permission: p,
+                    type
+                });
+            });
+
+            return res.status(201).location(`/api/files/${filesCounter}`).json({ id: filesCounter });
         }
 
         return res.status(400).json({ error: 'Invalid type' }); // invalid type provided

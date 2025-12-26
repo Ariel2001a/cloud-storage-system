@@ -37,10 +37,22 @@ function getPermissionsByFileId(fileId) {
     return permissionsByFile[fileId] || [];
 }
 
+function updatePermissionById(pId, newPermission) {
+    for (const fileId in permissionsByFile) {
+        const perm = permissionsByFile[fileId].find(p => p.id === pId);
+        if (perm) {
+            perm.permission = newPermission;
+            return perm;
+        }
+    }
+    return null;
+}
+
 
 module.exports = {
     addPermission,
     getPermissionsByFile,
     getPermissionsByFileId,
+    updatePermissionById,
     PERMISSION_TYPES
 };
