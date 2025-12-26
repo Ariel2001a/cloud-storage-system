@@ -5,6 +5,7 @@ const User = require('../models/users')
 
 let filesCounter = 0;
 
+// Creates a file or folder for the user
 exports.createFileOrFolder = async (req, res) => {
     const userId = req.headers['user-id'];
     const { name, type, content, parentId } = req.body;
@@ -72,6 +73,8 @@ exports.createFileOrFolder = async (req, res) => {
     }
 };
 
+
+// Returns user's top-level files
 exports.getFiles = (req, res) => {
     const userId = req.headers['user-id'];
 
@@ -89,6 +92,7 @@ exports.getFiles = (req, res) => {
     res.json({ files });
 };
 
+// Returns file or folder by ID
 exports.getFileById = (req, res) => {
     const userId = req.headers['user-id'];
 
@@ -108,6 +112,7 @@ exports.getFileById = (req, res) => {
     res.json({file})
 }
 
+// Updates file or folder fields
 exports.patchFileById = async(req,res) =>{
     const userId = req.headers['user-id'];
 
@@ -174,7 +179,7 @@ exports.patchFileById = async(req,res) =>{
     return res.status (400).json({ error: 'fields to update are required' })
 }
 
-/* Deletes a file or folder by ID for a user */
+// Deletes file or folder by ID
 exports.deleteFileById = async(req,res) => {
     const userId = req.headers['user-id'];
 

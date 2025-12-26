@@ -2,6 +2,7 @@ const { fileSocket } = require('../FileSocketClient');
 const filesModel = require('../models/files');
 const User = require('../models/users')
 
+// Fetches files matching the query from TCP server and local user files, returns combined list
 exports.getFilesByQuery = async(req, res) => {
     const userId = req.headers['user-id'];
 
@@ -20,12 +21,9 @@ exports.getFilesByQuery = async(req, res) => {
             `SEARCH ${query}`
     );
 
-
     const lines = cppResponse ? cppResponse.split(/\r?\n/).filter(l => l.trim() !== '') : [];
-    console.log (cppResponse)
     const filesLine = lines.slice(1).join(' ');
 
-    console.log(filesLine)
     const filesListFromTCP = filesLine.split(' ').map(f => f.trim()).filter(f => f);
     
     const userFiles = filesModel.getUserFiles(userId);
