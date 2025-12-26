@@ -1,1 +1,57 @@
 node_modules
+
+
+
+curl -i -X POST http://localhost:8080/api/files \
+-H "Content-Type: application/json" \
+-H "user-id: 1" \
+-d '{
+  "name": "report.txt",
+  "type": "file",
+  "content": "This",
+  "parented": null
+}'
+
+curl -i -X POST http://localhost:8080/api/files \
+-H "Content-Type: application/json" \
+-H "user-id: 1" \
+-d '{
+  "name": "documents",
+  "type": "folder",
+  "parentId": null
+}'
+
+
+
+
+
+curl -i -X POST http://localhost:8080/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"first_name":"hello","last_name":"world","email":"go4444@gmail.com","password":"djfkeffff","image":"19.png"}'
+
+
+
+curl -i -X POST http://localhost:8080/api/files/1/permissions \
+  -H "Content-Type: application/json" \
+  -H "user-id: 1" \
+  -d '{"userId":2,"permission":"read"}'
+
+
+
+
+
+curl -i http://localhost:8080/api/files/1/permissions \
+  -H "user-id: 2"
+
+
+
+
+curl -i -X PATCH http://localhost:8080/api/files/1/permissions/1766741028398 \
+  -H "Content-Type: application/json" \
+  -H "user-id: 1" \
+  -d '{"permission":"write"}'
+
+
+
+curl -i -X DELETE http://localhost:8080/api/files/2/permissions/1766741196146 \
+ -H "user-id: 1"
