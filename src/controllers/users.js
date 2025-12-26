@@ -1,5 +1,6 @@
 const User = require('../models/users')
 
+// Creates a new user with validation and returns the new user's ID
 exports.createUser = (req, res) => {
     const { first_name,last_name,email,password,image } = req.body
     if(User.checkUserByUsername(email))
@@ -30,6 +31,7 @@ exports.createUser = (req, res) => {
     res.status(201).location(`/api/users/${newUser.id}`).json({ id: newUser.id })
 }
 
+// Retrieves a user's details by their ID
 exports.getUserById = (req, res) => {
     const user = User.getUserById(parseInt(req.params.id))
     if (!user)
@@ -38,6 +40,7 @@ exports.getUserById = (req, res) => {
               'email': user.email,'image': user.image})
 }
 
+// Retrieves a user's details by their ID
 exports.checkUser = (req, res) => {
     const { email,password } = req.body
     const user = User.checkUserByUsername(email)

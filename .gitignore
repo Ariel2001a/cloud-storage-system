@@ -2,13 +2,25 @@ node_modules
 
 curl -i -X POST http://localhost:8080/api/users \
 -H "Content-Type: application/json" \
--d '{"first_name":"hello","last_name":"world","email":"djfke4444@gmail.com","password":"djfkeffff","image":"19.png"}'
+-d '{"first_name":"","last_name":"world","email":"djfke4444@gmail.com","password":"djfkeffff","image":"19.png"}'
 
-curl -i http://localhost:8080/api/users/1
+curl -i -X POST http://localhost:8080/api/users \
+-H "Content-Type: application/json" \
+-d '{"first_name":"    ","last_name":"world","email":"djfke4444@gmail.com","password":"djfkeffff","image":"19.png"}'
+
+curl -i -X POST http://localhost:8080/api/users \
+-H "Content-Type: application/json" \
+-d '{"first_name":"hello","last_name":"world","email":"djfke44443@gmail.com","password":"djfkeffff","image":"19.png"}'
+
+curl -i -X POST http://localhost:8080/api/users \
+-H "Content-Type: application/json" \
+-d '{"first_name":"hello","last_name":"world","email":"djfke444431@gmail.com","password":"djfkeffff"}'
+
+curl -i http://localhost:8080/api/users/a
 
 curl -i -X POST http://localhost:8080/api/users/tokens \
 -H "Content-Type: application/json" \
--d '{"email":"djfke4444@gmail.com","password":"djfkeffff"}'
+-d '{"email":"djfke444431@gmail.com","password":"djfkeffff"}'
 
 
 curl -i -X GET http://localhost:8080/api/files \
@@ -29,13 +41,30 @@ curl -i -X POST http://localhost:8080/api/files \
 -H "Content-Type: application/json" \
 -H "user-id: 1" \
 -d '{
+  "name": "folder",
+  "type": "folder",
+  "parentId": null
+}'
 
+curl -i -X POST http://localhost:8080/api/files \
+-H "Content-Type: application/json" \
+-H "user-id: 1" \
+-d '{
   "name": "notes.txt",
   "type": "file",
   "content": "hello world",
   "parentId": null
 }'
 
+curl -i -X POST http://localhost:8080/api/files \
+-H "Content-Type: application/json" \
+-H "user-id: 1" \
+-d '{
+  "name": "notes2.txt",
+  "type": "file",
+  "content": "yolder",
+  "parentId": null
+}'
 
 
 
@@ -76,14 +105,14 @@ curl -i -X POST http://localhost:8080/api/files \
 -H "Content-Type: application/json" \
 -H "user-id: 1" \
 -d '{
-  "name": "notesInFile.txt",
+  "name": "notesInFolder.txt",
   "type": "file",
   "content": "hello world",
-  "parentId": 2
+  "parentId": null
 }'
 
 
-curl -i -X GET http://localhost:8080/api/files/1 \
+curl -i -X GET http://localhost:8080/api/files/3 \
 -H "user-id: 1"
 
 
@@ -97,6 +126,9 @@ curl -i -X PATCH http://localhost:8080/api/files/3 \
 }'
 
 
-curl -i -X DELETE http://localhost:8080/api/files/4 \
+curl -i -X DELETE http://localhost:8080/api/files/1 \
+  -H "user-id: 1"
+
+curl -i -X GET http://localhost:8080/api/search/old \
   -H "user-id: 1"
 

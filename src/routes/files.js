@@ -3,14 +3,16 @@ const router = express.Router();          // create a new router
 
 const filesController = require('../controllers/files'); // import files controller
 
+// Routes for top-level files/folders
 router.route('/')
-        .post(filesController.createFileOrFolder)
-        .get(filesController.getFiles);
+        .post(filesController.createFileOrFolder)  // Create a new file or folder
+        .get(filesController.getFiles);   // Get all top-level files/folders
 
+// Routes for specific file/folder by ID
 router.route('/:id')
-        .get(filesController.getFileById)
-        .patch(filesController.patchFileById)
-        .delete(filesController.deleteFileById)
+        .get(filesController.getFileById)   // Get a file/folder by ID
+        .patch(filesController.patchFileById)  // Update a file/folder by ID
+        .delete(filesController.deleteFileById) // Delete a file/folder by ID
 
 
 module.exports = router; // export the router

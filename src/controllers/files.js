@@ -6,7 +6,12 @@ const User = require('../models/users')               // import user model
 const { addPermission } = require('../models/permissions');
 const { PERMISSION_TYPES } = require('../models/permissions');
 
-
+// Creates a file or folder for the user
+exports.createFileOrFolder = async (req, res) => {
+    const userId = req.headers['user-id'];
+    const { name, type, content, parentId } = req.body;
+    const user= User.getUserById(parseInt(userId))
+    
 let filesCounter = 0;
 // Create a new file or folder
 const createFileOrFolder = async (req, res) => {
@@ -99,6 +104,10 @@ const createFileOrFolder = async (req, res) => {
 };
 
 
+// Returns user's top-level files
+exports.getFiles = (req, res) => {
+    const userId = req.headers['user-id'];
+
 // Get top-level files for a user
 const getFiles = (req, res) => {
     const userId = req.headers['user-id'];          // get user ID from headers
@@ -116,6 +125,7 @@ const getFiles = (req, res) => {
     res.json({ files });                             // return files as JSON
 };
 
+// Returns file or folder by ID
 exports.getFileById = (req, res) => {
     const userId = req.headers['user-id'];
 
@@ -135,6 +145,7 @@ exports.getFileById = (req, res) => {
     res.json({file})
 }
 
+// Updates file or folder fields
 exports.patchFileById = async(req,res) =>{
     const userId = req.headers['user-id'];
 
@@ -201,7 +212,7 @@ exports.patchFileById = async(req,res) =>{
     return res.status (400).json({ error: 'fields to update are required' })
 }
 
-/* Deletes a file or folder by ID for a user */
+// Deletes file or folder by ID
 exports.deleteFileById = async(req,res) => {
     const userId = req.headers['user-id'];
 
