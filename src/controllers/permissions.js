@@ -65,7 +65,6 @@ const getPermissionsByFile = (req, res) => {
 
     return res.status(200).json(permissions);
 };
-
 async function updatePermission(req, res) {
     const ownerId = req.headers['user-id'];
     const fileId = parseInt(req.params.id, 10);
