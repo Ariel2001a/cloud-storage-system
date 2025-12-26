@@ -1,20 +1,22 @@
-const userFiles = {};
+const userFiles = {}; // store files/folders for each user (key = userId)
 
-// Returns all files/folders for a given user, initializing if none exist
+// Get all files/folders for a user
 const getUserFiles = (userId) => {
-    if (!userFiles[userId]) {
+    if (!userFiles[userId]) {       // if user has no files yet, create empty array
         userFiles[userId] = [];
     }
-    return userFiles[userId];
+    return userFiles[userId];       // return user's files
 };
 
-// Adds a file or folder to the user's collection
+
+// Add a new file or folder for a user
 const addFileOrFolder = (userId, file) => {
     if (!userFiles[userId]) userFiles[userId] = [];
         userFiles[userId].push(file);
 };
 
-// Returns only the top-level files/folders (no parent folder)
+
+// Get only top-level files/folders (no parent)
 const getTopLevelFiles = (userId) => {
     const files = getUserFiles(userId);
     return files.filter(item => item.folderParent == null);

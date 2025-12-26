@@ -1,7 +1,7 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express');       // import Express framework
+const router = express.Router();          // create a new router
 
-const filesController = require('../controllers/files');
+const filesController = require('../controllers/files'); // import files controller
 
 // Routes for top-level files/folders
 router.route('/')
@@ -15,4 +15,4 @@ router.route('/:id')
         .delete(filesController.deleteFileById) // Delete a file/folder by ID
 
 
-module.exports = router;
+module.exports = router; // export the router
