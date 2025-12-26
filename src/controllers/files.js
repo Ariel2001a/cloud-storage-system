@@ -4,6 +4,8 @@ const User = require('../models/users')               // import user model
 
 let filesCounter = 0; // global counter for file/folder IDs
 
+
+let filesCounter = 0;
 // Create a new file or folder
 const createFileOrFolder = async (req, res) => {
     const userId = req.headers['user-id'];          // get user ID from headers
@@ -65,6 +67,7 @@ const createFileOrFolder = async (req, res) => {
     }
 };
 
+
 // Get top-level files for a user
 const getFiles = (req, res) => {
     const userId = req.headers['user-id'];          // get user ID from headers
@@ -82,7 +85,26 @@ const getFiles = (req, res) => {
     res.json({ files });                             // return files as JSON
 };
 
+exports.getFileById = (req, res) => {
+    const userId = req.headers['user-id'];
+
+    const user= User.getUserById(parseInt(userId))
+
+    if (!userId) {
+        return res.status(401).json({error:'User not logged in'});
+    }
+    
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+
+    const file = filesModel.getFileById(userId,parseInt(req.params.id))
+    if (!file)
+    return res.status (404).json({ error: 'File not found' })
+    res.json({file})
+}
+
 module.exports = {
     createFileOrFolder, // export create function
-    getFiles            // export get function
+    getFiles           // export get function
 };

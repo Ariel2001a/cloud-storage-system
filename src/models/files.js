@@ -20,7 +20,11 @@ const getTopLevelFiles = (userId) => {
     return files.filter(item => !item.parentId && !item.folderId); // filter top-level only
 };
 
+const getFileById = (user_id,id) =>  userFiles[user_id].find(f => f.id===id)
+
+
 module.exports = {
+    getFileById,
     getUserFiles,        // export function to get user's files
     addFileOrFolder,     // export function to add file/folder
     getTopLevelFiles     // export function to get top-level files

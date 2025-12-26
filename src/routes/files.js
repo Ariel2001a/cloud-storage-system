@@ -3,10 +3,11 @@ const router = express.Router();          // create a new router
 
 const filesController = require('../controllers/files'); // import files controller
 
-// Route to create a new file or folder
-router.post('/', filesController.createFileOrFolder);
+router.route('/')
+        .post(filesController.createFileOrFolder)
+        .get(filesController.getFiles);
 
-// Route to get user's files
-router.get('/', filesController.getFiles);
+router.route('/:id')
+        .get(filesController.getFileById)
 
 module.exports = router; // export the router
