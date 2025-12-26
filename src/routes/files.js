@@ -1,9 +1,16 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express');       // import Express framework
+const router = express.Router();          // create a new router
 
-const filesController = require('../controllers/files');
+const filesController = require('../controllers/files'); // import files controller
 
-router.post('/', filesController.createFileOrFolder);
-router.get('/', filesController.getFiles);
+router.route('/')
+        .post(filesController.createFileOrFolder)
+        .get(filesController.getFiles);
 
-module.exports = router;
+router.route('/:id')
+        .get(filesController.getFileById)
+        .patch(filesController.patchFileById)
+        .delete(filesController.deleteFileById)
+
+
+module.exports = router; // export the router

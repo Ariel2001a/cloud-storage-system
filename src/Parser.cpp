@@ -68,7 +68,7 @@ vector<string> Parser::parseArgs(const string& line, const string& cmdName) {
 // --- Validate input ---
 // Returns false if command is empty, no args, or first arg is empty or whitespace
 bool Parser::validateInput(const string& cmdName, const vector<string>& args) {
-    if(cmdName.empty() || args.empty() || args[0].empty()||args[1].empty()) return false;
+    if(cmdName.empty() || args.empty() || args[0].empty()) return false;
     if(Parser::isWhitespaceOnly(args[0])) return false;
     return true;
 }
