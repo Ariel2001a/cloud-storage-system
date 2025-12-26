@@ -65,7 +65,6 @@ const getPermissionsByFile = (req, res) => {
 
     return res.status(200).json(permissions);
 };
-
 async function updatePermission(req, res) {
     const ownerId = req.headers['user-id'];
     const fileId = parseInt(req.params.id, 10);
@@ -101,4 +100,30 @@ if (duplicate) {
     return res.status(200).json(updated);
 }
 
-module.exports = { createPermission, getPermissionsByFile, updatePermission };
+async function deletePermission(req, res) {
+    const ownerId = req.headers['user-id'];
+    const fileId = parseInt(req.params.id, 10);
+    const pId = parseInt(req.params.pId, 10);
+
+    if (!ownerId) {
+        return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    const file = filesModel.getUserFiles(ownerId).find(f => f.id === fileId);
+    if (!file) {
+        return res.status(404).json({ error: 'File or folder not found' });
+    }
+
+    const permissions = getPermissionsByFileId(fileId);
+    const permissionIndex = permissions.findIndex(p => p.id === pId);
+
+    if (permissionIndex === -1) {
+        return res.status(404).json({ error: 'Permission not found' });
+    }
+
+    const deletedPermission = permissions.splice(permissionIndex, 1)[0];
+
+    return res.status(200).json(deletedPermission);
+}
+
+module.exports = { createPermission, getPermissionsByFile, updatePermission, deletePermission};

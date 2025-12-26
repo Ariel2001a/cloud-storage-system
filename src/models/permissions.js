@@ -48,11 +48,22 @@ function updatePermissionById(pId, newPermission) {
     return null;
 }
 
+function deletePermissionById(pId) {
+    for (const fileId in permissionsByFile) {
+        const index = permissionsByFile[fileId].findIndex(p => p.id === pId);
+        if (index !== -1) {
+            return permissionsByFile[fileId].splice(index, 1)[0];
+        }
+    }
+    return null;
+}
+
 
 module.exports = {
     addPermission,
     getPermissionsByFile,
     getPermissionsByFileId,
     updatePermissionById,
+    deletePermissionById,
     PERMISSION_TYPES
 };
