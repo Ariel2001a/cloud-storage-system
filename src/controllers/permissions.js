@@ -84,6 +84,10 @@ async function updatePermission(req, res) {
     const updated = updatePermissionById(pId, permission);
     if (!updated) return res.status(404).json({ error: 'Permission not found' });
 
+    if (updated.userId == ownerId) {
+        return res.status(403).json({ error: "You cannot modify your own permissions" });
+    }
+
     const duplicate = getPermissionsByFileId(fileId).some(p => 
     p.userId === updated.userId &&
     p.permission === permission &&

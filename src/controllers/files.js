@@ -2,6 +2,9 @@ const { fileSocket } = require('../FileSocketClient');
 const filesModel = require('../models/files');
 const User = require('../models/users')
 
+const { addPermission } = require('../models/permissions');
+const { PERMISSION_TYPES } = require('../models/permissions');
+
 
 let filesCounter = 0;
 
@@ -43,6 +46,16 @@ const createFileOrFolder = async (req, res) => {
                 folderParent: parentId || null
             });
 
+            const perms = PERMISSION_TYPES[type];
+            perms.forEach(p => {
+                addPermission({
+                    userId: parseInt(userId),
+                    fileId: filesCounter,
+                    permission: p,
+                    type
+                });
+            });
+
             return res.status(201).location(`/api/files/${filesCounter}`).json({ id: filesCounter });
         }
 
@@ -53,6 +66,16 @@ const createFileOrFolder = async (req, res) => {
                 type,
                 date: Date.now(),
                 folderParent: parentId || null
+            });
+
+            const perms = PERMISSION_TYPES[type];
+            perms.forEach(p => {
+                addPermission({
+                    userId: parseInt(userId),
+                    fileId: filesCounter,
+                    permission: p,
+                    type
+                });
             });
 
             return res.status(201).location(`/api/files/${filesCounter}`).json({ id: filesCounter });
