@@ -1,5 +1,6 @@
 node_modules
 
+
 curl -i -X POST http://localhost:8080/api/users \
 -H "Content-Type: application/json" \
 -d '{"first_name":"","last_name":"world","email":"djfke4444@gmail.com","password":"djfkeffff","image":"19.png"}'
@@ -16,7 +17,7 @@ curl -i -X POST http://localhost:8080/api/users \
 -H "Content-Type: application/json" \
 -d '{"first_name":"hello","last_name":"world","email":"djfke444431@gmail.com","password":"djfkeffff"}'
 
-curl -i http://localhost:8080/api/users/a
+curl -i http://localhost:8080/api/users/1
 
 curl -i -X POST http://localhost:8080/api/users/tokens \
 -H "Content-Type: application/json" \
@@ -76,7 +77,7 @@ curl -i -X POST http://localhost:8080/api/users \
 
 
 
-curl -i -X POST http://localhost:8080/api/files/1/permissions \
+curl -i -X POST http://localhost:8080/api/files/3/permissions \
   -H "Content-Type: application/json" \
   -H "user-id: 1" \
   -d '{"userId":2,"permission":"read"}'
@@ -88,17 +89,20 @@ curl -i -X POST http://localhost:8080/api/files/1/permissions \
 curl -i http://localhost:8080/api/files/1/permissions \
   -H "user-id: 2"
 
+  curl -i http://localhost:8080/api/files/3/permissions \
+  -H "user-id: 1"
 
 
 
-curl -i -X PATCH http://localhost:8080/api/files/1/permissions/1766741028398 \
+
+curl -i -X PATCH http://localhost:8080/api/files/3/permissions/1766754578517 \
   -H "Content-Type: application/json" \
   -H "user-id: 1" \
   -d '{"permission":"write"}'
 
 
 
-curl -i -X DELETE http://localhost:8080/api/files/2/permissions/1766741196146 \
+curl -i -X DELETE http://localhost:8080/api/files/3/permissions/1766754578517 \
  -H "user-id: 1"
 
 curl -i -X POST http://localhost:8080/api/files \
@@ -126,7 +130,7 @@ curl -i -X PATCH http://localhost:8080/api/files/3 \
 }'
 
 
-curl -i -X DELETE http://localhost:8080/api/files/1 \
+curl -i -X DELETE http://localhost:8080/api/files/3 \
   -H "user-id: 1"
 
 curl -i -X GET http://localhost:8080/api/search/old \

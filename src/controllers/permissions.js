@@ -2,12 +2,16 @@ const User = require('../models/users');
 const filesModel = require('../models/files');
 const { addPermission, getPermissionsByFileId, updatePermissionById, PERMISSION_TYPES } = require('../models/permissions');
 
+
+/**
+ * Create a new permission for a file or folder
+ */
 async function createPermission(req, res) {
     const fileId = parseInt(req.params.id, 10);
     const { userId, permission } = req.body;
     const ownerId = req.headers['user-id'];
 
-   
+   // Check if the request is from a logged-in user
     if (!ownerId) {
         return res.status(401).json({ error: 'User not logged in' });
     }
@@ -18,6 +22,7 @@ async function createPermission(req, res) {
     }
 
  
+    // Ensure the owner has access to the file
     const userFiles = filesModel.getUserFiles(ownerId);
     const file = userFiles.find(f => f.id == fileId);
 
@@ -26,6 +31,7 @@ async function createPermission(req, res) {
     }
 
  
+    // Validate input
     if (!userId || !permission) {
         return res.status(400).json({ error: 'Missing fields' });
     }
@@ -41,6 +47,7 @@ async function createPermission(req, res) {
     }
 
 
+    // Add the permission
     const newPermission = addPermission({ userId, fileId, permission, type: file.type });
     if (!newPermission) {
         return res.status(409).json({ error: 'Permission already exists' });
@@ -49,22 +56,28 @@ async function createPermission(req, res) {
     return res.status(201).json(newPermission);
 }
 
-
+/**
+ * Get all permissions for a file or folder
+ */
 const getPermissionsByFile = (req, res) => {
     const ownerId = req.headers['user-id'];
     const fileId = req.params.id;
 
+    // Ensure the owner has access
     const files = filesModel.getUserFiles(ownerId);
     const file = files.find(f => f.id == fileId);
-
     if (!file) {
         return res.status(404).json({ error: "File or folder not found" });
     }
 
+    // Fetch and return permissions
     const permissions = getPermissionsByFileId(fileId);
-
     return res.status(200).json(permissions);
 };
+
+/**
+ * Update an existing permission
+ */
 async function updatePermission(req, res) {
     const ownerId = req.headers['user-id'];
     const fileId = parseInt(req.params.id, 10);
@@ -83,10 +96,12 @@ async function updatePermission(req, res) {
     const updated = updatePermissionById(pId, permission);
     if (!updated) return res.status(404).json({ error: 'Permission not found' });
 
+    // Prevent owner from changing their own permission
     if (updated.userId == ownerId) {
         return res.status(403).json({ error: "You cannot modify your own permissions" });
     }
 
+    // Prevent duplicate permissions for the same user
     const duplicate = getPermissionsByFileId(fileId).some(p => 
     p.userId === updated.userId &&
     p.permission === permission &&
@@ -100,6 +115,9 @@ if (duplicate) {
     return res.status(200).json(updated);
 }
 
+/**
+ * Delete a permission by its ID
+ */
 async function deletePermission(req, res) {
     const ownerId = req.headers['user-id'];
     const fileId = parseInt(req.params.id, 10);
