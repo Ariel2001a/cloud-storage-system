@@ -7,12 +7,13 @@ const { fileSocket } = require('./FileSocketClient.js');
 
 const filesRouter = require('./routes/files.js'); 
 const UserRoutes = require('./routes/users.js');
+const permissionRoutes=require('./routes/permissions.js');
 
 app.use(express.json());
 
-
 app.use('/api/users', UserRoutes);
 app.use('/api/files', filesRouter);
+app.use('/api/files', permissionRoutes);
 
 app.listen(8080,'0.0.0.0',()=> {
     console.log('Server is running on http://localhost:8080');
