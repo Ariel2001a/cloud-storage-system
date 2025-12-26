@@ -24,7 +24,12 @@ AddCommand::AddCommand() : ICommand() {}
 //Execute add command
 string AddCommand::run(const vector<string>& args)
 {
-    string filename = args[0];
+
+    if (args.size() < 1) {
+        return INVALID_COMMAND;
+    }
+
+    string fileId = args[0];
     string text;
 
     // Concatenate remaining arguments as text
@@ -39,16 +44,10 @@ string AddCommand::run(const vector<string>& args)
 
 
     // Create full file path
-    string fullPath = ICommand::GetFolderPath() + "/" + filename;
-
-    // Check if file already exists- do not overwrite
-    if (fs::exists(fullPath)) {
-        return LOGICAL_PROBLEM;
-    }
-
+    string filePath = ICommand::GetFolderPath() + "/" + fileId;
 
     // Failed to open file for writing- abort
-    ofstream out(fullPath);
+    ofstream out(filePath);
     if (!out) {
         return SERVER_ERROR;
     }
