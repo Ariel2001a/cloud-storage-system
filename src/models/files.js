@@ -10,22 +10,39 @@ const getUserFiles = (userId) => {
 
 // Add a new file or folder for a user
 const addFileOrFolder = (userId, file) => {
-    const files = getUserFiles(userId); // get user's files
-    files.push(file);                   // add new file/folder
+    if (!userFiles[userId]) userFiles[userId] = [];
+        userFiles[userId].push(file);
 };
 
 // Get only top-level files/folders (no parent)
 const getTopLevelFiles = (userId) => {
-    const files = getUserFiles(userId);         // get all user's files
-    return files.filter(item => !item.parentId && !item.folderId); // filter top-level only
+    const files = getUserFiles(userId);
+    return files.filter(item => item.folderParent == null);
 };
 
 const getFileById = (user_id,id) =>  userFiles[user_id].find(f => f.id===id)
 
+const deleteFileById = (user_id, id) => {
+    userFiles[user_id] = userFiles[user_id].filter(a => a.id !== id);
+    return true;
+};
+
+const getFolderFiles = (userId, folderParent) => {
+    let files = getUserFiles(userId);
+    files = files.filter(item => item.folderParent == folderParent);
+    const id_files_in_folder = []
+    files.forEach(file => {
+        id_files_in_folder.push(file.id)
+    });
+
+    return id_files_in_folder
+};
 
 module.exports = {
+    getUserFiles,
+    addFileOrFolder,
+    getTopLevelFiles,
     getFileById,
-    getUserFiles,        // export function to get user's files
-    addFileOrFolder,     // export function to add file/folder
-    getTopLevelFiles     // export function to get top-level files
+    deleteFileById,
+    getFolderFiles
 };

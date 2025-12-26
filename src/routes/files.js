@@ -9,5 +9,8 @@ router.route('/')
 
 router.route('/:id')
         .get(filesController.getFileById)
+        .patch(filesController.patchFileById)
+        .delete(filesController.deleteFileById)
+
 
 module.exports = router; // export the router

@@ -35,7 +35,9 @@ string deletecommand::run(const std::vector<std::string>& args) {
 
     // The filename to delete
     std::string filename =args[0]; 
-    
+    filename.erase(filename.find_last_not_of(" \r\n\t") + 1);
+    filename.erase(0, filename.find_first_not_of(" \r\n\t"));
+
     // Iterate through the files in the directory
     for (const auto& entry : fs::directory_iterator(dir))
               {
