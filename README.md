@@ -1,67 +1,150 @@
-# Project-exercise2 
-# AdvancedProgrammingProject-exercise-2 📝
+# Project-exercise3 
+# AdvancedProgrammingProject-exercise-3 📝
 
-This is the second task out of a full google drive clone project.
-
+This is the third task out of a full google drive clone project.
 
 ## Key functionalities 📂
-- Post command : Gets file name and content. compress the file using RLE compression and adds it to a folder using enviroment variable
-- Get command : Gets file name. find the file in the folder, decompress it and return it
-- Search command : Gets a text query. search for files containing the query or has the query in the name and return a list of file names
-- Delete command : Gets a file name. finds it in the folder and deletes it.
-- TCP-based clients and server : supporting data transmission and multi-client connections.
 
+- User Accounts: Create a new user with an email, password, and profile image. Includes a login system to verify users.
+
+- File & Folder Management: Create files with content or folders to stay organized. 
+
+- Permissions Control: Share your files with other users. You can give "read" or "write" access, see who has permission, and change or delete those permissions whenever you want.
+
+- File Operations: Full support for editing file content (PATCH) and deleting files or folders you don't need anymore.
+
+- Search System: Quickly find what you're looking for by searching for a keyword. It checks both the names of the files and the text inside them.
+
+- Dual-Server Setup: Uses a C++ server for the heavy lifting and a Node.js web server to handle API requests, all running together via Docker.
 
 
 ## Setup 🛠️
 
-1. Clone the repository - https://github.com/Ariel2001a/Project-exercise1/tree/EX2
+1. Clone the repository - https://github.com/Ariel2001a/Project-exercise1/tree/EX3
 2. Make sure u have c++17 compiler
 3. 
-    * run the server 
+    * run the cpp server 
        
        -  docker compose build
-       -  docker compose up
+       -  docker compose up server
 
 
-   * run clients (seperated terminals)
-       - docker compose run --rm --service-ports client_cpp
-       - docker compose run --rm --service-ports client_python
-
-
-
-##  Testing ✅
-Tests are written using GoogleTest.  
-Test cover:
-* Post command tests - test file RLE compression, Test command validity.
-* Get command tests - file creation test, folder creation test .
-* Search command tests - single match, no match and multiple match tests. 
-* Delete command tests - simple delete for successfull delete and illegal delete for an attempt to delete a file that do not exist.
-* Sockets tests - These tests verify that the server correctly accepts clients, handles multiple clients in order, and properly manages cases where some client connections fail.
-
-![tests passed image](images/tests_passed.png)
-
-
-## Tests - clean destination folder and run 🧹
-
-     1. cd test
-     2. docker compose run --rm tests bash
-     3. ls /usr/src/app/newFiles
-     4. rm -f /usr/src/app/newFiles/*
-     5. exit
-     6. docker compose build
-     7. docker compose run --rm tests ./runTests
+   * run web server (seperated terminal)
+       - docker compose up server_node
+       
 
 
 ## Usage 💻
 
--POST [File name] [File content]
+- Create new user
 
--Get [File name] 
+curl -i -X POST http://localhost:8080/api/users \
+-H "Content-Type: application/json" \
+-d '{"first_name":"first","last_name":"user","email":"first@gmail.com","password":"first","image":"first.png"}'
 
--Search [Your Query]
+---------------------------------------------------------------------------------------------------------------------------
 
--Delete [File name]
+- Verifies user exists
+
+curl -i -X POST http://localhost:8080/api/users/tokens \
+-H "Content-Type: application/json" \
+-d '{"email":"first@gmail.com","password":"first"}'
+
+---------------------------------------------------------------------------------------------------------------------------
+
+- Get all top-leveL files for user 
+
+curl -i -X GET http://localhost:8080/api/files \
+-H "user-id: 1"
+
+---------------------------------------------------------------------------------------------------------------------------
+
+- Create new folder 
+
+curl -i -X POST http://localhost:8080/api/files \
+-H "Content-Type: application/json" \
+-H "user-id: 1" \
+-d '{
+
+  "name": "documents",
+  "type": "folder",
+  "parentId": null
+}'
+
+---------------------------------------------------------------------------------------------------------------------------
+
+- Create new file
+
+curl -i -X POST http://localhost:8080/api/files \
+-H "Content-Type: application/json" \
+-H "user-id: 1" \
+-d '{
+  "name": "notes.txt",
+  "type": "file",
+  "content": "hello world",
+  "parentId": null
+}'
+
+---------------------------------------------------------------------------------------------------------------------------
+
+- Gives permission to a user
+
+
+curl -i -X POST http://localhost:8080/api/files/2/permissions \
+  -H "Content-Type: application/json" \
+  -H "user-id: 1" \
+  -d '{"userId":2,"permission":"read"}'
+
+  ---------------------------------------------------------------------------------------------------------------------------
+
+- Show all permissions for a file
+
+curl -i http://localhost:8080/api/files/2/permissions \
+  -H "user-id: 1"
+
+
+    ---------------------------------------------------------------------------------------------------------------------------
+
+    Update permission by PID
+
+    curl -i -X PATCH http://localhost:8080/api/files/1/permissions/1766845870132 \
+  -H "Content-Type: application/json" \
+  -H "user-id: 1" \
+  -d '{"permission":"write"}'
+
+   ---------------------------------------------------------------------------------------------------------------------------
+
+   Deletes a permission from a file by PID
+
+   curl -i -X DELETE http://localhost:8080/api/files/2/permissions/1766845870132 \
+ -H "user-id: 1"
+
+  ---------------------------------------------------------------------------------------------------------------------------
+
+Edits file or folder 
+
+curl -i -X PATCH http://localhost:8080/api/files/2 \
+-H "Content-Type: application/json" \
+-H "user-id: 1" \
+-d '{
+  "name": "notes.txt",
+  "content": "this content was updated via PATCH",
+  "parentId": null
+}'
+
+---------------------------------------------------------------------------------------------------------------------------
+
+Deletes file or folder
+
+curl -i -X DELETE http://localhost:8080/api/files/1 \
+  -H "user-id: 1"
+
+---------------------------------------------------------------------------------------------------------------------------
+
+GET returns files/folders containing the query in their name or content
+
+curl -i -X GET http://localhost:8080/api/search/PATCH \
+  -H "user-id: 1"
 
 Dependencies
 
@@ -70,26 +153,204 @@ Dependencies
 ## Run example 🏃‍♂️
 
 
+##                                                     create first user
+```
+oject-exercise1 (EX3)
+$ curl -i -X POST http://localhost:8080/api/users \
+-H "Content-Type: application/json" \
+-d '{"first_name":"first","last_name":"user","email":"first@gmail.com","password":"first","image":"first.png"}'
+HTTP/1.1 201 Created
 
--- ![Run example](images/Run_example.png) --
+
+{"id":1}
+```
+
+##                                                     create second user
+```
+$ curl -i -X POST http://localhost:8080/api/users -H "Content-Type: application/json" -d '{"first_name":"second","last_name":"user","email":"second@gmail.com","password":"second","image":"second.png"}'
+HTTP/1.1 201 Created
+```
+
+{"id":2}
+
+
+##                                                     verify first user exists
+
+
+```
+$ curl -i -X POST http://localhost:8080/api/users/tokens \
+-H "Content-Type: application/json" \
+-d '{"email":"first@gmail.com","password":"first"}'
+HTTP/1.1 200 OK
+
+
+{"id":1}
+```
+
+##                                                     create folder for first user
+
+
+```
+$ curl -i -X POST http://localhost:8080/api/files \
+-H "Content-Type: application/json" \
+-H "user-id: 1" \
+-d '{
+
+  "name": "documents",
+  "type": "folder",
+  "parentId": null
+}'
+HTTP/1.1 201 Created
+
+
+{"id":1}
+```
+
+##                                                     create file for first user
+
+```
+curl -i -X POST http://localhost:8080/api/files \
+-H "Content-Type: application/json" \
+-H "user-id: 1" \
+-d '{
+  "name": "notes.txt",
+  "type": "file",
+  "content": "hello world",
+  "parentId": null
+}'
+HTTP/1.1 201 Created
+X-Powered-By: Express
+
+
+{"id":2}
+```
+
+##                                                     get first user's top level files
+
+```
+$ curl -i -X GET http://localhost:8080/api/files \
+-H "user-id: 1"
+HTTP/1.1 200 OK
+
+{"files":[{"id":1,"name":"documents","type":"folder","date":1766845753965,"folderParent":null},{"id":2,"name":"notes.txt","type":"file","date":1766845772519,"folderParent":null}]}
+```
+
+##                                                     give second user read permission for the first user's file(id=2)
+
+
+$ curl -i -X POST http://localhost:8080/api/files/2/permissions \
+  -H "Content-Type: application/json" \
+  -H "user-id: 1" \
+  -d '{"userId":2,"permission":"read"}'
+HTTP/1.1 201 Created
+
+{"id":1766845870132,"userId":2,"fileId":2,"permission":"read"}
+
+$ curl -i http://localhost:8080/api/files/2/permissions \
+  -H "user-id: 1"
+HTTP/1.1 200 OK
+
+
+[{"id":1766845772519,"userId":1,"fileId":2,"permission":"read"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"write"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"owner"},{"id":1766845870132,"userId":2,"fileId":2,"permission":"read"}]
+
+
+##                                                     change second user permission from read to write
+
+
+    curl -i -X PATCH http://localhost:8080/api/files/1/permissions/1766845870132 \
+  -H "Content-Type: application/json" \
+  -H "user-id: 1" \
+  -d '{"permission":"write"}'
+HTTP/1.1 200 OK
+
+{"id":1766845870132,"userId":2,"fileId":2,"permission":"write"}
+
+
+##                                                     check the file's permissions
+
+```
+$ curl -i http://localhost:8080/api/files/2/permissions   -H "user-id: 1"
+HTTP/1.1 200 OK
+
+[{"id":1766845772519,"userId":1,"fileId":2,"permission":"read"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"write"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"owner"},{"id":1766845870132,"userId":2,"fileId":2,"permission":"write"}]
+```
+
+##                                                     delete second user's permission
+
+```
+$   curl -i -X DELETE http://localhost:8080/api/files/2/permissions/1766845870132 \
+ -H "user-id: 1"
+HTTP/1.1 200 OK
+
+{"id":1766845870132,"userId":2,"fileId":2,"permission":"write"}
+```
+
+##                                                     check file permissions again
+
+```
+$ curl -i http://localhost:8080/api/files/2/permissions \
+  -H "user-id: 1"
+HTTP/1.1 200 OK
+
+[{"id":1766845772519,"userId":1,"fileId":2,"permission":"read"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"write"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"owner"}]
+```
+
+##                                                     change the content and name of the file
+
+```
+$ curl -i -X PATCH http://localhost:8080/api/files/2 \
+-H "Content-Type: application/json" \
+-H "user-id: 1" \
+-d '{
+  "name": "notes.txt",
+  "content": "this content was updated via PATCH",
+  "parentId": null
+}'
+HTTP/1.1 204 No Content
+```
+
+##                                                     delete the folder
+
+```
+$ curl -i -X DELETE http://localhost:8080/api/files/1 \
+  -H "user-id: 1"
+HTTP/1.1 204 No Content
+```
+
+##                                                     search for 'PATH' in first user's files
+
+
+curl -i -X GET http://localhost:8080/api/search/PATCH \
+  -H "user-id: 1"
+HTTP/1.1 200 OK
+
+
+{"filesList":[{"id":2,"name":"notes.txt","type":"file","date":1766845772519,"folderParent":null,"content":"this content was updated via PATCH"}]}
+
+
+##                                                     get first user's top level files
+
+
+$ curl -i -X GET http://localhost:8080/api/files \
+-H "user-id: 1"
+HTTP/1.1 200 OK
+
+
+{"files":[{"id":2,"name":"notes.txt","type":"file","date":1766845772519,"folderParent":null,"content":"this content was updated via PATCH"}]}
+
+$
 
 
 
 ## clients and servers running examples 📡 📤
 
--- ![multiple clients](images/multi_clients.jpg) --
-
-
+-- ![Both servers running](both_servers_running.png) --
 
 
 
 
 ## File Structure 📁
 
-
-
-
--- ![Project folder structure diagram](images/diagram.png) --
 
 
 - AddCommand.h / AddCommand.cpp : defines the AddCommand class
@@ -130,108 +391,29 @@ Dependencies
 
 - ICommunication.h: Interface for all communication classes
 
-- test.cpp / docker-compose.yml(for tests) : tests to check codes functionallity
+Controllers:
 
+- files.js – Handles creating, retrieving, updating, and deleting files/folders.
 
- 
+- users.js – Handles user registration, login, and user info retrieval.
 
+- permissions.js – Handles creating, updating, deleting, and retrieving file/folder permissions.
 
+Models:
 
-## Task questions ❓
+- files.js – Stores and manages file/folder data in memory.
 
-## Did changing the command names require modifying code that was supposed to be “closed for modification but open for extension”?
+- users.js – Stores and manages user data in memory.
 
-Initially — no significant modifications were required.
-Each command class (e.g., AddCommand) inherits from the ICommand interface, and in the first implementation the command’s name was provided through the constructor of the command class itself.
-Therefore, changing the name of a single command only required updating the constructor of that specific class, without affecting any shared logic or infrastructure.
+- permissions.js – Stores and manages permissions for files/folders.
 
-However, although this worked for a single change, it exposed a structural weakness:
-if multiple command names were to change, we would need to open every command class individually and update the constructor in each one.
-This results in multiple modifications across many files, which violates the Open/Closed Principle (OCP) and increases the coupling of the system.
+Routes:
 
-Refactoring to avoid this issue in the future
+- files.js – Defines HTTP routes for file/folder operations, connects to files.js controller.
 
-To prevent this problem in future assignments, we redesigned the system:
+- users.js – Defines HTTP routes for user operations, connects to users.js controller.
 
-- The constructor of ICommand was changed to a default constructor and no longer receives the command name.
-
-- We introduced a dedicated component, CommandFactory, whose responsibility is to instantiate commands and    associate them with their names.
-
-- The CommandManager maintains a map of command names to command objects.
-
-- Command names themselves were centralized into a single configuration file (config.h) as constants (#define).
-
-Result
-
-This redesign ensures that if a command name changes in the future, the only modification required is updating the constant in config.h.
-No command classes need to be opened, no logic is modified, and the system now adheres properly to OCP.
-
-
-## Did adding new commands require modifying code that was supposed to be “closed for modification but open for extension”?
-
-No.
-As explained in the previous section, all commands inherit from the ICommand interface and are instantiated through the CommandFactory.
-Because of this design, adding a new command does not require modifying any existing logic.
-To add a new command, we only needed to:
-
-1. Create a new class that inherits from ICommand.
-
-2. Add a single line in the CommandFactory to register the new command with the CommandManager.
-
-This means the system remains closed for modification (no existing components were changed) but open for extension (we extended the system by adding new classes and registry entries).
-
-The CommandFactory was specifically designed to centralize command creation, so modifying it to include new command instances does not violate OCP; adding entries to a factory is considered an extension, not a modification to core logic.
-
-This demonstrates that the architecture supports clean extensibility, as required by the Open/Closed Principle.
-
-
-
-## Did the change in output format require modifications to code that should be “closed to modification but open to extension”?
-
-Yes.
-In the implementation we wrote for the first exercise, the commands printed their output directly inside the command classes. This design violates the Open/Closed Principle, because any future change in the output format would force us to modify the existing command classes.
-
-To address this and ensure the system remains closed to modification but open to extension, we refactored the design as follows:
-
-1. We created a ConsoleCommunication class
-   This class is solely responsible for input and output operations via the console.
-   All printing logic was moved out of the command classes and into this communication layer.
-
-2. ConsoleCommunication implements the ICommunication interface
-   By introducing this abstraction, we can easily add new communication methods (e.g., TCP communication, file-based communication, GUI output) without changing any existing code—only by adding new classes that implement ICommunication.
-3. We modified the signature of ICommand::run so that it returns a string instead of printing directly
-   Each command now returns its result as a string.
-   The communication layer (e.g., Console or TCP) is responsible for delivering this string to the user.
-   This keeps command logic clean and independent of I/O concerns.
-
-4. Output messages were moved to the Config file as #define constants
-   This ensures that any future changes to printed texts do not require changes in the logic of the commands themselves.
-   Instead, the messages can be updated in a single configuration file.
-
-As a result:
-
-- The command classes no longer require modification for changes in output format
-
-- The system allows for adding new forms of communication without touching existing logic
-
-- The design fully adheres to the Open/Closed Principle
-
-
-## "Did the fact that input/output comes from sockets instead of the console require you to modify code that was supposed to be 'closed for modification but open for extension'?"
-
-
-Yes.
-
-As mentioned in previous questions, we created a new interface called ICommunication, which is inherited by all classes responsible for handling communication.
-
-Now, there are two classes that implement this interface:
-
-ConsoleCommunication – handles reading from and writing to the console.
-
-TCPServerCommunication – handles input and output coming from sockets.
-
-This design ensures that in the future, we can add new types of communication without modifying the existing code, keeping the system closed for modification but open for extension.
-
+- permissions.js – Defines HTTP routes for permission operations, connects to permissions.js controller.
 
 
 ## Authors ✍️
