@@ -67,6 +67,9 @@ exports.createFileOrFolder = async (req, res) => {
         }
 
         if (type === 'folder') {                    // handle folder creation
+            if (content) {                         // folders should not have content
+                return res.status(400).json({ error: 'Folders cannot have content' });
+            }
             filesModel.addFileOrFolder(userId, {    // save folder in model
                 id: ++filesCounter,
                 name,
@@ -145,21 +148,46 @@ exports.patchFileById = async (req, res) => {
         return res.status(404).json({ error: "User not found" });
     }
 
-    let update = false;
+    let updateContent = false;
+    let updateName = false;
+    let updateParentId = false;
+
     const file = filesModel.getFileById(userId, parseInt(req.params.id));
     if (!file) {
         return res.status(404).json({ error: 'File not found' });
     }
 
-    const { name, content } = req.body;
-    if (name != null) {
-        file.name = name;
-        update = true;
+    const { name, content, parentId } = req.body;
+
+    if (content !== undefined) {
+
+        if (file.type === 'folder') {                         // folders should not have content
+            return res.status(400).json({ error: 'Folders cannot have content' });
+        }
+
+        updateContent = true;
+    }
+    
+    if (name !== undefined) {
+        if (name.trim() === '') {
+            return res.status(400).json({ error: 'Invalid file name' });
+        }
+        updateName = true;
     }
 
-    if (content != null) {
-        file.content = content;
-        if (file.type === 'file') {
+    if (parentId !== undefined) {
+        const parent = filesModel.getFileById(userId, parentId);
+        if (!parent || parent.type !== 'folder') {
+            return res.status(400).json({ error: "Folder Parent does not exist" });
+        }
+        updateParentId = true;
+    }
+
+
+    if (updateName || updateContent || updateParentId) {
+        if (updateName) file.name = name;
+        if (updateParentId) file.folderParent = parentId;
+        if (updateContent) {
             try {
                 const cppResponseDelete = await fileSocket.sendCommand(`DELETE ${file.id}`);
 
@@ -183,16 +211,9 @@ exports.patchFileById = async (req, res) => {
             } catch (error) {
                 return res.status(500).end();
             }
+            
+            file.content = content;
         }
-        update = true;
-    }
-
-    if ('parentId' in req.body) {
-        file.folderParent = req.body.parentId;
-        update = true;
-    }
-
-    if (update) {
         return res.status(204).end();
     }
 
@@ -253,8 +274,3 @@ exports.deleteFileById = async (req, res) => {
     }
     return res.status(204).end();
 };
-
-
-
-
-

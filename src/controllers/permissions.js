@@ -127,11 +127,13 @@ async function deletePermission(req, res) {
         return res.status(401).json({ error: 'User not logged in' });
     }
 
+    // Check that the file belongs to the user
     const file = filesModel.getUserFiles(ownerId).find(f => f.id === fileId);
     if (!file) {
         return res.status(404).json({ error: 'File or folder not found' });
     }
 
+    // Get permissions for this file
     const permissions = getPermissionsByFileId(fileId);
     const permissionIndex = permissions.findIndex(p => p.id === pId);
 
@@ -139,9 +141,16 @@ async function deletePermission(req, res) {
         return res.status(404).json({ error: 'Permission not found' });
     }
 
-    const deletedPermission = permissions.splice(permissionIndex, 1)[0];
+    const permission = permissions[permissionIndex];
 
-    return res.status(200).json(deletedPermission);
+    //  Owner cannot delete their own permission
+    if (permission.userId == ownerId) {
+        return res.status(403).json({
+            error: 'Owner cannot delete their own permission'
+        });
+    }
+
+    return res.status(204).end();
 }
 
 module.exports = { createPermission, getPermissionsByFile, updatePermission, deletePermission};
