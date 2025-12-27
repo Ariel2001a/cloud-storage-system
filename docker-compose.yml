@@ -1,4 +1,6 @@
 services:
+
+  # C++ server service
   server:
     build:
       context: ./src
@@ -14,6 +16,7 @@ services:
     networks:
       - local
 
+  # Node.js server
   server_node:
     build:
       context: ./src
@@ -23,6 +26,7 @@ services:
     networks:
       - local
 
+  # Python client connecting to C++ server
   client_python:
     build:
       context: ./src/ClientPython
@@ -36,6 +40,7 @@ services:
     stdin_open: true
     tty: true
 
+  # C++ client connecting to C++ server
   client_cpp:
     build:
       context: ./src/ClientCpp
@@ -49,6 +54,7 @@ services:
     stdin_open: true
     tty: true
 
+# Custom network for all services
 networks:
   local:
     driver: bridge
