@@ -99,11 +99,11 @@ curl -i -X POST http://localhost:8080/api/files/2/permissions \
 
 - Show all permissions for a file
 
+
 curl -i http://localhost:8080/api/files/2/permissions \
   -H "user-id: 1"
 
-
-    ---------------------------------------------------------------------------------------------------------------------------
+  ---------------------------------------------------------------------------------------------------------------------------
 
     Update permission by PID
 
