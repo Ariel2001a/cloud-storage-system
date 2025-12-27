@@ -39,7 +39,14 @@ This is the third task out of a full google drive clone project.
 
 ## Usage 💻 (Linux commands)
 
+
+
 - Create new user
+
+// NOTE : when creating new user you can use the default image from folder "uploads" named "default.png"
+     - image must be uploaded before building the docker
+     - make sure the image is in format png and drag it inside the "uploads" folder
+     - when sending the command, make sure you send the name of the image and add .png (eg. file name hello, insert hello.png)
 
 curl -i -X POST http://localhost:8080/api/users \
 -H "Content-Type: application/json" \
