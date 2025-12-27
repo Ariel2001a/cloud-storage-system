@@ -75,7 +75,7 @@ curl -i -X POST http://localhost:8080/api/files \
 -H "user-id: 1" \
 -d '{
   "name": "notes.txt",
-  "type": "file", / "folder"
+  "type": "file" / "folder",
   "content": "hello world", (for folder creation content must be NULL)
   "parentId": null / "folder id"
 }'
