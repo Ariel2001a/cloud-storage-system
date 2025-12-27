@@ -160,10 +160,10 @@ $ curl -i -X POST http://localhost:8080/api/users \
 -H "Content-Type: application/json" \
 -d '{"first_name":"first","last_name":"user","email":"first@gmail.com","password":"first","image":"first.png"}'
 HTTP/1.1 201 Created
-
+```
 
 {"id":1}
-```
+
 
 ##                                                     create second user
 ```
@@ -182,10 +182,11 @@ $ curl -i -X POST http://localhost:8080/api/users/tokens \
 -H "Content-Type: application/json" \
 -d '{"email":"first@gmail.com","password":"first"}'
 HTTP/1.1 200 OK
+```
 
 
 {"id":1}
-```
+
 
 ##                                                     create folder for first user
 
@@ -201,10 +202,11 @@ $ curl -i -X POST http://localhost:8080/api/files \
   "parentId": null
 }'
 HTTP/1.1 201 Created
+```
 
 
 {"id":1}
-```
+
 
 ##                                                     create file for first user
 
@@ -219,11 +221,11 @@ curl -i -X POST http://localhost:8080/api/files \
   "parentId": null
 }'
 HTTP/1.1 201 Created
-X-Powered-By: Express
+```
 
 
 {"id":2}
-```
+
 
 ##                                                     get first user's top level files
 
@@ -231,49 +233,56 @@ X-Powered-By: Express
 $ curl -i -X GET http://localhost:8080/api/files \
 -H "user-id: 1"
 HTTP/1.1 200 OK
+```
 
 {"files":[{"id":1,"name":"documents","type":"folder","date":1766845753965,"folderParent":null},{"id":2,"name":"notes.txt","type":"file","date":1766845772519,"folderParent":null}]}
-```
+
 
 ##                                                     give second user read permission for the first user's file(id=2)
 
-
+```
 $ curl -i -X POST http://localhost:8080/api/files/2/permissions \
   -H "Content-Type: application/json" \
   -H "user-id: 1" \
   -d '{"userId":2,"permission":"read"}'
 HTTP/1.1 201 Created
+```
 
 {"id":1766845870132,"userId":2,"fileId":2,"permission":"read"}
 
+##                                                     check file's permissions
+
+```
 $ curl -i http://localhost:8080/api/files/2/permissions \
   -H "user-id: 1"
 HTTP/1.1 200 OK
-
+```
 
 [{"id":1766845772519,"userId":1,"fileId":2,"permission":"read"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"write"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"owner"},{"id":1766845870132,"userId":2,"fileId":2,"permission":"read"}]
 
 
 ##                                                     change second user permission from read to write
 
-
+```
     curl -i -X PATCH http://localhost:8080/api/files/1/permissions/1766845870132 \
   -H "Content-Type: application/json" \
   -H "user-id: 1" \
   -d '{"permission":"write"}'
 HTTP/1.1 200 OK
+```
 
 {"id":1766845870132,"userId":2,"fileId":2,"permission":"write"}
 
 
-##                                                     check the file's permissions
+##                                                     check file's permissions
 
 ```
 $ curl -i http://localhost:8080/api/files/2/permissions   -H "user-id: 1"
 HTTP/1.1 200 OK
+```
 
 [{"id":1766845772519,"userId":1,"fileId":2,"permission":"read"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"write"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"owner"},{"id":1766845870132,"userId":2,"fileId":2,"permission":"write"}]
-```
+
 
 ##                                                     delete second user's permission
 
@@ -281,9 +290,10 @@ HTTP/1.1 200 OK
 $   curl -i -X DELETE http://localhost:8080/api/files/2/permissions/1766845870132 \
  -H "user-id: 1"
 HTTP/1.1 200 OK
+```
 
 {"id":1766845870132,"userId":2,"fileId":2,"permission":"write"}
-```
+
 
 ##                                                     check file permissions again
 
@@ -291,9 +301,10 @@ HTTP/1.1 200 OK
 $ curl -i http://localhost:8080/api/files/2/permissions \
   -H "user-id: 1"
 HTTP/1.1 200 OK
+```
 
 [{"id":1766845772519,"userId":1,"fileId":2,"permission":"read"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"write"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"owner"}]
-```
+
 
 ##                                                     change the content and name of the file
 
@@ -319,22 +330,22 @@ HTTP/1.1 204 No Content
 
 ##                                                     search for 'PATH' in first user's files
 
-
+```
 curl -i -X GET http://localhost:8080/api/search/PATCH \
   -H "user-id: 1"
 HTTP/1.1 200 OK
-
+```
 
 {"filesList":[{"id":2,"name":"notes.txt","type":"file","date":1766845772519,"folderParent":null,"content":"this content was updated via PATCH"}]}
 
 
 ##                                                     get first user's top level files
 
-
+```
 $ curl -i -X GET http://localhost:8080/api/files \
 -H "user-id: 1"
 HTTP/1.1 200 OK
-
+```
 
 {"files":[{"id":2,"name":"notes.txt","type":"file","date":1766845772519,"folderParent":null,"content":"this content was updated via PATCH"}]}
 
@@ -344,7 +355,7 @@ $
 
 ## clients and servers running examples 📡 📤
 
--- ![Both servers running](both_servers_running.png) --
+-- ![Both servers running](images/both_servers_running.png) --
 
 
 
