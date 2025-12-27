@@ -13,9 +13,9 @@ This is the third task out of a full google drive clone project.
 
 - File Operations: Full support for editing file content (PATCH) and deleting files or folders you don't need anymore.
 
-- Search System: Quickly find what you're looking for by searching for a keyword. It checks both the names of the files and the text inside them.
+- Search System: find what you're looking for by searching for a query. It checks both the names of the files and the text inside them.
 
-- Dual-Server Setup: Uses a C++ server for the heavy lifting and a Node.js web server to handle API requests, all running together via Docker.
+- Dual-Server Setup: Uses a C++ server for file operationa and a Node.js web server to handle API requests, all running together via Docker.
 
 
 ## Setup 🛠️
@@ -75,8 +75,8 @@ curl -i -X POST http://localhost:8080/api/files \
 -H "user-id: 1" \
 -d '{
   "name": "notes.txt",
-  "type": "file" / "folder"
-  "content": "hello world",
+  "type": "file", / "folder"
+  "content": "hello world", (for folder creation content must be NULL)
   "parentId": null / "folder id"
 }'
 
@@ -111,7 +111,7 @@ curl -i -X DELETE http://localhost:8080/api/files/1 \
 
 - Show all permissions for a file
 
-curl -i http://localhost:8080/api/files/2/permissions \
+curl -i http://localhost:8080/api/files/1/permissions \
   -H "user-id: 1"
 
 ---------------------------------------------------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ curl -i -X POST http://localhost:8080/api/files/2/permissions \
 
 - Deletes a permission from a file by PID
 
-   curl -i -X DELETE http://localhost:8080/api/files/2/permissions/1766845870132 \
+   curl -i -X DELETE http://localhost:8080/api/files/1/permissions/1766866323404 \
  -H "user-id: 1"
 
 ---------------------------------------------------------------------------------------------------------------------------
@@ -178,8 +178,12 @@ HTTP/1.1 201 Created
 
 
 ```
-NEEDS TO ADD HERE
+$ curl -i -X GET http://localhost:8080/api/users/1
+HTTP/1.1 200 OK
 ```
+
+{"id":1,"first_name":"first","last_name":"user","email":"first@gmail.com","image":"first.png"}
+
 
 
 
@@ -240,8 +244,13 @@ HTTP/1.1 201 Created
 
 
 ```
-NEEDS TO ADD HERE
+$ curl -i -X GET http://localhost:8080/api/files/2  \
+  -H "user-id: 1"
+HTTP/1.1 200 OK
 ```
+
+{"file":{"id":1,"name":"notes.txt","type":"file","date":1766860463612,"folderParent":null}}
+
 
 
 
@@ -308,10 +317,10 @@ HTTP/1.1 200 OK
 ```
 $   curl -i -X DELETE http://localhost:8080/api/files/2/permissions/1766845870132 \
  -H "user-id: 1"
-HTTP/1.1 200 OK
+HTTP/1.1 204 No Content
 ```
 
-{"id":1766845870132,"userId":2,"fileId":2,"permission":"write"}
+
 
 
 ##                                                     check file permissions again
