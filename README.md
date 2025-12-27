@@ -105,7 +105,7 @@ curl -i http://localhost:8080/api/files/2/permissions \
 
   ---------------------------------------------------------------------------------------------------------------------------
 
-    Update permission by PID
+- Update permission by PID
 
     curl -i -X PATCH http://localhost:8080/api/files/1/permissions/1766845870132 \
   -H "Content-Type: application/json" \
