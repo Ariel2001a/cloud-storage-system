@@ -21,6 +21,9 @@ This is the third task out of a full google drive clone project.
 ## Setup 🛠️
 
 1. Clone the repository - https://github.com/Ariel2001a/Project-exercise1/tree/EX3
+
+      - each task has its own branch - EX1, EX2, EX3...
+
 2. Make sure u have c++17 compiler
 3. 
     * run the cpp server 
@@ -46,8 +49,7 @@ curl -i -X POST http://localhost:8080/api/users \
 
 - Get user's details
 
-curl -i -X GET https://www.foo.com/api/users/:id
--H "user-id: 1"
+curl -i -X GET https://localhost:8080/api/users/1
 
 ---------------------------------------------------------------------------------------------------------------------------
 
@@ -75,14 +77,14 @@ curl -i -X POST http://localhost:8080/api/files \
   "name": "notes.txt",
   "type": "file" / "folder"
   "content": "hello world",
-  "parentId": null
+  "parentId": null / "folder id"
 }'
 
 ---------------------------------------------------------------------------------------------------------------------------
 
 - gives the details of the file/folder whose identifier is id.
 
-curl -i -X GET http://foo.com/api/files/:1  \
+curl -i -X GET http://localhost:8080/api/files/1  \
   -H "user-id: 1"
 
 ---------------------------------------------------------------------------------------------------------------------------
@@ -95,7 +97,7 @@ curl -i -X PATCH http://localhost:8080/api/files/2 \
 -d '{
   "name": "notes.txt",
   "content": "this content was updated via PATCH",
-  "parentId": null
+   "parentId": null / "folder id"
 }'
 
 ---------------------------------------------------------------------------------------------------------------------------
@@ -172,6 +174,15 @@ HTTP/1.1 201 Created
 
 {"id":2}
 
+##                                                    get first user's details
+
+
+```
+NEEDS TO ADD HERE
+```
+
+
+
 
 ##                                                     verify first user exists
 
@@ -224,6 +235,15 @@ HTTP/1.1 201 Created
 
 
 {"id":2}
+
+##                                                    get the file's (id=2) details
+
+
+```
+NEEDS TO ADD HERE
+```
+
+
 
 
 ##                                                     get first user's top level files
@@ -327,7 +347,7 @@ $ curl -i -X DELETE http://localhost:8080/api/files/1 \
 HTTP/1.1 204 No Content
 ```
 
-##                                                     search for 'PATH' in first user's files
+##                                                     search for 'PATCH' in first user's files
 
 ```
 curl -i -X GET http://localhost:8080/api/search/PATCH \
