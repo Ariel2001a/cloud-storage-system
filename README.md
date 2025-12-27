@@ -34,13 +34,20 @@ This is the third task out of a full google drive clone project.
        
 
 
-## Usage 💻
+## Usage 💻 (Linux commands)
 
 - Create new user
 
 curl -i -X POST http://localhost:8080/api/users \
 -H "Content-Type: application/json" \
 -d '{"first_name":"first","last_name":"user","email":"first@gmail.com","password":"first","image":"first.png"}'
+
+---------------------------------------------------------------------------------------------------------------------------
+
+- Get user's details
+
+curl -i -X GET https://www.foo.com/api/users/:id
+-H "user-id: 1"
 
 ---------------------------------------------------------------------------------------------------------------------------
 
@@ -59,67 +66,26 @@ curl -i -X GET http://localhost:8080/api/files \
 
 ---------------------------------------------------------------------------------------------------------------------------
 
-- Create new folder 
-
-curl -i -X POST http://localhost:8080/api/files \
--H "Content-Type: application/json" \
--H "user-id: 1" \
--d '{
-
-  "name": "documents",
-  "type": "folder",
-  "parentId": null
-}'
-
----------------------------------------------------------------------------------------------------------------------------
-
-- Create new file
+- Create new file/folder
 
 curl -i -X POST http://localhost:8080/api/files \
 -H "Content-Type: application/json" \
 -H "user-id: 1" \
 -d '{
   "name": "notes.txt",
-  "type": "file",
+  "type": "file" / "folder"
   "content": "hello world",
   "parentId": null
 }'
 
 ---------------------------------------------------------------------------------------------------------------------------
 
-- Gives permission to a user
+- gives the details of the file/folder whose identifier is id.
 
-
-curl -i -X POST http://localhost:8080/api/files/2/permissions \
-  -H "Content-Type: application/json" \
-  -H "user-id: 1" \
-  -d '{"userId":2,"permission":"read"}'
-
-  ---------------------------------------------------------------------------------------------------------------------------
-
-- Show all permissions for a file
-
-
-curl -i http://localhost:8080/api/files/2/permissions \
+curl -i -X GET http://foo.com/api/files/:1  \
   -H "user-id: 1"
 
-  ---------------------------------------------------------------------------------------------------------------------------
-
-- Update permission by PID
-
-    curl -i -X PATCH http://localhost:8080/api/files/1/permissions/1766845870132 \
-  -H "Content-Type: application/json" \
-  -H "user-id: 1" \
-  -d '{"permission":"write"}'
-
-   ---------------------------------------------------------------------------------------------------------------------------
-
-- Deletes a permission from a file by PID
-
-   curl -i -X DELETE http://localhost:8080/api/files/2/permissions/1766845870132 \
- -H "user-id: 1"
-
-  ---------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------
 
 - Edits file or folder 
 
@@ -141,10 +107,43 @@ curl -i -X DELETE http://localhost:8080/api/files/1 \
 
 ---------------------------------------------------------------------------------------------------------------------------
 
+- Show all permissions for a file
+
+curl -i http://localhost:8080/api/files/2/permissions \
+  -H "user-id: 1"
+
+---------------------------------------------------------------------------------------------------------------------------
+
+- Gives permission to a user
+
+curl -i -X POST http://localhost:8080/api/files/2/permissions \
+  -H "Content-Type: application/json" \
+  -H "user-id: 1" \
+  -d '{"userId":2,"permission":"read"}'
+
+---------------------------------------------------------------------------------------------------------------------------
+
+- Update permission by PID
+
+    curl -i -X PATCH http://localhost:8080/api/files/1/permissions/1766845870132 \
+  -H "Content-Type: application/json" \
+  -H "user-id: 1" \
+  -d '{"permission":"write"}'
+
+---------------------------------------------------------------------------------------------------------------------------
+
+- Deletes a permission from a file by PID
+
+   curl -i -X DELETE http://localhost:8080/api/files/2/permissions/1766845870132 \
+ -H "user-id: 1"
+
+---------------------------------------------------------------------------------------------------------------------------
+
 - get the files/folders containing the query in their name or content
 
 curl -i -X GET http://localhost:8080/api/search/PATCH \
   -H "user-id: 1"
+
 
 Dependencies
 
@@ -404,6 +403,15 @@ HTTP/1.1 200 OK
 
 - ICommunication.h: Interface for all communication classes
 
+- threadpool.cpp / threadpool.h: Manages a pool of worker threads that execute tasks concurrently.
+
+- Itask.h: Defines the interface for a task handling communication with a single client.
+
+- ClientTask.cpp / ClientTask.h: Implements a client-handling task with socket, command manager, mutex, and server communication.
+
+- FilesSocketJS.cpp: Handles communication between the C++ server and the JavaScript server.
+
+
 Controllers:
 
 - files.js – Handles creating, retrieving, updating, and deleting files/folders.
@@ -411,6 +419,8 @@ Controllers:
 - users.js – Handles user registration, login, and user info retrieval.
 
 - permissions.js – Handles creating, updating, deleting, and retrieving file/folder permissions.
+
+- search.js - Fetches files matching the query from TCP server and local user files, returns combined list
 
 Models:
 
@@ -420,6 +430,8 @@ Models:
 
 - permissions.js – Stores and manages permissions for files/folders.
 
+
+
 Routes:
 
 - files.js – Defines HTTP routes for file/folder operations, connects to files.js controller.
@@ -427,6 +439,8 @@ Routes:
 - users.js – Defines HTTP routes for user operations, connects to users.js controller.
 
 - permissions.js – Defines HTTP routes for permission operations, connects to permissions.js controller.
+
+- search.js - Search files by query
 
 
 ## Authors ✍️
