@@ -349,9 +349,11 @@ HTTP/1.1 200 OK
 
 {"files":[{"id":2,"name":"notes.txt","type":"file","date":1766845772519,"folderParent":null,"content":"this content was updated via PATCH"}]}
 
-$
 
 
+
+
+---------------------------------------------------------------------------------------------------------------------------
 
 ## clients and servers running examples 📡 📤
 
