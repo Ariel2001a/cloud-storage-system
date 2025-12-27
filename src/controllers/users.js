@@ -1,4 +1,6 @@
 const User = require('../models/users')
+const fs = require('fs');
+const path = require('path');
 
 // Creates a new user with validation and returns the new user's ID
 exports.createUser = (req, res) => {
@@ -11,6 +13,13 @@ exports.createUser = (req, res) => {
         profileImage = "default.png"
     else
         profileImage = image
+
+    const uploadsDir = path.join(__dirname, '../uploads');
+    const imagePath = path.join(uploadsDir, path.basename(profileImage));
+
+    if (!fs.existsSync(imagePath)) {
+        return res.status(400).json({ error: 'Image not found' });
+    }
     
     if (!first_name || first_name.trim() === "" ||
         !last_name  || last_name.trim() === "" ||
