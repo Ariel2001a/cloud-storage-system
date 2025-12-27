@@ -114,14 +114,14 @@ curl -i http://localhost:8080/api/files/2/permissions \
 
    ---------------------------------------------------------------------------------------------------------------------------
 
-   Deletes a permission from a file by PID
+- Deletes a permission from a file by PID
 
    curl -i -X DELETE http://localhost:8080/api/files/2/permissions/1766845870132 \
  -H "user-id: 1"
 
   ---------------------------------------------------------------------------------------------------------------------------
 
-Edits file or folder 
+- Edits file or folder 
 
 curl -i -X PATCH http://localhost:8080/api/files/2 \
 -H "Content-Type: application/json" \
@@ -134,14 +134,14 @@ curl -i -X PATCH http://localhost:8080/api/files/2 \
 
 ---------------------------------------------------------------------------------------------------------------------------
 
-Deletes file or folder
+- Deletes file or folder
 
 curl -i -X DELETE http://localhost:8080/api/files/1 \
   -H "user-id: 1"
 
 ---------------------------------------------------------------------------------------------------------------------------
 
-GET returns files/folders containing the query in their name or content
+- get the files/folders containing the query in their name or content
 
 curl -i -X GET http://localhost:8080/api/search/PATCH \
   -H "user-id: 1"
