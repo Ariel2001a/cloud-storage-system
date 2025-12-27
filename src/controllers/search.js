@@ -6,8 +6,8 @@ const User = require('../models/users')
 exports.getFilesByQuery = async(req, res) => {
     const userId = req.headers['user-id'];
 
+    // Get the user object and validate login
     const user= User.getUserById(parseInt(userId))
-
     if (!userId) {
         return res.status(401).json({error:'User not logged in'});
     }
@@ -17,19 +17,23 @@ exports.getFilesByQuery = async(req, res) => {
     }
 
     const query = req.params.query
+
+    // Send SEARCH command to the TCP server
     const cppResponse = await fileSocket.sendCommand(
             `SEARCH ${query}`
     );
 
+    // Parse TCP server response
     const lines = cppResponse ? cppResponse.split(/\r?\n/).filter(l => l.trim() !== '') : [];
     const filesLine = lines.slice(1).join(' ');
-
     const filesListFromTCP = filesLine.split(' ').map(f => f.trim()).filter(f => f);
     
+    // Get local files for the user
     const userFiles = filesModel.getUserFiles(userId);
 
     const filesList =[];
 
+    // Combine TCP server files with local files
     filesListFromTCP.forEach(file_id => {
         const idNum = parseInt(file_id);
         const file = filesModel.getFileById(userId,idNum);
@@ -38,6 +42,7 @@ exports.getFilesByQuery = async(req, res) => {
         }
     });
 
+    // Add local files that match the query but are not in TCP results
     userFiles.forEach(item => {
 
         if (!filesList.some(f => f.id === item.id) && item.name.includes(query)) {
@@ -46,5 +51,6 @@ exports.getFilesByQuery = async(req, res) => {
         
     });
 
+    // Return combined list of files
     return res.status(200).json({ filesList });
 };

@@ -9,6 +9,8 @@
 
 #include "ITask.h"
 
+// ThreadPool class: manages a fixed number of worker threads
+// that execute submitted tasks asynchronously
 class ThreadPool {
 private:
     std::vector<pthread_t> workers;

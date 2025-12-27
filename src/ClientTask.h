@@ -9,6 +9,7 @@
 #include "TCPServerCommunication.h"
 #include "HandleClient.h"
 
+// ClientTask represents a task for handling communication with a single client
 class ClientTask : public Task {
 private:
     int client_socket;
@@ -17,11 +18,13 @@ private:
     TCPServerCommunication* server_comm;
 
 public:
+    // Constructor: initializes the task with client socket, manager, mutex, and server communication
     ClientTask(int socket,
                CommandManager* mgr,
                std::mutex* mtx,
                TCPServerCommunication* comm);
 
+    // Override execute() to handle client communication
     void execute() override;
 };
 
