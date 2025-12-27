@@ -15,7 +15,7 @@ This is the third task out of a full google drive clone project.
 
 - Search System: find what you're looking for by searching for a query. It checks both the names of the files and the text inside them.
 
-- Dual-Server Setup: Uses a C++ server for file operationa and a Node.js web server to handle API requests, all running together via Docker.
+- Dual-Server Setup: Uses a C++ server for file operations and a Node.js web server to handle API requests, all running together via Docker.
 
 
 ## Setup 🛠️
@@ -383,7 +383,7 @@ HTTP/1.1 200 OK
 
 ---------------------------------------------------------------------------------------------------------------------------
 
-## clients and servers running examples 📡 📤
+## servers running 📡 📤
 
 -- ![Both servers running](images/both_servers_running.png) --
 
