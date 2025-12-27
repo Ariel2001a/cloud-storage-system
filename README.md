@@ -49,7 +49,7 @@ curl -i -X POST http://localhost:8080/api/users \
 
 - Get user's details
 
-curl -i -X GET https://localhost:8080/api/users/1
+curl -i -X GET http://localhost:8080/api/users/1
 
 ---------------------------------------------------------------------------------------------------------------------------
 
