@@ -61,6 +61,7 @@
 
 #username input,
 #password input,
+#Cpassword input,
 #firstname input,
 #lastname input {
   width: 30%;
@@ -72,6 +73,7 @@
 /* Placeholder color for all */
 #username input::placeholder,
 #password input::placeholder,
+#Cpassword input::placeholder,
 #firstname input::placeholder,
 #lastname input::placeholder {
   color: white;
@@ -83,26 +85,34 @@
 #firstname input {
   position: absolute;
   right: 5%;
-  bottom: 75%;
+  bottom: 85%;
 }
 
 #lastname input {
   position: absolute;
   right: 5%;
-  bottom: 60%;
+  bottom: 72%;
 }
 
 #username input {
   position: absolute;
   right: 5%;
-  bottom: 45%;
+  bottom: 59%;
 }
 
 #password input {
   position: absolute;
   right: 5%;
-  bottom: 30%;
+  bottom: 46%;
 }
+
+
+#Cpassword input {
+  position: absolute;
+  right: 5%;
+  bottom: 33%;
+}
+
 
 .card-logo {
   position: absolute;
@@ -139,5 +149,4 @@
   height: 100%;
   object-fit: cover;
 }
-
 
