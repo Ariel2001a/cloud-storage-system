@@ -1,0 +1,108 @@
+.main_headline {
+  font-size: 30pt;
+  text-align: left;
+  font-weight: bold;
+  position: absolute;
+  left: 5%;
+  top: 40%;
+}
+
+
+     .secondary_headline {
+    font-size: 100%;
+      text-align: left;
+        
+       position: absolute;
+  left: 5%;   /* distance from right edge */
+  bottom: 10%;
+    }
+
+    body .MyCard {
+
+    color: white;
+    
+    position: relative;
+
+      border-radius: 20px;  /* adjust number for more/less rounding */
+  background-color: rgb(0,0,0); /* keep your card color */
+  padding: 20px;
+    
+
+
+    width: 60%;
+    height: 50%;
+  background-color: rgb(0, 0, 0) !important;
+
+     justify-content: center;          /* Center horizontally */
+      align-items: center; 
+}
+
+
+
+ body {
+            
+      display: flex;
+      justify-content: center;          /* Center horizontally */
+      align-items: center;              /* Center vertically */
+      font-family: Arial, sans-serif;
+    }
+
+.MyCard .btn-primary {
+  position: absolute;
+  right: 5%;   
+  bottom: 10%;  
+}
+
+.MyCard .btn-light {
+  position: absolute;
+  right: 65%;   
+  bottom: 10%;  
+}
+
+
+#password input::placeholder {
+  color: white;
+}
+
+#password input
+{
+    width: 30%;
+   
+     position: absolute;
+  right: 5%;   
+  bottom: 28%;  
+
+    background-color: black;
+    color: white;
+
+  border-color: blue;
+}
+
+
+
+#username input::placeholder {
+  color: white;
+}
+#username input
+{
+      width: 30%;
+   
+     position: absolute;
+  right: 5%;   
+  bottom: 45%;  
+
+  background-color: black;
+      color: white;
+  border-color: blue;
+}
+
+
+.card-logo {
+  position: absolute;
+  top: 10%;
+  left: 5%;
+  width: 20%;
+  height: 20%;
+}
+
+
