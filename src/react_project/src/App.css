@@ -1,0 +1,47 @@
+.left_buttons {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.left_buttons button {
+  width:200px;
+  height: 30px;
+  font-size: 10px;
+}
+
+.imageUser {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 20px;
+  top: 10%;
+  transform: translateY(-90%);
+}
+
+.logo button {
+  font-size: 30px;
+}
+
+.new_file_folder {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 20px;
+  top: 20%;
+  transform: translateY(-80%);
+}
+
+.new_file_folder button {
+  font-size: 30px;
+}
