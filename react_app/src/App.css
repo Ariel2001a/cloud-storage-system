@@ -1,0 +1,14 @@
+.app-container {
+  padding: 20px;
+}
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.file-view textarea {
+  margin-top: 10px;
+  background: white;
+}
