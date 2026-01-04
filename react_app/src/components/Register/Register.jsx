@@ -16,16 +16,28 @@ function Register() {
 
   // Register button handler
   const handleRegister = async () => {
+    // Check all fields
     if (!firstname || !lastname || !username || !password || !confirm) {
       alert('Please fill all fields');
       return;
     }
 
+    // Password rules: min 8 chars, at least 1 letter, 1 number
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      alert(
+        'Password must be at least 8 characters and include at least 1 letter and 1 number'
+      );
+      return;
+    }
+
+    // Password confirmation
     if (password !== confirm) {
       alert('Passwords do not match');
       return;
     }
 
+    // Prepare data
     const data = {
       first_name: firstname,
       last_name: lastname,
