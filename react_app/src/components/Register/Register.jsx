@@ -41,7 +41,7 @@ function Register() {
     const data = {
       first_name: firstname,
       last_name: lastname,
-      email: username + '@gmail.com',
+      email: username + '@ead.com',
       password,
       image: file ? file.name : 'Alogo.png',
     };
