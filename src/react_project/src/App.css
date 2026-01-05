@@ -45,3 +45,100 @@
 .new_file_folder button {
   font-size: 30px;
 }
+
+/* מבנה העמוד הראשי */
+.home-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: sans-serif;
+}
+
+/* תפריט עליון */
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1.5rem;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dadce0;
+}
+
+.search-container {
+    flex: 0 1 700px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.7rem 1.5rem;
+    border-radius: 24px;
+    border: none;
+    background-color: #eaf1fb;
+    font-size: 1rem;
+}
+
+/* כפתור שפה קטן */
+.lang-button {
+    background: none;
+    border: 1px solid #dadce0;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #5f6368;
+}
+
+/* המבנה המרכזי (סיידבר + תוכן) */
+.main-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 5px;;
+    width:15%;
+    height: 30px;
+    font-size: 10px;
+    padding: 1rem;
+    background-color: #f8f9fa;
+}
+
+/* כפתור חדש בסטייל דרייב */
+.new-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: white;
+    padding: 12px 24px;
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.new-button:hover {
+    background-color: #f1f3f4;
+}
+
+/* אזור הקבצים */
+.main-content {
+    flex: 1;
+    background-color: white;
+    margin: 10px;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}

@@ -1,26 +1,32 @@
+import ALogo from "../react_uploads/Alogo.png";
+
+
 export default function DefaultLeftSidebar() {
     return (
         <div>
             <div className="logo">
-            <button>EAD Drive</button>
+                <img className="imageUser"
+                src={ALogo} 
+                alt="Logo" 
+                style={{ width: "200px", height: "50px" }} />
             </div>
-            <div className="new_file_folder">
-            <button id = "new_file_folder">New ➕</button>
+            <div className="new-button">
+            <button>New ➕</button>
             </div>
-            <div className="left_buttons">
+            <div className="sidebar">
             <button>Home 🏠</button>
+            <br />
             <button>My Drive 📁</button>
-            <button>Computers 🖥️</button>
             <br />
             <br />
             <button>Shared with me 👤</button>
+            <br />
             <button>Recent ⏰</button>
+            <br />
+            <br />
             <button>Starred ⭐</button>
             <br />
-            <br />
-            <button>Spam 🚫</button>
             <button>Bin 🗑️</button>
-            <button>Storage ☁️</button>
             </div>
         </div>
     );
