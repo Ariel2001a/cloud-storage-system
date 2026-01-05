@@ -52,9 +52,14 @@ async function createPermission(req, res) {
     if (!newPermission) {
         return res.status(409).json({ error: 'Permission already exists' });
     }
-
+    
+    let success = filesModel.shareFileWithUser(ownerId, fileId, userId);
+    if (!success) {
+        return res.status(400).json({ error: 'Failed to share file with user' });
+    }
     return res.status(201).json(newPermission);
 }
+
 
 /**
  * Get all permissions for a file or folder

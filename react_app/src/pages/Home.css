@@ -52,7 +52,17 @@
     padding: 1rem;
     background-color: #f8f9fa;
 }
-
+.sidebar-button {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #202124;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+}
 /* כפתור חדש בסטייל דרייב */
 .new-button {
     display: flex;

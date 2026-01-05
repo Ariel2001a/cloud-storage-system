@@ -50,7 +50,8 @@ exports.createFileOrFolder = async (req, res) => {
                 name,
                 type,
                 date: Date.now(),
-                folderParent: parentId || null
+                folderParent: parentId || null,
+                starred: false
             });
 
             const perms = PERMISSION_TYPES[type];
@@ -234,15 +235,37 @@ exports.deleteFileById = async (req, res) => {
     }
 
     const idToDelete = parseInt(req.params.id);
-    const file = filesModel.getFileById(userId, idToDelete);
-    if (!file) return res.status(404).json({ error: 'File not found' });
+    let file = filesModel.getFileById(userId, idToDelete);
+    if (!file){
+        file = filesModel.getFileByIdFromDeleted(userId, idToDelete);
+        if (!file) {
+            return res.status(404).json({ error: 'File not found' });
+        } 
 
-    if (file.type === 'folder') {
-        const id_files_in_folder = filesModel.getFolderFiles(userId, idToDelete);
-        for (const id of id_files_in_folder) {
-            filesModel.deleteFileById(userId, id);
+        if (file.type === 'folder') {
+            const id_files_in_folder = filesModel.getFolderFiles(userId, idToDelete);
+            for (const id of id_files_in_folder) {
+                filesModel.deleteFileByIdFromBin(userId, id);
+                try {
+                    const cppResponseDelete = await fileSocket.sendCommand(`DELETE ${id}`);
+
+                    if (cppResponseDelete.includes("400")) {
+                        return res.status(400).json({ error: 'Delete' });
+                    }
+                    if (cppResponseDelete.includes("500")) {
+                        return res.status(500).json({ error: 'Delete' });
+                    }
+                } catch (error) {
+                    return res.status(500).end();
+                }
+            }
+        }
+
+        filesModel.deleteFileByIdFromBin(userId, idToDelete);
+
+        if (file.type === 'file') {
             try {
-                const cppResponseDelete = await fileSocket.sendCommand(`DELETE ${id}`);
+                const cppResponseDelete = await fileSocket.sendCommand(`DELETE ${idToDelete}`);
 
                 if (cppResponseDelete.includes("400")) {
                     return res.status(400).json({ error: 'Delete' });
@@ -255,22 +278,25 @@ exports.deleteFileById = async (req, res) => {
             }
         }
     }
+    else {
+        filesModel.deleteFileByIdFromUserFiles(userId, idToDelete);
+    }
+    return res.status(204).end();
+};
 
-    filesModel.deleteFileById(userId, idToDelete);
-
-    if (file.type === 'file') {
-        try {
-            const cppResponseDelete = await fileSocket.sendCommand(`DELETE ${idToDelete}`);
-
-            if (cppResponseDelete.includes("400")) {
-                return res.status(400).json({ error: 'Delete' });
-            }
-            if (cppResponseDelete.includes("500")) {
-                return res.status(500).json({ error: 'Delete' });
-            }
-        } catch (error) {
-            return res.status(500).end();
-        }
+exports.starOrUnstarFile = (req, res) => {
+    const userId = req.headers['user-id'];
+    const user = User.getUserById(parseInt(userId));
+    if (!userId) {
+        return res.status(401).json({ error: 'User not logged in' });
+    } 
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+    const fileId = parseInt(req.params.id);
+    const success = filesModel.starOrUnstarFile(userId, fileId);
+    if (!success) {
+        return res.status(404).json({ error: 'File not found' });
     }
     return res.status(204).end();
 };

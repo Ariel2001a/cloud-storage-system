@@ -4,6 +4,8 @@ import FileItem from "../components/FileItem";
 import CreateFileForm from "../components/CreateFileForm"; // הקומפוננטה החדשה שכוללת CSS משלה
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
+import Default_picture from '../uploads/default.png';
+import Alogo from '../uploads/Alogo.png';
 
 export default function Home() {
     const [items, setItems] = useState([]);
@@ -32,13 +34,24 @@ export default function Home() {
 
             {/* תפריט עליון */}
             <header className="top-bar">
-                <div className="logo">Drive Clone</div>
+                <div className="logo">
+                    <img
+                    src={Alogo} 
+                    alt="Logo" 
+                    style={{ width: "100%", height: "50px" }} />
+                </div>
                 <div className="search-container">
                     <input className="search-input" type="text" placeholder={isRtl ? "חיפוש..." : "Search..."} />
                 </div>
                 <button className="lang-button" onClick={() => setLang(isRtl ? 'en' : 'he')}>
                     {isRtl ? "English" : "עברית"}
                 </button>
+                                <div className="logo">
+                    <img
+                    src={Default_picture} 
+                    alt="Logo" 
+                    style={{ width: "50px", height: "50px" }} />
+                </div>
             </header>
 
             <div className="main-layout">
@@ -47,6 +60,19 @@ export default function Home() {
                     <button className="new-button" onClick={() => setShowForm(true)}>
                         <span style={{ color: '#34a853' }}>＋</span> {isRtl ? "חדש" : "New"}
                     </button>
+                    <button className="sidebar-button" style={isRtl ? { textAlign: 'right' } : { textAlign: 'left' }}>{isRtl ? "🏠 בית" : "🏠 Home"}</button>
+                    <br />
+                    <button className="sidebar-button" style={isRtl ? { textAlign: 'right' } : { textAlign: 'left' }}>{isRtl ? "📁 האחסון שלי" : "📁 My Drive"}</button>
+                    <br />
+                    <br />
+                    <button className="sidebar-button" style={isRtl ? { textAlign: 'right' } : { textAlign: 'left' }}>{isRtl ? "👤 שותף איתי" : "👤 Shared with me"}</button>
+                    <br />
+                    <button className="sidebar-button" style={isRtl ? { textAlign: 'right' } : { textAlign: 'left' }}>{isRtl ? "⏰ אחרונים" : "⏰ Recent"}</button>
+                    <br />
+                    <br />
+                    <button className="sidebar-button" style={isRtl ? { textAlign: 'right' } : { textAlign: 'left' }}>{isRtl ? "⭐ מסומנים בכוכב" : "⭐ Starred"}</button>
+                    <br />
+                    <button className="sidebar-button" style={isRtl ? { textAlign: 'right' } : { textAlign: 'left' }}>{isRtl ? "🗑️ אשפה" : "🗑️ Bin"}</button>
                 </aside>
 
                 {/* רשימת קבצים */}
