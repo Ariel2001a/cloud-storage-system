@@ -1,37 +1,59 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getFiles, getFolderChildren } from "../api/files";
+import { getFolderChildren } from "../api/files";
 import FileItem from "../components/FileItem";
+import FileView from "./FileView";
+import "./Home.css"; // שימוש באותו עיצוב של דף הבית
 
-export default function FolderView() {
+export default function FolderView({ lang, onFolderEnter }) {
     const { id } = useParams();
-    const [folderItems, setFolderItems] = useState([]);
     const navigate = useNavigate();
-    const userId = 1; // החלף עם המשתמש הנוכחי שלך
+    const [items, setItems] = useState([]);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const isRtl = lang === "he";
 
     useEffect(() => {
+        onFolderEnter(id); // מעדכן את ה-Layout שאנחנו בתוך תיקייה
         async function load() {
-            const children = await getFolderChildren(userId, id);
-            setFolderItems(children);
+            const children = await getFolderChildren(1, id);
+            setItems(children || []);
         }
         load();
+        return () => onFolderEnter(null);
     }, [id]);
 
-    function openItem(item) {
-        if (item.type === "folder") {
-            navigate(`/folder/${item.id}`);
-        } else {
-            navigate(`/file/${item.id}`);
-        }
-    }
-
     return (
-        <div>
-            <h1>📁 תיקייה</h1>
+        /* אנחנו משתמשים ב-ClassNames שהגדרנו ב-Home.css */
+        <div className="page-container">
+            <header className="folder-header-row" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <button className="back-btn" onClick={() => navigate(-1)} style={{ cursor: 'pointer' }}>
+                    {isRtl ? "→" : "←"}
+                </button>
+                <h2 className="page-title">{isRtl ? "תיקייה" : "Folder"}</h2>
+            </header>
 
-            {folderItems.map((item) => (
-                <FileItem key={item.id} item={item} onClick={openItem} />
-            ))}
+            <div className="file-list">
+                {items.length > 0 ? (
+                    items.map(item => (
+                        <FileItem
+                            key={item.id}
+                            item={item}
+                            onClick={(it) => it.type === "folder" ? navigate(`/folder/${it.id}`) : setSelectedFile(it)}
+                        />
+                    ))
+                ) : (
+                    <p className="status-msg">{isRtl ? "התיקייה ריקה" : "Folder is empty"}</p>
+                )}
+            </div>
+
+            {selectedFile && (
+                <FileView
+                    fileId={selectedFile.id}
+                    fileName={selectedFile.name}
+                    lang={lang}
+                    onClose={() => setSelectedFile(null)}
+                />
+            )}
         </div>
     );
 }

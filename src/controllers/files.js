@@ -5,7 +5,7 @@ const User = require('../models/users');               // import user model
 const { addPermission } = require('../models/permissions');
 const { PERMISSION_TYPES } = require('../models/permissions');
 
-let filesCounter = 0;
+let filesCounter = Date.now(); // initialize file ID counter
 
 // Creates a file or folder for the user
 exports.createFileOrFolder = async (req, res) => {
@@ -167,7 +167,7 @@ exports.patchFileById = async (req, res) => {
 
         updateContent = true;
     }
-    
+
     if (name !== undefined) {
         if (name.trim() === '') {
             return res.status(400).json({ error: 'Invalid file name' });
@@ -211,7 +211,7 @@ exports.patchFileById = async (req, res) => {
             } catch (error) {
                 return res.status(500).end();
             }
-            
+
             file.content = content;
         }
         return res.status(204).end();
