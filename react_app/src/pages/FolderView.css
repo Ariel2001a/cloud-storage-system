@@ -1,0 +1,29 @@
+.folder-view-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 10px;
+}
+
+.folder-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 10px;
+}
+
+.folder-header h1 {
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin: 0;
+    color: #202124;
+}
+
+/* שימוש ב-flex-direction לוגי עבור ה-FileItem */
+.file-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}

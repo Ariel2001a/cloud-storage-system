@@ -1,0 +1,47 @@
+/* הגדרות בסיסיות לכל האתר */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body,
+html,
+#root {
+  height: 100%;
+  width: 100%;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #202124;
+  overflow: hidden;
+  /* מונע גלילה כפולה של כל העמוד */
+}
+
+/* הגדרות טקסט כלליות */
+h1,
+h2,
+h3 {
+  color: #3c4043;
+  font-weight: 400;
+}
+
+/* קישורים */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* עיצוב בסיסי לכפתורים (כדי שלא ייראו מיושנים) */
+button {
+  font-family: inherit;
+  outline: none;
+}
+
+/* הגדרה גלובלית לשינוי כיווניות חלקה */
+[style*="direction: rtl"] {
+  text-align: right;
+}
+
+[style*="direction: ltr"] {
+  text-align: left;
+}
