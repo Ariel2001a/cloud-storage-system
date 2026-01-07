@@ -12,7 +12,7 @@ const getUserFiles = (userId) => {
 // Add a new file or folder for a user
 const addFileOrFolder = (userId, file) => {
     if (!userFiles[userId]) userFiles[userId] = [];
-        userFiles[userId].push(file);
+    userFiles[userId].push(file);
 };
 
 
@@ -24,11 +24,11 @@ const getTopLevelFiles = (userId) => {
 
 // Returns a file/folder by its ID for a given user
 const getFileById = (user_id, id) => {
-  const files = userFiles[user_id];
-  if (!files) {
-    return null;
-  }
-  return files.find(f => f.id === id) || null;
+    const files = userFiles[user_id];
+    if (!files) {
+        return null;
+    }
+    return files.find(f => f.id === id) || null;
 };
 
 // Deletes a file/folder by its ID for a given user
@@ -36,7 +36,7 @@ const deleteFileById = (user_id, id) => {
     userFiles[user_id] = userFiles[user_id].filter(a => a.id !== id);
     return true;
 };
-
+/*
 // Returns IDs of all files contained in a specific folder for a user
 const getFolderFiles = (userId, folderParent) => {
     let files = getUserFiles(userId);
@@ -47,6 +47,13 @@ const getFolderFiles = (userId, folderParent) => {
     });
 
     return id_files_in_folder
+};*/
+
+const getFolderFiles = (userId, folderParent) => {
+
+    const allFiles = getUserFiles(userId);
+    const filesInFolder = allFiles.filter(item => item.folderParent == folderParent);
+    return filesInFolder;
 };
 
 module.exports = {

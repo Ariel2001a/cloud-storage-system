@@ -20,7 +20,7 @@ export async function getFiles(userId) {
 // 2️⃣ פתיחת תיקייה (children)
 export async function getFolderChildren(userId, folderId) {
     try {
-        const res = await fetch(`${API_BASE}/${folderId}`, {
+        const res = await fetch(`${API_BASE}/${folderId}/children`, {
             headers: { 'user-id': userId }
         });
         if (!res.ok) throw new Error('Failed to fetch folder');
