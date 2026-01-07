@@ -1,0 +1,87 @@
+/* השכבה השחורה השקופה שמכסה את כל האתר */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    /* הכי גבוה כדי לצוף מעל ה-Sidebar וה-Header */
+}
+
+/* הקופסה הלבנה המרחפת */
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.modal-content h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    text-align: center;
+}
+
+/* עיצוב הטופס והשדות */
+.drive-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.drive-input,
+.drive-select,
+.drive-textarea {
+    padding: 0.6rem;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.drive-textarea {
+    height: 80px;
+    resize: none;
+}
+
+/* כפתורי הפעולה בתחתית */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.drive-btn-primary {
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.drive-btn-secondary {
+    background: none;
+    border: 1px solid #dadce0;
+    padding: 0.5rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #5f6368;
+}

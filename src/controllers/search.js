@@ -18,6 +18,10 @@ exports.getFilesByQuery = async(req, res) => {
 
     const query = req.params.query
 
+    if (!query || query.trim() === '') {
+        return res.status(400).json({ error: 'Invalid search query' });
+    }
+
     // Send SEARCH command to the TCP server
     const cppResponse = await fileSocket.sendCommand(
             `SEARCH ${query}`
