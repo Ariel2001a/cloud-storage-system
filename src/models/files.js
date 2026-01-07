@@ -23,7 +23,13 @@ const getTopLevelFiles = (userId) => {
 };
 
 // Returns a file/folder by its ID for a given user
-const getFileById = (user_id,id) =>  userFiles[user_id].find(f => f.id===id)
+const getFileById = (user_id, id) => {
+  const files = userFiles[user_id];
+  if (!files) {
+    return null;
+  }
+  return files.find(f => f.id === id) || null;
+};
 
 // Deletes a file/folder by its ID for a given user
 const deleteFileById = (user_id, id) => {

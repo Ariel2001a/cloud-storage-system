@@ -1,0 +1,45 @@
+/* המכולה הראשית של כל דף תוכן (Home או Folder) */
+.page-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: fadeIn 0.3s ease;
+    /* אנימציה עדינה בכניסת עמוד */
+}
+
+/* כותרת העמוד (האחסון שלי / שם התיקייה) */
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #202124;
+    margin: 0;
+}
+
+/* סידור רשימת הקבצים */
+.file-list {
+    display: flex;
+    flex-direction: column;
+    /* יצירת קו הפרדה בין הפריטים אם רוצים */
+    border-top: 1px solid #f1f3f4;
+}
+
+/* הודעה במקרה של רשימה ריקה */
+.status-msg {
+    text-align: center;
+    padding: 50px;
+    color: #5f6368;
+    font-size: 1.1rem;
+}
+
+/* אנימציית כניסה חלקה */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
