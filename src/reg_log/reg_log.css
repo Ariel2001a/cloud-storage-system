@@ -1,0 +1,152 @@
+.main_headline {
+  font-size: 30pt;
+  text-align: left;
+  font-weight: bold;
+  position: absolute;
+  left: 5%;
+  top: 40%;
+}
+
+
+     .secondary_headline {
+    font-size: 100%;
+      text-align: left;
+        
+       position: absolute;
+  left: 5%;   /* distance from right edge */
+  bottom: 10%;
+    }
+
+    body .MyCard {
+
+    color: white;
+    
+    position: relative;
+
+      border-radius: 20px;  /* adjust number for more/less rounding */
+  background-color: rgb(0,0,0); /* keep your card color */
+  padding: 20px;
+    
+
+
+    width: 65%;
+    height: 55%;
+  background-color: rgb(0, 0, 0) !important;
+
+     justify-content: center;          /* Center horizontally */
+      align-items: center; 
+}
+
+
+
+ body {
+            
+      display: flex;
+      justify-content: center;          /* Center horizontally */
+      align-items: center;              /* Center vertically */
+      font-family: Arial, sans-serif;
+    }
+
+.MyCard .btn-primary {
+  position: absolute;
+  right: 5%;   
+  bottom: 10%;  
+}
+
+.MyCard .btn-light {
+  position: absolute;
+  right: 65%;   
+  bottom: 10%;  
+}
+
+#username input,
+#password input,
+#Cpassword input,
+#firstname input,
+#lastname input {
+  width: 30%;
+  background-color: black;
+  color: white;
+  border-color: blue;
+}
+
+/* Placeholder color for all */
+#username input::placeholder,
+#password input::placeholder,
+#Cpassword input::placeholder,
+#firstname input::placeholder,
+#lastname input::placeholder {
+  color: white;
+}
+
+
+
+
+#firstname input {
+  position: absolute;
+  right: 5%;
+  bottom: 85%;
+}
+
+#lastname input {
+  position: absolute;
+  right: 5%;
+  bottom: 72%;
+}
+
+#username input {
+  position: absolute;
+  right: 5%;
+  bottom: 59%;
+}
+
+#password input {
+  position: absolute;
+  right: 5%;
+  bottom: 46%;
+}
+
+
+#Cpassword input {
+  position: absolute;
+  right: 5%;
+  bottom: 33%;
+}
+
+
+.card-logo {
+  position: absolute;
+  top: 10%;
+  left: 5%;
+  width: 20%;
+  height: 20%;
+}
+
+.photo-placeholder {
+  display: flex;                /* center text */
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  right: 25%;   
+  bottom: 2%;  
+
+  cursor: pointer;
+  width: 90px;         /* make width = height for perfect circle */
+  height: 90px;
+  border-radius: 50%;   /* perfect circle */
+  overflow: hidden;
+  border: 2px solid blue;
+
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+.photo-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
