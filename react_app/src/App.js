@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import FolderView from "./pages/FolderView";
 import FileView from "./pages/FileView";
 import Register from './components/Register/Register';
+import Login from './components/login/login';
 import "./App.css";
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Route path="/folder/:id" element={<FolderView />} />
         <Route path="/file/:id" element={<FileView />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </BrowserRouter>
   );
