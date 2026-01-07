@@ -10,26 +10,35 @@ import "./App.css";
 
 function App() {
   const [lang, setLang] = useState('he');
-  const [currentFolderId, setCurrentFolderId] = useState(null); // שמירת התיקייה הנוכחית
+  const [currentFolderId, setCurrentFolderId] = useState(null);
 
   return (
     <BrowserRouter>
-      {/* מעבירים ל-Layout את ה-currentFolderId */}
-      <Layout lang={lang} setLang={setLang} currentFolderId={currentFolderId}>
-        <Routes>
-          {/* בתוך הבית, התיקייה היא null (שורש) */}
-          <Route path="/" element={<Home lang={lang} onFolderEnter={() => setCurrentFolderId(null)} />} />
+      <Routes>
 
-          {/* בתוך תיקייה, נעדכן את ה-ID שלה */}
-          <Route path="/folder/:id" element={<FolderView lang={lang} onFolderEnter={setCurrentFolderId} />} />
+        {/* מסכים שלא צריכים Layout */}
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
 
-          <Route path="/register" element={<Register />} />
-            
-          <Route path="/login" element={<Login />} />
+        {/* Layout עטוף בתוך Route */}
+        <Route
+          path="/"
+          element={<Layout lang={lang} setLang={setLang} currentFolderId={currentFolderId} />}
+        >
 
+          <Route
+            index
+            element={<Home lang={lang} onFolderEnter={() => setCurrentFolderId(null)} />}
+          />
 
-        </Routes>
-      </Layout>
+          <Route
+            path="folder/:id"
+            element={<FolderView lang={lang} onFolderEnter={setCurrentFolderId} />}
+          />
+
+        </Route>
+
+      </Routes>
     </BrowserRouter>
   );
 }

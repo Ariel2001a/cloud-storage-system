@@ -11,8 +11,9 @@
 .file-view textarea {
   margin-top: 10px;
   background: white;
+}
 
-  /* הגדרות בסיסיות לכל האתר */
+/* הגדרות בסיסיות לכל האתר */
 * {
   box-sizing: border-box;
   margin: 0;

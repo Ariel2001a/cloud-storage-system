@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import './Register.css';
 import CardLogo from '../../images/Alogo.png';
+import UserPicture from '../../images/default.png';
 
 function Register() {
   // Form state
@@ -43,7 +44,7 @@ function Register() {
       last_name: lastname,
       email: username + '@ead.com',
       password,
-      image: file ? file.name : 'Alogo.png',
+      image: file ? file.name : UserPicture,
     };
 
     try {
@@ -159,13 +160,14 @@ function Register() {
         </div>
 
         {/* Hidden file input */}
+        {/*}
         <input
           type="file"
           ref={fileInputRef}
           style={{ display: 'none' }}
           onChange={handleFileChange}
           accept="image/*"
-        />
+        />*/}
       </div>
     </div>
   );

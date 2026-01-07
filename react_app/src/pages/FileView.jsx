@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { getFileContent } from "../api/files";
 import "./FileView.css";
 
@@ -6,7 +7,7 @@ export default function FileView({ fileId, fileName, onClose, lang = "he" }) {
     const [content, setContent] = useState("");
     const [loading, setLoading] = useState(true);
     const isRtl = lang === "he";
-    const userId = 1;
+    const { userId } = useParams();
 
     useEffect(() => {
         async function load() {

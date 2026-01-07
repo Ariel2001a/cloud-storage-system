@@ -4,40 +4,40 @@ import CardLogo from '../../images/Alogo.png';
 
 function Login() {
   // Form state
-  const [username, setUsername] = useState('');
+  let [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   // Sign-in handler
   const handleSignIn = async () => {
-  if (!username || !password) {
-    alert('Please fill all fields');
-    return;
-  }
-
-  const data = { email: username, password }; // <-- important
-
-  try {
-    const res = await fetch('http://localhost:8080/api/users/tokens', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-
-    if (!res.ok) {
-      const errText = await res.text();
-      alert('Sign in failed: ' + errText);
+    if (!username || !password) {
+      alert('Please fill all fields');
       return;
     }
+    username = username + '@ead.com';
+    const data = { email: username, password: password }; // <-- important
 
-    const { token } = await res.json();
-    localStorage.setItem('token', token);
-    alert('Signed in successfully!');
-    window.location.href = '/home';
-  } catch (err) {
-    alert('Could not connect to the server.');
-    console.error(err);
-  }
-};
+    try {
+      const res = await fetch('http://localhost:8080/api/users/tokens', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        alert('Sign in failed: ' + errText);
+        return;
+      }
+
+      const { token } = await res.json();
+      localStorage.setItem('token', token);
+      alert('Signed in successfully!');
+      window.location.href = '/';
+    } catch (err) {
+      alert('Could not connect to the server.');
+      console.error(err);
+    }
+  };
   // Go to register page
   const handleSignUp = () => {
     window.location.href = '/register';
