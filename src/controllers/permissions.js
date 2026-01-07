@@ -80,6 +80,38 @@ const getPermissionsByFile = (req, res) => {
     return res.status(200).json(permissions);
 };
 
+const getPermissionsBySharedFile = (req, res) => {
+    const ownerId = req.headers['user-id'];
+    const fileId = req.params.id;
+
+    // Ensure the owner has access
+    const files = filesModel.getUserSharedFiles(ownerId);
+    const file = files.find(f => f.id == fileId);
+    if (!file) {
+        return res.status(404).json({ error: "File or folder not found" });
+    }
+
+    // Fetch and return permissions
+    const permissions = getPermissionsByFileId(fileId);
+    return res.status(200).json(permissions);
+};
+
+const getPermissionsByDeletedFile = (req, res) => {
+    const ownerId = req.headers['user-id'];
+    const fileId = req.params.id;
+
+    // Ensure the owner has access
+    const files = filesModel.getUserDeletedFiles(ownerId);
+    const file = files.find(f => f.id == fileId);
+    if (!file) {
+        return res.status(404).json({ error: "File or folder not found" });
+    }
+
+    // Fetch and return permissions
+    const permissions = getPermissionsByFileId(fileId);
+    return res.status(200).json(permissions);
+};
+
 /**
  * Update an existing permission
  */
@@ -158,4 +190,5 @@ async function deletePermission(req, res) {
     return res.status(204).end();
 }
 
-module.exports = { createPermission, getPermissionsByFile, updatePermission, deletePermission};
+module.exports = { createPermission, getPermissionsByFile, updatePermission, deletePermission,
+                    getPermissionsBySharedFile,getPermissionsByDeletedFile };

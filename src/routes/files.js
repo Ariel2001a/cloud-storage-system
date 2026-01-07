@@ -8,11 +8,18 @@ router.route('/')
         .post(filesController.createFileOrFolder)  // Create a new file or folder
         .get(filesController.getFiles);   // Get all top-level files/folders
 
+router.route('/deleted')
+        .get(filesController.getDeletedFiles); // Get all deleted files/folders
+
+router.route('/shared')
+        .get(filesController.getSharedFiles); // Get all shared files/folders
+
 // Routes for specific file/folder by ID
 router.route('/:id')
         .get(filesController.getFileById)   // Get a file/folder by ID
         .patch(filesController.patchFileById)  // Update a file/folder by ID
         .delete(filesController.deleteFileById) // Delete a file/folder by ID
+        .post(filesController.starOrUnstarFile); // Restore a deleted file/folder by ID
 
 
 module.exports = router; // export the router

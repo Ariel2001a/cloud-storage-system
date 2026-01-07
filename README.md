@@ -50,7 +50,11 @@ This is the third task out of a full google drive clone project.
 
 curl -i -X POST http://localhost:8080/api/users \
 -H "Content-Type: application/json" \
--d '{"first_name":"first","last_name":"user","email":"first@gmail.com","password":"first","image":"first.png"}'
+-d '{"first_name":"first","last_name":"user","email":"first@gmail.com","password":"first"}'
+
+curl -i -X POST http://localhost:8080/api/users \
+-H "Content-Type: application/json" \
+-d '{"first_name":"second","last_name":"user","email":"second@gmail.com","password":"second"}'
 
 ---------------------------------------------------------------------------------------------------------------------------
 
@@ -70,7 +74,7 @@ curl -i -X POST http://localhost:8080/api/users/tokens \
 
 - Get all top-leveL files for user 
 
-curl -i -X GET http://localhost:8080/api/files \
+curl -i -X GET http://localhost:8080/api/files/deleted \
 -H "user-id: 1"
 
 ---------------------------------------------------------------------------------------------------------------------------
@@ -82,9 +86,9 @@ curl -i -X POST http://localhost:8080/api/files \
 -H "user-id: 1" \
 -d '{
   "name": "notes.txt",
-  "type": "file" / "folder",
-  "content": "hello world", (for folder creation content must be NULL)
-  "parentId": null / "folder id"
+  "type": "file",
+  "content": "hello world",
+  "parentId": null
 }'
 
 ---------------------------------------------------------------------------------------------------------------------------
@@ -92,6 +96,9 @@ curl -i -X POST http://localhost:8080/api/files \
 - gives the details of the file/folder whose identifier is id.
 
 curl -i -X GET http://localhost:8080/api/files/1  \
+  -H "user-id: 1"
+
+curl -i -X POST http://localhost:8080/api/files/1  \
   -H "user-id: 1"
 
 ---------------------------------------------------------------------------------------------------------------------------

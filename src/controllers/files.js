@@ -128,7 +128,7 @@ exports.getDeletedFiles = (req, res) => {
         return res.status(404).json({ error: "User not found" });
     }
 
-    const files = filesModel.getDeletedFiles(userId);
+    const files = filesModel.getUserDeletedFiles(userId);
     res.json({ files });
 };
 
@@ -145,7 +145,7 @@ exports.getSharedFiles = (req, res) => {
         return res.status(404).json({ error: "User not found" });
     }
 
-    const files = filesModel.getSharedFiles(userId);
+    const files = filesModel.getUserSharedFiles(userId);
     res.json({ files });
 };
 
@@ -314,6 +314,10 @@ exports.deleteFileById = async (req, res) => {
     }
     else {
         filesModel.deleteFileByIdFromUserFiles(userId, idToDelete);
+        if (file.type === 'file') {
+            if (file.starred) {
+                filesModel.starOrUnstarFile(userId, idToDelete);
+            }
     }
     return res.status(204).end();
 };

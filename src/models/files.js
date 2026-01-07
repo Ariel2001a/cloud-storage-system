@@ -101,8 +101,7 @@ const getFolderFiles = (userId, folderParent) => {
 };
 
 const starOrUnstarFile = (userId, fileId) => {
-    const files = getUserFiles(userId);
-    const file = files.find(f => f.id === fileId);
+    const file = getFileById(userId, fileId);
     if (file) {
         file.starred = !file.starred;
         return true;
