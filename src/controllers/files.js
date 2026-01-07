@@ -116,6 +116,40 @@ exports.getFiles = (req, res) => {
     res.json({ files });                               // return files as JSON
 };
 
+exports.getDeletedFiles = (req, res) => {
+    const userId = req.headers['user-id'];
+    const user = User.getUserById(parseInt(userId));
+
+    if (!userId) {
+        return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+
+    const files = filesModel.getDeletedFiles(userId);
+    res.json({ files });
+};
+
+
+exports.getSharedFiles = (req, res) => {
+    const userId = req.headers['user-id'];
+    const user = User.getUserById(parseInt(userId));
+
+    if (!userId) {
+        return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+
+    const files = filesModel.getSharedFiles(userId);
+    res.json({ files });
+};
+
+
 // Returns file or folder by ID
 exports.getFileById = (req, res) => {
     const userId = req.headers['user-id'];

@@ -53,7 +53,7 @@ async function createPermission(req, res) {
         return res.status(409).json({ error: 'Permission already exists' });
     }
     
-    let success = filesModel.shareFileWithUser(ownerId, fileId, userId);
+    let success = filesModel.sharedWithUsers(ownerId, fileId, userId);
     if (!success) {
         return res.status(400).json({ error: 'Failed to share file with user' });
     }

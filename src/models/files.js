@@ -122,7 +122,6 @@ const sharedWithUsers = (userId, fileId,userToShareId) => {
     }
 
     return false;
-    
 }
 
 module.exports = {
