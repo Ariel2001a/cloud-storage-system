@@ -25,10 +25,8 @@ export async function getFolderChildren(userId, folderId) {
         });
         if (!res.ok) throw new Error('Failed to fetch folder');
         const data = await res.json();
-        // data.file.folderParent === parentId, אבל children לא מגיעים ישירות
-        // צריך להשתמש ב־getFolderFiles API, אבל לפי הקוד שלך אין endpoint נפרד
-        // לכן, נניח שה־children נשלחים בפיילד file.children (אם תוסיף)
-        return data.file.children || []; // אם אין, אפשר לממש ב־mock
+
+        return data.files || [];
     } catch (err) {
         console.error(err);
         return [];
