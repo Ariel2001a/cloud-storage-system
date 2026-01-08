@@ -17,15 +17,22 @@ function App() {
       <Routes>
 
         {/* מסכים שלא צריכים Layout */}
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/register"
+          element={<Register lang={lang} setLang={setLang} />}
+        />
 
-        {/* Layout עטוף בתוך Route */}
+        <Route
+          path="/login"
+          element={<Login lang={lang} setLang={setLang} />}
+        />
+
+{/* Layout עטוף בתוך Route */}
         <Route
           path="/"
           element={<Layout lang={lang} setLang={setLang} currentFolderId={currentFolderId} />}
         >
-
+        
           <Route
             index
             element={<Home lang={lang} onFolderEnter={() => setCurrentFolderId(null)} />}
