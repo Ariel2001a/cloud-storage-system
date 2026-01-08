@@ -93,7 +93,7 @@ const data = {
           <input type="text" className="form-control" placeholder={isRtl ? 'שם פרטי' : 'First name'} value={firstname} onChange={(e) => setFirstname(e.target.value)} />
           <input type="text" className="form-control" placeholder={isRtl ? 'שם משפחה' : 'Last name'} value={lastname} onChange={(e) => setLastname(e.target.value)} />
           <input type="text" className="form-control" placeholder={isRtl ? 'שם משתמש' : 'Username'} value={username} onChange={(e) => setUsername(e.target.value)} />
-          <input type="password" className="form-control" placeholder={isRtl ? 'סיסמה' : 'Password'} value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input type="password" className="form-control" title={isRtl ? 'הסיסמה חייבת להכיל לפחות 8 תווים, לפחות אות אחת באנגלית ולפחות ספרה אחד' : 'Password must contain 8 or more characters, at least 1 letter and 1 number'} placeholder={isRtl ? 'סיסמה' : 'Password'} value={password} onChange={e => setPassword(e.target.value)} />
           <input type="password" className="form-control" placeholder={isRtl ? 'אימות סיסמה' : 'Confirm password'} value={confirm} onChange={(e) => setConfirm(e.target.value)} />
 
           <div className="buttons-row">

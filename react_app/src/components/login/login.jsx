@@ -96,6 +96,7 @@ function Login({ lang, setLang }) {
             className="form-control"
             placeholder={isRtl ? 'שם משתמש' : 'Username'}
             value={username}
+          title={isRtl ? 'ניתן להזין שם משתמש או כתובת מייל (username@ead.com)' : 'You can enter a username or email address (username@ead.com)'}
             onChange={(e) => setUsername(e.target.value)}
           />
 
