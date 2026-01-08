@@ -14,7 +14,6 @@ export default function CreateFileForm({ userId, onCreated, onClose }) {
         e.preventDefault();
         if (!name.trim()) return alert("חובה להזין שם!");
 
-        // חילוץ ה-ID מה-URL
         const currentPath = window.location.pathname;
         const parts = currentPath.split('/');
         const folderIdIndex = parts.indexOf('folder');
@@ -29,7 +28,6 @@ export default function CreateFileForm({ userId, onCreated, onClose }) {
             name,
             type,
             content: type === "file" ? content : undefined,
-            // התיקון הקריטי: השרת שלכם ב-req.body מחפש parentId!
             parentId: idFromUrl
         });
         setLoading(false);

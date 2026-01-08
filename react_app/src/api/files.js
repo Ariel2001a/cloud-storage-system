@@ -43,7 +43,7 @@ export async function getFileContent(userId, fileId) {
         const data = await res.json();
         // לפי הקוד שלך, content נשמר ב־C++ server => צריך לקרוא ל־content דרך socket
         // לצורך Frontend, אפשר להחזיר mock: data.file.content
-        return data.file.content || '';
+        return data.content || '';
     } catch (err) {
         console.error(err);
         return '';

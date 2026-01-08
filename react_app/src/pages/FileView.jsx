@@ -13,9 +13,10 @@ export default function FileView({ fileId, fileName, onClose, lang = "he" }) {
             setLoading(true);
             try {
                 const data = await getFileContent(userId, fileId);
+                console.log("DEBUG - Result from API function:", data);
                 // גישה לנתיב הנכון לפי תמונת ה-Network ששלחת
-                if (data && data.file) {
-                    setContent(data.file.content || "");
+                if (data !== null && data !== undefined) {
+                    setContent(data);
                 }
             } catch (error) {
                 console.error("Failed to load file content:", error);
