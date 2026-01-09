@@ -19,6 +19,7 @@ export default function Layout({ children, lang, setLang, currentFolderId }) {
                     />
                 </div>
                 <div className="search-container">
+                    <span className="search-icon">🔍</span>
                     <input
                         className="search-input"
                         type="text"
