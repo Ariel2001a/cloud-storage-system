@@ -1,15 +1,21 @@
 import { useState, useEffect } from "react";
-import { getFiles } from "../api/files";
-import FileItem from "../components/FileItem";
-import FileView from "./FileView"; // 1. ייבוא של קומפוננטת התצוגה
+import { getFiles, searchFiles } from "../api/files";
+import FileView from "./FileView";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 
-export default function Home({ lang }) {
-    const [items, setItems] = useState([]);
+const formatFileSize = (bytes) => {
+    if (!bytes || bytes === 0) return "--";
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+};
 
-    // 2. State חדש: האם יש קובץ שנבחר לצפייה?
+export default function Home({ lang, searchTerm, user }) {
+    const [items, setItems] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [isLoading, setIsLoading] = useState(true); // סטייט חדש לטעינה
 
     const navigate = useNavigate();
     const userId = 1;
@@ -17,48 +23,96 @@ export default function Home({ lang }) {
 
     useEffect(() => {
         async function load() {
+            setIsLoading(true); // מתחילים טעינה - זה ימנע את הודעת "אין קבצים"
             try {
-                const res = await getFiles(userId);
-                setItems(res || []);
+                let data;
+                if (searchTerm && searchTerm.trim() !== "") {
+                    data = await searchFiles(userId, searchTerm);
+                } else {
+                    data = await getFiles(userId);
+                }
+                setItems(data || []);
             } catch (error) {
                 console.error("Error loading files:", error);
+            } finally {
+                setIsLoading(false); // מסיימים טעינה בכל מקרה (הצלחה או כישלון)
             }
         }
-        load();
-    }, []);
 
-    // 3. עדכון פונקציית הפתיחה
+        const delayDebounceFn = setTimeout(() => {
+            load();
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchTerm]); // אם הוספת refreshKey ב-App.js, תוסיף אותו גם כאן במערך
+
     function openItem(item) {
         if (item.type === "folder") {
-            navigate(`/folder/${item.id}`); // תיקייה עדיין עוברת עמוד
+            navigate(`/folder/${item.id}`);
         } else {
-            setSelectedFile(item); // קובץ נשמר ב-State ופותח מודאל
+            setSelectedFile(item);
         }
     }
 
     return (
         <div className="page-container">
             <h2 className="page-title">
-                {isRtl ? "האחסון שלי" : "My Drive"}
+                {searchTerm ? (isRtl ? `תוצאות חיפוש עבור: ${searchTerm}` : `Search results for: ${searchTerm}`)
+                    : (isRtl ? "האחסון שלי" : "My Drive")}
             </h2>
 
-            <div className="file-list">
-                {items.length > 0 ? (
-                    items.map(item => (
-                        <FileItem
-                            key={item.id}
-                            item={item}
-                            onClick={() => openItem(item)}
-                        />
-                    ))
-                ) : (
-                    <p className="status-msg">
-                        {isRtl ? "אין קבצים להצגה" : "No files to show"}
-                    </p>
-                )}
+            <div className="table-container">
+                <table className="files-table">
+                    <thead>
+                        <tr>
+                            <th>{isRtl ? "שם" : "Name"}</th>
+                            <th>{isRtl ? "בעלים" : "Owner"}</th>
+                            <th>{isRtl ? "שינוי אחרון" : "Last modified"}</th>
+                            <th>{isRtl ? "גודל קובץ" : "File size"}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {/* תנאי משולש: קודם בודקים אם בטעינה, אחר כך אם יש קבצים */}
+                        {isLoading ? (
+                            <tr>
+                                <td colSpan="4" className="status-msg">
+                                    {isRtl ? "טוען קבצים..." : "Loading files..."}
+                                </td>
+                            </tr>
+                        ) : items.length > 0 ? (
+                            items.map(item => (
+                                <tr key={item.id} className="file-row" onClick={() => openItem(item)}>
+                                    <td className="col-name">
+                                        <span className="file-icon">{item.type === 'folder' ? '📁' : '📄'}</span>
+                                        {item.name}
+                                    </td>
+                                    <td className="col-owner">
+                                        <div className="owner-info">
+                                            <div className="owner-avatar-mini">
+                                                {user?.first_name ? user.first_name[0].toUpperCase() : "U"}
+                                            </div>
+                                            <span>{isRtl ? "אני" : "me"}</span>
+                                        </div>
+                                    </td>
+                                    <td className="col-date">
+                                        {new Date(item.updatedAt || item.createdAt).toLocaleDateString(isRtl ? 'he-IL' : 'en-US')}
+                                    </td>
+                                    <td className="col-size">
+                                        {item.type === 'folder' ? '--' : formatFileSize(item.size)}
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4" className="status-msg">
+                                    {isRtl ? "אין קבצים להצגה" : "No files to show"}
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
 
-            {/* 4. הצגת המודאל הצף אם selectedFile אינו null */}
             {selectedFile && (
                 <FileView
                     fileId={selectedFile.id}
