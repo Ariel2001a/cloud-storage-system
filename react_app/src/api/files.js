@@ -20,15 +20,13 @@ export async function getFiles(userId) {
 // 2️⃣ פתיחת תיקייה (children)
 export async function getFolderChildren(userId, folderId) {
     try {
-        const res = await fetch(`${API_BASE}/${folderId}`, {
+        const res = await fetch(`${API_BASE}/${folderId}/children`, {
             headers: { 'user-id': userId }
         });
         if (!res.ok) throw new Error('Failed to fetch folder');
         const data = await res.json();
-        // data.file.folderParent === parentId, אבל children לא מגיעים ישירות
-        // צריך להשתמש ב־getFolderFiles API, אבל לפי הקוד שלך אין endpoint נפרד
-        // לכן, נניח שה־children נשלחים בפיילד file.children (אם תוסיף)
-        return data.file.children || []; // אם אין, אפשר לממש ב־mock
+
+        return data.files || [];
     } catch (err) {
         console.error(err);
         return [];
@@ -65,3 +63,129 @@ export async function createFileOrFolder(userId, body) {
     return await res.json();
 }
 
+
+export async function deleteFileOrFolder(userId, fileId) {
+    const res = await fetch(`${API_BASE}/${fileId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "user-id": userId
+        }
+    });
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Failed to delete: " + errText);
+    }
+    const text = await res.text(); // קורא את הגוף כטקסט
+    return text;
+}
+
+
+export async function renameFileOrFolder(userId, fileId, newName) {
+    const res = await fetch(`${API_BASE}/${fileId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "user-id": userId
+        },
+        body: JSON.stringify({ name: newName })
+    });
+
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Failed to rename: " + errText);
+    }
+
+    const text = await res.text(); // קורא את הגוף כטקסט
+    return text;
+}
+
+export async function moveFolder(userId, fileId, folderId) {
+    const res = await fetch(`${API_BASE}/${fileId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "user-id": userId
+        },
+        body: JSON.stringify({ parent_id: folderId })
+    });
+    
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Failed to move folder: " + errText);
+    }
+
+    const text = await res.text(); // קורא את הגוף כטקסט
+    return text;
+}
+
+
+export async function starOrUnstarFile(userId, fileId) {
+    const res = await fetch(`${API_BASE}/${fileId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "user-id": userId
+        },
+    });
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Failed to star/unstar: " + errText);
+    }
+
+    const text = await res.text(); // קורא את הגוף כטקסט
+    return text;
+}
+
+export async function shareFileOrFolder(userId, fileId, sharedWithUserId, permission) {
+    const res = await fetch(`${API_BASE}/${fileId}/permissions`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "user-id": userId
+        },
+        body: JSON.stringify({ shared_with_user_id: sharedWithUserId, permission: permission })
+
+    });
+
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Failed to share file/folder: " + errText);
+    }
+    const text = await res.text(); // קורא את הגוף כטקסט
+    return text;
+}
+
+
+export async function getDeletedFiles(userId) {
+    const res = await fetch(`${API_BASE}/deleted`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "user-id": userId
+        },
+    });
+    return await res.json();
+}
+
+export async function getSharedFiles(userId) {
+    const res = await fetch(`${API_BASE}/shared`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "user-id": userId
+        },
+    });
+    return await res.json();
+}
+
+export async function getStarredFiles(userId) {
+    const res = await fetch(`${API_BASE}/starred`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "user-id": userId
+        },
+    });
+    return await res.json();
+}

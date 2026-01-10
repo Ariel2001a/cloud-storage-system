@@ -1,100 +1,45 @@
-/* מבנה העמוד הראשי */
-.home-wrapper {
+/* המכולה הראשית של כל דף תוכן (Home או Folder) */
+.page-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    font-family: sans-serif;
+    gap: 20px;
+    animation: fadeIn 0.3s ease;
+    /* אנימציה עדינה בכניסת עמוד */
 }
 
-/* תפריט עליון */
-.top-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 1.5rem;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dadce0;
-}
-
-.search-container {
-    flex: 0 1 700px;
-}
-
-.search-input {
-    width: 100%;
-    padding: 0.7rem 1.5rem;
-    border-radius: 24px;
-    border: none;
-    background-color: #eaf1fb;
-    font-size: 1rem;
-}
-
-/* כפתור שפה קטן */
-.lang-button {
-    background: none;
-    border: 1px solid #dadce0;
-    padding: 5px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 13px;
-    color: #5f6368;
-}
-
-/* המבנה המרכזי (סיידבר + תוכן) */
-.main-layout {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-}
-
-.sidebar {
-    width: 250px;
-    padding: 1rem;
-    background-color: #f8f9fa;
-}
-.sidebar-button {
-    display: block;
-    width: 100%;
-    background: none;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
+/* כותרת העמוד (האחסון שלי / שם התיקייה) */
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 400;
     color: #202124;
-    cursor: pointer;
-    margin-bottom: 0.5rem;
-}
-/* כפתור חדש בסטייל דרייב */
-.new-button {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background-color: white;
-    padding: 12px 24px;
-    border-radius: 16px;
-    border: none;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-weight: 500;
-    cursor: pointer;
-    margin-bottom: 1rem;
+    margin: 0;
 }
 
-.new-button:hover {
-    background-color: #f1f3f4;
-}
-
-/* אזור הקבצים */
-.main-content {
-    flex: 1;
-    background-color: white;
-    margin: 10px;
-    border-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-}
-
+/* סידור רשימת הקבצים */
 .file-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    /* יצירת קו הפרדה בין הפריטים אם רוצים */
+    border-top: 1px solid #f1f3f4;
+}
+
+/* הודעה במקרה של רשימה ריקה */
+.status-msg {
+    text-align: center;
+    padding: 50px;
+    color: #5f6368;
+    font-size: 1.1rem;
+}
+
+/* אנימציית כניסה חלקה */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

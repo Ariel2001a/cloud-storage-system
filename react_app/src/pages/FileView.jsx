@@ -1,31 +1,56 @@
-import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getFileContent } from "../api/files";
+import "./FileView.css";
 
-export default function FileView() {
-    const { id } = useParams();
+export default function FileView({ fileId, fileName, onClose, lang = "he" }) {
     const [content, setContent] = useState("");
-    const [fileName, setFileName] = useState("קובץ"); // אם אין שם מה־API, אפשר לשים ברירת מחדל
-    const userId = 1; // החלף עם המשתמש הנוכחי שלך
+    const [loading, setLoading] = useState(true);
+    const isRtl = lang === "he";
+    const userId = 1;
 
     useEffect(() => {
         async function load() {
-            const c = await getFileContent(userId, id);
-            setContent(c); // getFileContent מחזיר כבר מחרוזת תוכן
+            setLoading(true);
+            try {
+                const data = await getFileContent(userId, fileId);
+                // גישה לנתיב הנכון לפי תמונת ה-Network ששלחת
+                if (data && data.file) {
+                    setContent(data.file.content || "");
+                }
+            } catch (error) {
+                console.error("Failed to load file content:", error);
+            }
+            setLoading(false);
         }
-
         load();
-    }, [id]);
+    }, [fileId]);
 
     return (
-        <div>
-            <h1>📄 {fileName}</h1>
+        /* השכבה השקופה מאחור שסוגרת את החלון בלחיצה */
+        <div className="file-modal-overlay" onClick={onClose}>
+            <div className="file-view-modal" onClick={(e) => e.stopPropagation()}>
 
-            <textarea
-                value={content}
-                readOnly
-                style={{ width: "100%", height: "300px", direction: "rtl" }}
-            />
+                <header className="file-view-header">
+                    <div className="header-right">
+                        <span className="file-icon">📄</span>
+                        <h2>{fileName || (isRtl ? "צפייה בקובץ" : "File View")}</h2>
+                    </div>
+                    <button className="close-x-btn" onClick={onClose}>✕</button>
+                </header>
+
+                <div className="document-paper">
+                    {loading ? (
+                        <div className="loading-spinner">{isRtl ? "טוען..." : "Loading..."}</div>
+                    ) : (
+                        <textarea
+                            className="file-textarea"
+                            value={content}
+                            readOnly
+                            style={{ direction: isRtl ? "rtl" : "ltr" }}
+                        />
+                    )}
+                </div>
+            </div>
         </div>
     );
 }

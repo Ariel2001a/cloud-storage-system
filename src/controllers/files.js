@@ -149,9 +149,7 @@ exports.getSharedFiles = (req, res) => {
     res.json({ files });
 };
 
-
-// Returns file or folder by ID
-exports.getFileById = (req, res) => {
+exports.getStarredFiles = (req, res) => {
     const userId = req.headers['user-id'];
     const user = User.getUserById(parseInt(userId));
 
@@ -163,12 +161,118 @@ exports.getFileById = (req, res) => {
         return res.status(404).json({ error: "User not found" });
     }
 
-    const file = filesModel.getFileById(userId, parseInt(req.params.id));
+    const files = filesModel.getStarredFiles(userId);
+    res.json({ files });
+};
+
+exports.getFolderChildren = (req, res) => {
+    const userId = req.headers['user-id'];
+    const folderId = req.params.id;
+
+    const children = filesModel.getFolderFiles(userId, folderId);
+    res.json({ files: children });
+};
+
+
+exports.getFileById = async (req, res) => {
+    const userId = req.headers['user-id'];
+
+    // בדיקת תקינות בסיסית
+    if (!userId) {
+        return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    const user = User.getUserById(parseInt(userId));
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+
+    const fileId = req.params.id;
+    const file = filesModel.getFileById(userId, parseInt(fileId));
+
     if (!file) {
         return res.status(404).json({ error: 'File not found' });
     }
-    res.json({ file });
+
+    let content = "";
+
+    if (file.type === "file") {
+        try {
+            // ניקוי ה-ID מרווחים לפני השליחה ל-C++ כדי למנוע 404
+            const cppResponse = await fileSocket.sendCommand(`GET ${fileId.toString().trim()}`);
+            console.log("Raw Response from C++:", cppResponse);
+
+            // טיפול בשגיאות שחוזרות מה-C++
+            if (cppResponse.startsWith("404") || cppResponse.includes("LOGICAL_PROBLEM")) {
+                return res.status(404).json({ error: "File not found on storage server" });
+            }
+            if (cppResponse.startsWith("500") || cppResponse.includes("SERVER_ERROR")) {
+                return res.status(500).json({ error: "C++ server internal error" });
+            }
+
+            // חילוץ תוכן חכם:
+            // אנחנו מחליפים רק את ה-200 (וקוד הסטטוס OK אם קיים) בהתחלה במחרוזת ריקה
+            // זה מבטיח שכל ה-1h1e2l1o... יישאר שלם
+            content = cppResponse.replace(/^200\s*(OK)?\s*/i, "");
+
+        } catch (err) {
+            console.error("Socket Error:", err);
+            return res.status(500).json({ error: "Failed to connect to storage server" });
+        }
+    }
+
+    // החזרת ה-JSON במבנה שקבענו
+    return res.json({
+        file: {
+            ...file,
+            content: content // כאן יופיע ה-hello world או הקידוד שלו
+        }
+    });
 };
+
+exports.getFileById2 = async (req, res) => {
+    const userId = req.headers['user-id'];
+    if (!userId) return res.status(401).json({ error: 'User not logged in' });
+
+    const user = User.getUserById(parseInt(userId));
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const fileId = req.params.id;
+    const file = filesModel.getFileById(userId, parseInt(fileId));
+
+    if (!file) return res.status(404).json({ error: 'File not found' });
+
+    // הגדרת תוכן כ-null לתיקייה כדי להבדיל בין "ריק" ל"לא קיים"
+    let content = file.type === "file" ? "" : null;
+
+    if (file.type === "file") {
+        try {
+            const cppResponse = await fileSocket.sendCommand(`GET ${fileId.toString().trim()}`);
+
+            console.log(`--- Debug: Raw Response for File ${fileId} ---`);
+            console.log(`[${cppResponse}]`);
+
+            if (cppResponse.startsWith("404")) {
+                return res.status(404).json({ error: "File not found on storage server" });
+            }
+
+            content = cppResponse;
+        }
+
+        catch (err) {
+            console.error("Socket Error:", err);
+            return res.status(500).json({ error: "Failed to connect to storage server" });
+        }
+    }
+
+    return res.json({
+        file: {
+            ...file,
+            content: content
+        }
+    });
+};
+
 
 // Updates file or folder fields
 exports.patchFileById = async (req, res) => {
@@ -318,9 +422,11 @@ exports.deleteFileById = async (req, res) => {
             if (file.starred) {
                 filesModel.starOrUnstarFile(userId, idToDelete);
             }
+        }
     }
     return res.status(204).end();
 };
+
 
 exports.starOrUnstarFile = (req, res) => {
     const userId = req.headers['user-id'];

@@ -39,7 +39,10 @@ string AddCommand::run(const vector<string>& args)
             text += " ";
         }
     }
-
+    
+    text.erase(text.find_last_not_of(" \r\n\t") + 1);
+    text.erase(0, text.find_first_not_of(" \r\n\t"));
+    
     string compressed = Compressor::compress(text);
 
 

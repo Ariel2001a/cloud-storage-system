@@ -14,12 +14,19 @@ router.route('/deleted')
 router.route('/shared')
         .get(filesController.getSharedFiles); // Get all shared files/folders
 
+router.route('/starred')
+        .get(filesController.getStarredFiles); // Get all starred files/folders
+
 // Routes for specific file/folder by ID
 router.route('/:id')
-        .get(filesController.getFileById)   // Get a file/folder by ID
+        .get(filesController.getFileById2)   // Get a file/folder by ID
         .patch(filesController.patchFileById)  // Update a file/folder by ID
         .delete(filesController.deleteFileById) // Delete a file/folder by ID
         .post(filesController.starOrUnstarFile); // Restore a deleted file/folder by ID
+
+
+router.route('/:id/children')
+        .get(filesController.getFolderChildren);
 
 
 module.exports = router; // export the router

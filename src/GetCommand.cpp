@@ -47,6 +47,9 @@ string GetCommand::run(const vector<string>& args) {
 
     string fileId = args[0];
 
+    fileId.erase(fileId.find_last_not_of(" \n\r\t") + 1);
+    fileId.erase(0, fileId.find_first_not_of(" \n\r\t"));
+
     string environment_variable_path = ICommand::GetFolderPath() + "/" + fileId;
 ;
 

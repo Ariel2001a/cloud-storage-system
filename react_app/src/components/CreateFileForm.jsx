@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { createFileOrFolder } from "../api/files";
-import "./CreateFileForm.css"; // ייבוא ה-CSS הנפרד
+import "./CreateFileForm.css";
+import { useLocation } from "react-router-dom";
 
-export default function CreateFileForm({ userId, onCreated, onClose, parentId = null }) {
+export default function CreateFileForm({ userId, onCreated, onClose }) {
+    const location = useLocation();
     const [name, setName] = useState("");
     const [type, setType] = useState("file");
     const [content, setContent] = useState("");
@@ -12,15 +14,29 @@ export default function CreateFileForm({ userId, onCreated, onClose, parentId = 
         e.preventDefault();
         if (!name.trim()) return alert("חובה להזין שם!");
 
+        // חילוץ ה-ID מה-URL
+        const currentPath = window.location.pathname;
+        const parts = currentPath.split('/');
+        const folderIdIndex = parts.indexOf('folder');
+        let idFromUrl = null;
+
+        if (folderIdIndex !== -1 && parts[folderIdIndex + 1]) {
+            idFromUrl = Number(parts[folderIdIndex + 1]);
+        }
+
         setLoading(true);
         const res = await createFileOrFolder(userId, {
-            name, type, content: type === "file" ? content : undefined, parentId,
+            name,
+            type,
+            content: type === "file" ? content : undefined,
+            // התיקון הקריטי: השרת שלכם ב-req.body מחפש parentId!
+            parentId: idFromUrl
         });
         setLoading(false);
 
         if (res) {
-            onCreated && onCreated(res.id, { name, type });
-            onClose(); // סגירת המודאל לאחר הצלחה
+            onCreated && onCreated();
+            onClose();
         }
     };
 
