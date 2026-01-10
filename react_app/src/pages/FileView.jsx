@@ -11,8 +11,16 @@ export default function FileView({ fileId, fileName, onClose, lang = "he" }) {
     useEffect(() => {
         async function load() {
             setLoading(true);
-            const c = await getFileContent(userId, fileId);
-            setContent(c);
+            try {
+                const data = await getFileContent(userId, fileId);
+                console.log("DEBUG - Result from API function:", data);
+                // גישה לנתיב הנכון לפי תמונת ה-Network ששלחת
+                if (data !== null && data !== undefined) {
+                    setContent(data);
+                }
+            } catch (error) {
+                console.error("Failed to load file content:", error);
+            }
             setLoading(false);
         }
         load();

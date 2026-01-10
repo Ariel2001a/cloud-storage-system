@@ -20,15 +20,13 @@ export async function getFiles(userId) {
 // 2️⃣ פתיחת תיקייה (children)
 export async function getFolderChildren(userId, folderId) {
     try {
-        const res = await fetch(`${API_BASE}/${folderId}`, {
+        const res = await fetch(`${API_BASE}/${folderId}/children`, {
             headers: { 'user-id': userId }
         });
         if (!res.ok) throw new Error('Failed to fetch folder');
         const data = await res.json();
-        // data.file.folderParent === parentId, אבל children לא מגיעים ישירות
-        // צריך להשתמש ב־getFolderFiles API, אבל לפי הקוד שלך אין endpoint נפרד
-        // לכן, נניח שה־children נשלחים בפיילד file.children (אם תוסיף)
-        return data.file.children || []; // אם אין, אפשר לממש ב־mock
+
+        return data.files || [];
     } catch (err) {
         console.error(err);
         return [];
@@ -45,7 +43,7 @@ export async function getFileContent(userId, fileId) {
         const data = await res.json();
         // לפי הקוד שלך, content נשמר ב־C++ server => צריך לקרוא ל־content דרך socket
         // לצורך Frontend, אפשר להחזיר mock: data.file.content
-        return data.file.content || '';
+        return data.content || '';
     } catch (err) {
         console.error(err);
         return '';

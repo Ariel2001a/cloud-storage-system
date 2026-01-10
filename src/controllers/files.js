@@ -5,7 +5,7 @@ const User = require('../models/users');               // import user model
 const { addPermission } = require('../models/permissions');
 const { PERMISSION_TYPES } = require('../models/permissions');
 
-let filesCounter = Date.now(); // initialize file ID counter
+let filesCounter = 0; // initialize file ID counter
 
 // Creates a file or folder for the user
 exports.createFileOrFolder = async (req, res) => {
@@ -115,25 +115,57 @@ exports.getFiles = (req, res) => {
     res.json({ files });                               // return files as JSON
 };
 
-// Returns file or folder by ID
-exports.getFileById = (req, res) => {
+
+exports.getFolderChildren = (req, res) => {
     const userId = req.headers['user-id'];
-    const user = User.getUserById(parseInt(userId));
+    const folderId = req.params.id;
 
-    if (!userId) {
-        return res.status(401).json({ error: 'User not logged in' });
-    }
-
-    if (!user) {
-        return res.status(404).json({ error: "User not found" });
-    }
-
-    const file = filesModel.getFileById(userId, parseInt(req.params.id));
-    if (!file) {
-        return res.status(404).json({ error: 'File not found' });
-    }
-    res.json({ file });
+    const children = filesModel.getFolderFiles(userId, folderId);
+    res.json({ files: children });
 };
+
+exports.getFileById = async (req, res) => {
+    const userId = req.headers['user-id'];
+    if (!userId) return res.status(401).json({ error: 'User not logged in' });
+
+    const user = User.getUserById(parseInt(userId));
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const fileId = req.params.id;
+    const file = filesModel.getFileById(userId, parseInt(fileId));
+
+    if (!file) return res.status(404).json({ error: 'File not found' });
+
+
+    let content = file.type === "file" ? "" : null;
+
+    if (file.type === "file") {
+        try {
+            const cppResponse = await fileSocket.sendCommand(`GET ${fileId.toString().trim()}`);
+            if (cppResponse.startsWith("404")) {
+                return res.status(404).json({ error: "File not found on storage server" });
+            }
+
+            const okIndex = cppResponse.toLowerCase().indexOf("ok");
+            if (okIndex !== -1) {
+                content = cppResponse.substring(okIndex + 2).trim();
+            } else {
+                content = cppResponse.trim();
+            }
+        }
+
+        catch (err) {
+            console.error("Socket Error:", err);
+            return res.status(500).json({ error: "Failed to connect to storage server" });
+        }
+    }
+
+    return res.json({
+        ...file,
+        content: content
+    });
+};
+
 
 // Updates file or folder fields
 exports.patchFileById = async (req, res) => {

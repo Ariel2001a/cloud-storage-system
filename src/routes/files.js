@@ -14,5 +14,8 @@ router.route('/:id')
         .patch(filesController.patchFileById)  // Update a file/folder by ID
         .delete(filesController.deleteFileById) // Delete a file/folder by ID
 
+router.route('/:id/children')
+        .get(filesController.getFolderChildren);
+
 
 module.exports = router; // export the router
