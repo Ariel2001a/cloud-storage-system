@@ -1,0 +1,142 @@
+.MyCard {
+  width: 80%;
+  margin: 60px auto;
+  padding: 30px 25px;
+  height: 420px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: black;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  gap: 20px;
+  direction: ltr; /* force left-to-right layout */
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* LEFT COLUMN: Logo + headlines + sign-in */
+.left {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* push logo top, headlines+btn bottom */
+  align-items: flex-start;
+  height: 100%;
+}
+
+/* RIGHT COLUMN: Inputs + buttons */
+.right {
+  flex: 2;
+  align-items: flex-end; /* stick to right */
+}
+
+/* Logo */
+.card-logo {
+  width: 250px;
+  height: auto;
+  margin-bottom: 15px;
+}
+
+/* Headlines */
+.main_headline {
+  color: white;
+  font-size: 50px;
+  margin-bottom: 90px;
+}
+
+.headline-signin {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.secondary_headline {
+  color: white;
+  font-size: 30px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+/* Inputs */
+.form-control::placeholder {
+  color: white;
+  opacity: 1;
+}
+
+.form-control {
+  padding: 10px;
+  font-size: 20px;
+  width: 70%;
+  background-color: black;
+  color: white;
+  border-color: blue;
+}
+
+/* Buttons container */
+.buttons-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Both buttons 50% */
+.register-btn,
+.upload-btn {
+  flex: 1;
+  font-size: 15px;
+  padding: 1px;
+}
+
+/* Button colors */
+.SignIn-btn {
+  background-color: blue;
+  color: white;
+  border-color: blue;
+ width: 190px;
+ padding: 10px 20px;
+  
+}
+
+.upload-btn {
+  background-color: green;
+  color: white;
+  border-color: green;
+  width: 190px;
+  
+  
+}
+.register-btn:hover {
+  background-color: darkblue;
+  border-color: darkblue;    
+  color: black;
+}
+
+/* Upload button hover */
+.upload-btn:hover {
+  background-color: darkgreen; 
+  border-color: darkgreen;
+   color: black;
+}
+
+/* Sign-in button hover */
+.sign-in-btn:hover {
+  background-color: navy;  
+  border-color: navy;
+   color: black;
+}
+
+/* Sign-in button in left column */
+.sign-in-btn {
+  border-color: blue;
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  flex-shrink: 0;
+}

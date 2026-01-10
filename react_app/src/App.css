@@ -1,4 +1,18 @@
-/* הגדרות בסיסיות לכל האתר */
+.app-container {
+  padding: 20px;
+}
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.file-view textarea {
+  margin-top: 10px;
+  background: white;
+
+  /* הגדרות בסיסיות לכל האתר */
 * {
   box-sizing: border-box;
   margin: 0;
