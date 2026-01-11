@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
+import FileItem from "../components/FileItem";
 import { getFiles, searchFiles } from "../api/files";
 import FileView from "./FileView";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
+import { getUserIdFromToken } from "../utils/tokenUtils";
+
+
 
 const formatFileSize = (bytes) => {
     if (!bytes || bytes === 0) return "--";
@@ -15,13 +19,27 @@ const formatFileSize = (bytes) => {
 export default function Home({ lang, searchTerm, user }) {
     const [items, setItems] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [userId, setUserId] = useState(null); // store decoded user ID
+    const [items, setItems] = useState([]);
+    const [selectedFile, setSelectedFile] = useState(null);
     const [isLoading, setIsLoading] = useState(true); // סטייט חדש לטעינה
-
     const navigate = useNavigate();
-    const userId = 1;
     const isRtl = lang === 'he';
 
+    // ✅ Decode token and redirect if missing/invalid
     useEffect(() => {
+        const id = getUserIdFromToken();
+        if (!id) {
+            navigate('/login'); // redirect to login if no valid token
+            return;
+        }
+        setUserId(id);
+    }, [navigate]);
+
+    // ✅ Load files after we have userId
+    useEffect(() => {
+        if (!userId) return;
+
         async function load() {
             setIsLoading(true); // מתחילים טעינה - זה ימנע את הודעת "אין קבצים"
             try {
@@ -44,7 +62,7 @@ export default function Home({ lang, searchTerm, user }) {
         }, 300);
 
         return () => clearTimeout(delayDebounceFn);
-    }, [searchTerm]); // אם הוספת refreshKey ב-App.js, תוסיף אותו גם כאן במערך
+    }, [searchTerm,userId]);
 
     function openItem(item) {
         if (item.type === "folder") {

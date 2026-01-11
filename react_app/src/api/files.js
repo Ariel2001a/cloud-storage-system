@@ -2,12 +2,26 @@
 
 const API_BASE = 'http://localhost:8080/api'; // כתובת ה־API שלך
 
-// 1️⃣ הצגת קבצים ותיקיות (top-level)
-export async function getFiles(userId) {
+// helper to get headers with token
+function getAuthHeaders() {
+    const token = sessionStorage.getItem('token');
+    if (!token) throw new Error("No token found");
+    return {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    };
+}
+
+
+
+
+
+// 1️⃣ Get top-level files
+export async function getFiles() {
     try {
         const res = await fetch(`${API_BASE}/files`, {
-            headers: { 'user-id': userId }
-        });
+            headers: getAuthHeaders()
+
         if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();
         return data.files || [];
@@ -17,15 +31,14 @@ export async function getFiles(userId) {
     }
 }
 
-// 2️⃣ פתיחת תיקייה (children)
-export async function getFolderChildren(userId, folderId) {
+// 2️⃣ Get folder children
+export async function getFolderChildren(folderId) {
     try {
-        const res = await fetch(`${API_BASE}/files/${folderId}/children`, {
-            headers: { 'user-id': userId }
+        const res = await fetch(`${API_BASE}/files/${folderId}`, {
+            headers: getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch folder');
         const data = await res.json();
-
         return data.files || [];
     } catch (err) {
         console.error(err);
@@ -33,36 +46,39 @@ export async function getFolderChildren(userId, folderId) {
     }
 }
 
-// 3️⃣ פתיחת קובץ (content)
-export async function getFileContent(userId, fileId) {
+// 3️⃣ Get file content
+export async function getFileContent(fileId) {
     try {
         const res = await fetch(`${API_BASE}/files/${fileId}`, {
-            headers: { 'user-id': userId }
+            headers: getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch file');
         const data = await res.json();
-        // לפי הקוד שלך, content נשמר ב־C++ server => צריך לקרוא ל־content דרך socket
-        // לצורך Frontend, אפשר להחזיר mock: data.file.content
         return data.content || '';
+      
     } catch (err) {
         console.error(err);
         return '';
     }
+
+// 4️⃣ Create file or folder
+export async function createFileOrFolder(body) {
+    try {
+        const res = await fetch(`${API_BASE}/files`, {
+            method: "POST",
+            headers: getAuthHeaders(), // includes Content-Type + Authorization
+            body: JSON.stringify(body) // ✅ stringify your object
+        });
+
+        if (!res.ok) throw new Error('Failed to create file/folder');
+        return await res.json();
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
 }
 
-// 4️⃣ יצירת קובץ או תיקייה   
-export async function createFileOrFolder(userId, body) {
-    const res = await fetch(`${API_BASE}/files`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "user-id": userId
-        },
-        body: JSON.stringify(body)
-    });
-    return await res.json();
-}
-
+//CHANGE THIS FUNCTIONS
 export async function searchFiles(userId, query) {
     if (!query || query.trim() === "") return [];
 

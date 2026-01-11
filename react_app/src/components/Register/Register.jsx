@@ -1,8 +1,13 @@
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Register.css';
 import CardLogo from '../../images/Alogo.png';
+import LangButton from '../LangButton';
 
-function Register() {
+function Register({ lang, setLang }) {
+  const navigate = useNavigate();
+  const isRtl = lang === 'he';
+
   // Form state
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
@@ -10,165 +15,103 @@ function Register() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
 
-  // File upload ref
+  // File upload
   const fileInputRef = useRef(null);
   const [file, setFile] = useState(null);
 
-  // Register button handler
+  // Handlers
   const handleRegister = async () => {
-    // Check all fields
     if (!firstname || !lastname || !username || !password || !confirm) {
-      alert('Please fill all fields');
+      alert(isRtl ? 'נא למלא את כל השדות' : 'Please fill all fields');
       return;
     }
-
-    // Password rules: min 8 chars, at least 1 letter, 1 number
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    if (!passwordRegex.test(password)) {
+    if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
       alert(
-        'Password must be at least 8 characters and include at least 1 letter and 1 number'
+        isRtl
+          ? 'הסיסמה חייבת להכיל לפחות 8 תווים, אות אחת ומספר אחד'
+          : 'Password must be at least 8 characters and include at least 1 letter and 1 number'
       );
       return;
     }
-
-    // Password confirmation
     if (password !== confirm) {
-      alert('Passwords do not match');
+      alert(isRtl ? 'הסיסמאות אינן תואמות' : 'Passwords do not match');
       return;
     }
-
-    // Prepare data
-    const data = {
-      first_name: firstname,
-      last_name: lastname,
-      email: username + '@ead.com',
-      password,
-      image: file ? file.name : 'Alogo.png',
-    };
+const data = {
+  first_name: firstname,
+  last_name: lastname,
+  email: username + '@ead.com',  // backend expects "email"
+  password,
+  image: file ? file.name : 'Alogo.png',
+};
 
     try {
-      const res = await fetch('http://localhost:8080/api/users', {
+        const res = await fetch('http://localhost:8080/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
 
       if (res.ok) {
-        alert('Registered successfully!');
-        window.location.href = '/login';
+        alert(isRtl ? 'נרשמת בהצלחה!' : 'Registered successfully!');
+        navigate('/login');
       } else {
         const errText = await res.text();
-        alert('Registration failed: ' + errText);
+        alert(
+          isRtl
+            ? 'ההרשמה נכשלה: ' + errText
+            : 'Registration failed: ' + errText
+        );
       }
     } catch (err) {
-      alert('Could not connect to the server.');
+      alert(isRtl ? 'לא ניתן להתחבר לשרת' : 'Could not connect to the server.');
       console.error(err);
     }
   };
 
-  // Sign-in handler
-  const handleSignIn = () => {
-    window.location.href = '/login';
-  };
-
-  // Upload button click
-  const handleUploadClick = () => {
-    fileInputRef.current.click();
-  };
-
-  // File selected
-  const handleFileChange = (e) => {
-    if (e.target.files.length > 0) {
-      setFile(e.target.files[0]);
-    }
-  };
+  const handleSignIn = () => navigate('/login');
+  const handleUploadClick = () => fileInputRef.current.click();
+  const handleFileChange = (e) => e.target.files.length && setFile(e.target.files[0]);
 
   return (
-    <div className="MyCard">
-      {/* LEFT COLUMN: Logo + Headlines + Sign-in */}
-      <div className="column left">
-        <img src={CardLogo} alt="Logo" className="card-logo" />
-        <h2 className="main_headline">Create a new account</h2>
-        <div className="headline-signin">
-          <h3 className="secondary_headline">Already has an account?</h3>
-          <button
-            className="btn btn-light sign-in-btn"
-            type="button"
-            onClick={handleSignIn}
-          >
-            Sign in
-          </button>
-        </div>
-      </div>
-
-      {/* RIGHT COLUMN: Inputs + Upload + Register */}
-      <div className="column right">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="First name"
-          value={firstname}
-          onChange={(e) => setFirstname(e.target.value)}
-        />
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Last name"
-          value={lastname}
-          onChange={(e) => setLastname(e.target.value)}
-        />
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          type="password"
-          className="form-control"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <input
-          type="password"
-          className="form-control"
-          placeholder="Confirm password"
-          value={confirm}
-          onChange={(e) => setConfirm(e.target.value)}
-        />
-
-        {/* Buttons row */}
-        <div className="buttons-row">
-          <button
-            className="btn upload-btn"
-            type="button"
-            onClick={handleUploadClick}
-          >
-            Upload Picture
-          </button>
-
-          <button
-            className="btn register-btn"
-            type="submit"
-            onClick={handleRegister}
-          >
-            Register
-          </button>
+    <>
+     <LangButton lang={lang} setLang={setLang} />
+      {/* ===== REGISTER CARD ===== */}
+      <div className="MyCard" style={{ direction: isRtl ? 'rtl' : 'ltr' }}>
+        <div className="column left">
+          <img src={CardLogo} alt="Logo" className="card-logo" />
+          <h2 className="main_headline">{isRtl ? 'צור חשבון חדש' : 'Create a new account'}</h2>
+          <div className="headline-signin">
+            <h3 className="secondary_headline">{isRtl ? 'כבר יש לך חשבון?' : 'Already have an account?'}</h3>
+            <button className="btn btn-light sign-in-btn" type="button" onClick={handleSignIn}>
+              {isRtl ? 'התחברות' : 'Sign in'}
+            </button>
+          </div>
         </div>
 
-        {/* Hidden file input */}
-        <input
-          type="file"
-          ref={fileInputRef}
-          style={{ display: 'none' }}
-          onChange={handleFileChange}
-          accept="image/*"
-        />
+        <div className="column right">
+          <input type="text" className="form-control" placeholder={isRtl ? 'שם פרטי' : 'First name'} value={firstname} onChange={(e) => setFirstname(e.target.value)} />
+          <input type="text" className="form-control" placeholder={isRtl ? 'שם משפחה' : 'Last name'} value={lastname} onChange={(e) => setLastname(e.target.value)} />
+          <input type="text" className="form-control" placeholder={isRtl ? 'שם משתמש' : 'Username'} value={username} onChange={(e) => setUsername(e.target.value)} />
+          <input type="password" className="form-control" title={isRtl ? 'הסיסמה חייבת להכיל לפחות 8 תווים, לפחות אות אחת באנגלית ולפחות ספרה אחד' : 'Password must contain 8 or more characters, at least 1 letter and 1 number'} placeholder={isRtl ? 'סיסמה' : 'Password'} value={password} onChange={e => setPassword(e.target.value)} />
+          <input type="password" className="form-control" placeholder={isRtl ? 'אימות סיסמה' : 'Confirm password'} value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+
+          <div className="buttons-row">
+            <button className="btn upload-btn" type="button" onClick={handleUploadClick}>
+              {isRtl ? 'העלאת תמונה' : 'Upload Picture'}
+            </button>
+            <button className="btn register-btn" type="button" onClick={handleRegister}>
+              {isRtl ? 'הרשמה' : 'Register'}
+            </button>
+          </div>
+
+          <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileChange} accept="image/*" />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
 export default Register;
+
+

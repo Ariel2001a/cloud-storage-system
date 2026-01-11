@@ -1,3 +1,4 @@
+import { Outlet } from "react-router-dom";
 import { useState, useEffect, useRef } from "react"; // 1. הוספנו useEffect ו-useRef
 import CreateFileForm from "./CreateFileForm";
 import "./Layout.css";
@@ -32,6 +33,8 @@ export default function Layout({ children, lang, setLang, currentFolderId, searc
 
     return (
         <div className="home-wrapper" style={{ direction: isRtl ? "rtl" : "ltr" }}>
+
+            {/* ===== TOP BAR ===== */}
             <header className="top-bar">
                 <div className="logo-container">
                     <img src={driveLogo} className="logo-img" alt="Google Drive Logo" />
@@ -81,12 +84,16 @@ export default function Layout({ children, lang, setLang, currentFolderId, searc
                 </div>
             </header>
 
+            {/* ===== MAIN LAYOUT ===== */}
             <div className="main-layout">
+
+                {/* SIDEBAR */}
                 <aside className="sidebar">
                     <button className="new-button" onClick={() => setShowForm(true)}>
                         <span style={{ color: '#34a853', fontSize: '24px' }}>＋</span>
                         {isRtl ? "חדש" : "New"}
                     </button>
+
                     <nav className="side-nav">
                         <div className="nav-item active">
                             <span className="nav-icon">📁</span>
@@ -95,23 +102,24 @@ export default function Layout({ children, lang, setLang, currentFolderId, searc
                     </nav>
                 </aside>
 
+                {/* MAIN CONTENT (פה נטען התוכן של Home / FolderView) */}
                 <main className="main-content">
-                    {children}
+                    <Outlet />
                 </main>
             </div>
 
-            {showForm && (
-                <CreateFileForm
-                    userId={1}
-                    parentId={currentFolderId}
-                    onClose={() => setShowForm(false)}
-                    lang={lang}
-                    onCreated={() => {
-                        setShowForm(false);
-                        window.location.reload();
-                    }}
-                />
-            )}
+            {/* ===== CREATE FILE POPUP ===== */}
+           {showForm && (
+    <CreateFileForm
+        parentId={currentFolderId}
+        onClose={() => setShowForm(false)}
+        lang={lang}
+        onCreated={() => {
+            setShowForm(false);
+            window.location.reload();
+        }}
+    />
+)}
         </div>
     );
 }

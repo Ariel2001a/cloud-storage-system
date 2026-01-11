@@ -27,13 +27,30 @@ function App() {
 
           <Route path="/folder/:id" element={<FolderView lang={lang} searchTerm={searchTerm} onFolderEnter={setCurrentFolderId} />} />
 
-          <Route path="/register" element={<Register />} />
-            
-          <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={<Login lang={lang} setLang={setLang} />}
+        />
 
+{/* Layout עטוף בתוך Route */}
+        <Route
+          path="/"
+          element={<Layout lang={lang} setLang={setLang} currentFolderId={currentFolderId} />}
+        >
+        
+          <Route
+            index
+            element={<Home lang={lang} onFolderEnter={() => setCurrentFolderId(null)} />}
+          />
 
-        </Routes>
-      </Layout>
+          <Route
+            path="folder/:id"
+            element={<FolderView lang={lang} onFolderEnter={setCurrentFolderId} />}
+          />
+
+        </Route>
+
+      </Routes>
     </BrowserRouter>
   );
 }
