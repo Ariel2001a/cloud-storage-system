@@ -1,17 +1,18 @@
+// routes/users.js
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/users')
+const controller = require('../controllers/users');
 
 // Create a new user
 router.route('/')
-        .post(controller.createUser)
+    .post(controller.createUser);
 
 // Get user details by ID
 router.route('/:id')
-        .get(controller.getUserById)
+    .get(controller.getUserById);
 
-// Get user details by ID
+// Login / check user credentials
 router.route('/tokens')
-        .post(controller.checkUser)
+    .post(controller.checkUser);
 
-module.exports = router
+module.exports = router;
