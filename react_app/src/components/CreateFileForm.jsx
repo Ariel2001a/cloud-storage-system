@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createFileOrFolder } from "../api/files";
-import "./CreateFileForm.css"; // ייבוא ה-CSS הנפרד
 import { getUserIdFromToken } from "../utils/tokenUtils"; // ✅ import token utils
+import "./CreateFileForm.css";
+import { useLocation } from "react-router-dom";
 
 export default function CreateFileForm({ onCreated, onClose, parentId = null }) {
+    const location = useLocation();
     const [name, setName] = useState("");
     const [type, setType] = useState("file");
     const [content, setContent] = useState("");

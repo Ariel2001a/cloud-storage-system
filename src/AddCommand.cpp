@@ -12,20 +12,18 @@
 #include <sys/stat.h>
 #include <filesystem>
 
-
-
 using namespace std;
 namespace fs = filesystem;
 
-
-//AddCommand constructor
+// AddCommand constructor
 AddCommand::AddCommand() : ICommand() {}
 
-//Execute add command
-string AddCommand::run(const vector<string>& args)
+// Execute add command
+string AddCommand::run(const vector<string> &args)
 {
 
-    if (args.size() < 1) {
+    if (args.size() < 1)
+    {
         return INVALID_COMMAND;
     }
 
@@ -33,27 +31,32 @@ string AddCommand::run(const vector<string>& args)
     string text;
 
     // Concatenate remaining arguments as text
-    for (size_t i = 1; i < args.size(); i++) {
+    for (size_t i = 1; i < args.size(); i++)
+    {
         text += args[i];
-        if (i + 1 < args.size()){ 
+        if (i + 1 < args.size())
+        {
             text += " ";
         }
     }
 
-    string compressed = Compressor::compress(text);
+    text.erase(text.find_last_not_of(" \n\r\t") + 1);
+    text.erase(0, text.find_first_not_of(" \n\r\t"));
 
+    string compressed = Compressor::compress(text);
 
     // Create full file path
     string filePath = ICommand::GetFolderPath() + "/" + fileId;
 
     // Failed to open file for writing- abort
     ofstream out(filePath);
-    if (!out) {
+    if (!out)
+    {
         return SERVER_ERROR;
     }
 
     out << compressed;
     out.close();
-    
+
     return SUCCESS_ADD;
 }

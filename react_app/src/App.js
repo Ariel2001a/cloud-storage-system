@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import FolderView from "./pages/FolderView";
+import { getUserDetails } from "./api/files";
 import FileView from "./pages/FileView";
 import Register from './components/Register/Register';
 import Login from './components/login/login';
@@ -11,16 +12,20 @@ import "./App.css";
 function App() {
   const [lang, setLang] = useState('he');
   const [currentFolderId, setCurrentFolderId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    getUserDetails(1).then(data => setUser(data)).catch(err => console.error(err));
+  }, []); //
 
   return (
     <BrowserRouter>
-      <Routes>
+      <Layout user={user} lang={lang} setLang={setLang} currentFolderId={currentFolderId} searchTerm={searchTerm} setSearchTerm={setSearchTerm}>
+        <Routes>
+          <Route path="/" element={<Home user={user} lang={lang} searchTerm={searchTerm} onFolderEnter={() => setCurrentFolderId(null)} />} />
 
-        {/* מסכים שלא צריכים Layout */}
-        <Route
-          path="/register"
-          element={<Register lang={lang} setLang={setLang} />}
-        />
+          <Route path="/folder/:id" element={<FolderView lang={lang} searchTerm={searchTerm} onFolderEnter={setCurrentFolderId} />} />
 
         <Route
           path="/login"
