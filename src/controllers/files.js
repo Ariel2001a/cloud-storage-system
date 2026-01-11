@@ -42,6 +42,9 @@ exports.createFileOrFolder = async (req, res) => {
 
     try {
         if (type === 'file') {                      // handle file creation
+            const contentString = content || '';
+            const fileSize = Buffer.byteLength(contentString, 'utf8');
+
             const cppResponse = await fileSocket.sendCommand(
                 `POST ${++filesCounter} ${content || ''}` // send file content to C++ server
             );
@@ -58,6 +61,7 @@ exports.createFileOrFolder = async (req, res) => {
                 name,
                 type,
                 date: Date.now(),
+                size: fileSize,
                 folderParent: parentId || null
             });
 
@@ -220,6 +224,8 @@ exports.patchFileById = async (req, res) => {
                 return res.status(500).end();
             }
             file.content = content;
+
+            file.size = Buffer.byteLength(content || '', 'utf8');
         }
         return res.status(204).end();
     }

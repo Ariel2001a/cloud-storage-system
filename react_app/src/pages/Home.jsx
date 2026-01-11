@@ -13,7 +13,7 @@ const formatFileSize = (bytes) => {
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    return "\u200e" + parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 };
 
 export default function Home({ lang, searchTerm, user }) {
@@ -88,7 +88,6 @@ export default function Home({ lang, searchTerm, user }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* תנאי משולש: קודם בודקים אם בטעינה, אחר כך אם יש קבצים */}
                         {isLoading ? (
                             <tr>
                                 <td colSpan="4" className="status-msg">
@@ -111,7 +110,12 @@ export default function Home({ lang, searchTerm, user }) {
                                         </div>
                                     </td>
                                     <td className="col-date">
-                                        {new Date(item.updatedAt || item.createdAt).toLocaleDateString(isRtl ? 'he-IL' : 'en-US')}
+                                        {/* ✅ שימוש בשדה date מהשרת ופרמוט יפה */}
+                                        {item.date ? new Date(item.date).toLocaleDateString(isRtl ? 'he-IL' : 'en-US', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric'
+                                        }) : "--"}
                                     </td>
                                     <td className="col-size">
                                         {item.type === 'folder' ? '--' : formatFileSize(item.size)}
