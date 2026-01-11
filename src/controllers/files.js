@@ -5,39 +5,55 @@ const { addPermission } = require('../models/permissions');
 const { PERMISSION_TYPES } = require('../models/permissions');
 
 // Initialize file ID counter
-let filesCounter = Date.now(); 
+let filesCounter = Date.now();
 
 
 
 // ===== CREATE FILE OR FOLDER =====
 exports.createFileOrFolder = async (req, res) => {
-    const userId = req.userId;                      // ✅ get userId from JWT
-    const { name, type, content, parentId } = req.body;
+    const userId = req.userId;              // get user ID from headers
+    const { name, type, content, parentId } = req.body; // get data from request body
+    const user = User.getUserById(parseInt(userId));    // find user by ID
 
-    if (!userId) return res.status(401).json({ error: 'User not logged in' });
+    if (!userId) {                                      // check if user ID is missing
+        return res.status(401).json({ error: 'User not logged in' });
+    }
 
-    const user = User.getUserById(userId);
-    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (!user) {                                        // check if user exists
+        return res.status(404).json({ error: "User not found" });
+    }
 
     if (parentId != null) {
         const parent = filesModel.getFileById(userId, parentId);
+
+        console.log("REQ BODY:", req.body);
+        console.log("PARENT ID TYPE:", typeof parentId, "VALUE:", parentId);
+        console.log("PARENT OBJ:", parent);
+
+
         if (!parent || parent.type !== 'folder') {
-            return res.status(400).json({ error: 'Folder Parent does not exist' });
+            return res.status(400).json({ error: "Folder Parent does not exist" });
         }
     }
 
-    if (!name || !type) return res.status(400).json({ error: 'Missing Fields' });
+    if (!name || !type) {
+        return res.status(400).json({ error: "Missing Fields" });
+    }
 
     try {
-        if (type === 'file') {
+        if (type === 'file') {                      // handle file creation
             const cppResponse = await fileSocket.sendCommand(
-                `POST ${++filesCounter} ${content || ''}`
+                `POST ${++filesCounter} ${content || ''}` // send file content to C++ server
             );
 
-            if (cppResponse.includes("400")) return res.status(400).end();
-            if (cppResponse.includes("500")) return res.status(500).end();
+            if (cppResponse.includes("400")) {       // handle bad request from server
+                return res.status(400).end();
+            }
+            if (cppResponse.includes("500")) {      // handle server error
+                return res.status(500).end();
+            }
 
-            filesModel.addFileOrFolder(userId, {
+            filesModel.addFileOrFolder(userId, {    // save file in model
                 id: filesCounter,
                 name,
                 type,
@@ -45,17 +61,24 @@ exports.createFileOrFolder = async (req, res) => {
                 folderParent: parentId || null
             });
 
-            PERMISSION_TYPES[type].forEach(p => {
-                addPermission({ userId, fileId: filesCounter, permission: p, type });
+            const perms = PERMISSION_TYPES[type];
+            perms.forEach(p => {
+                addPermission({
+                    userId: parseInt(userId),
+                    fileId: filesCounter,
+                    permission: p,
+                    type
+                });
             });
 
             return res.status(201).location(`/api/files/${filesCounter}`).json({ id: filesCounter });
         }
 
-        if (type === 'folder') {
-            if (content) return res.status(400).json({ error: 'Folders cannot have content' });
-
-            filesModel.addFileOrFolder(userId, {
+        if (type === 'folder') {                    // handle folder creation
+            if (content) {                         // folders should not have content
+                return res.status(400).json({ error: 'Folders cannot have content' });
+            }
+            filesModel.addFileOrFolder(userId, {    // save folder in model
                 id: ++filesCounter,
                 name,
                 type,
@@ -63,15 +86,22 @@ exports.createFileOrFolder = async (req, res) => {
                 folderParent: parentId || null
             });
 
-            PERMISSION_TYPES[type].forEach(p => {
-                addPermission({ userId, fileId: filesCounter, permission: p, type });
+            const perms = PERMISSION_TYPES[type];
+            perms.forEach(p => {
+                addPermission({
+                    userId: parseInt(userId),
+                    fileId: filesCounter,
+                    permission: p,
+                    type
+                });
             });
 
             return res.status(201).location(`/api/files/${filesCounter}`).json({ id: filesCounter });
         }
 
-        return res.status(400).json({ error: 'Invalid type' });
-    } catch (error) {
+        return res.status(400).json({ error: 'Invalid type' }); // invalid type provided
+
+    } catch (error) {                               // catch unexpected errors
         return res.status(500).end();
     }
 };
@@ -91,15 +121,17 @@ exports.getFiles = (req, res) => {
 
 
 exports.getFolderChildren = (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
     const folderId = req.params.id;
 
-    const children = filesModel.getFolderFiles(userId, folderId);
+    const numericFolderId = Number(folderId);
+
+    const children = filesModel.getFolderFiles(userId, numericFolderId);
     res.json({ files: children });
 };
 
 exports.getFileById = async (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
     if (!userId) return res.status(401).json({ error: 'User not logged in' });
 
     const user = User.getUserById(parseInt(userId));

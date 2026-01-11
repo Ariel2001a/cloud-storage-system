@@ -21,6 +21,7 @@ export async function getFiles() {
     try {
         const res = await fetch(`${API_BASE}/files`, {
             headers: getAuthHeaders()
+        });
 
         if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();
@@ -34,11 +35,12 @@ export async function getFiles() {
 // 2️⃣ Get folder children
 export async function getFolderChildren(folderId) {
     try {
-        const res = await fetch(`${API_BASE}/files/${folderId}`, {
+        const res = await fetch(`${API_BASE}/files/${folderId}/children`, {
             headers: getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch folder');
         const data = await res.json();
+        console.log("Server Response for folder:", data);
         return data.files || [];
     } catch (err) {
         console.error(err);
@@ -55,11 +57,12 @@ export async function getFileContent(fileId) {
         if (!res.ok) throw new Error('Failed to fetch file');
         const data = await res.json();
         return data.content || '';
-      
+
     } catch (err) {
         console.error(err);
         return '';
     }
+}
 
 // 4️⃣ Create file or folder
 export async function createFileOrFolder(body) {
@@ -79,15 +82,13 @@ export async function createFileOrFolder(body) {
 }
 
 //CHANGE THIS FUNCTIONS
-export async function searchFiles(userId, query) {
+export async function searchFiles(query) {
     if (!query || query.trim() === "") return [];
 
     try {
         const res = await fetch(`${API_BASE}/search/${encodeURIComponent(query)}`, {
             method: 'GET',
-            headers: {
-                'user-id': userId.toString()
-            }
+            headers: getAuthHeaders(),
         });
 
         if (!res.ok) {

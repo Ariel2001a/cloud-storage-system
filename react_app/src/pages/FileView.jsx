@@ -20,7 +20,7 @@ export default function FileView({ fileId, fileName, onClose, lang = "he" }) {
         async function load() {
             setLoading(true);
             try {
-                const c = await getFileContent(userId, fileId); // use token-based userId
+                const c = await getFileContent(fileId); // use token-based userId
                 setContent(c);
             } catch (error) {
                 console.error("Error loading file content:", error);

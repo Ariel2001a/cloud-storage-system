@@ -18,6 +18,6 @@ router.route('/:id')
 module.exports = router;
 
 router.route('/:id/children')
-        .get(filesController.getFolderChildren);
+    .get(isLoggedIn, filesController.getFolderChildren);
 
 

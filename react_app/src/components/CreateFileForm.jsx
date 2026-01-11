@@ -5,53 +5,52 @@ import { getUserIdFromToken } from "../utils/tokenUtils"; // ✅ import token ut
 import "./CreateFileForm.css";
 import { useLocation } from "react-router-dom";
 
-export default function CreateFileForm({ onCreated, onClose, parentId = null }) {
+export default function CreateFileForm({ onCreated, onClose, parentId }) {
     const location = useLocation();
     const [name, setName] = useState("");
     const [type, setType] = useState("file");
     const [content, setContent] = useState("");
     const [loading, setLoading] = useState(false);
-    const [userId, setUserId] = useState(null);
-
     const navigate = useNavigate();
+
+    console.log("CreateFileForm Parent ID:", parentId);
 
     // ✅ Get userId from token and redirect if invalid
     useEffect(() => {
-        const id = getUserIdFromToken();
-        if (!id) {
+        const userId = getUserIdFromToken();
+        if (!userId) {
             navigate("/login");
             return;
         }
-        setUserId(id);
     }, [navigate]);
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!name.trim()) return alert("חובה להזין שם!");
+        e.preventDefault();
+        if (!name.trim()) return alert("חובה להזין שם!");
 
-    setLoading(true);
+        setLoading(true);
 
-    try {
-        // Only pass the object, do NOT pass userId
-        const bodyToSend = {
-            name: name.trim(),
-            type,
-            ...(type === "file" && { content }),
-            parentId: parentId || null
-        };
+        try {
+            // Only pass the object, do NOT pass userId
+            const bodyToSend = {
+                name: name.trim(),
+                type,
+                content: type === "file" ? content : undefined,
+                parentId: parentId ? Number(parentId) : null
+            };
 
-        const res = await createFileOrFolder(bodyToSend);
+            const res = await createFileOrFolder(bodyToSend);
 
-        if (res) {
-            onCreated && onCreated(res.id, { name, type });
-            onClose();
+            if (res) {
+                onCreated && onCreated(res.id, { name, type });
+                onClose();
+            }
+        } catch (error) {
+            console.error("Error creating file/folder:", error);
+        } finally {
+            setLoading(false);
         }
-    } catch (error) {
-        console.error("Error creating file/folder:", error);
-    } finally {
-        setLoading(false);
-    }
-};
+    };
 
 
     return (

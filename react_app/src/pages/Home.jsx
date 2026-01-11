@@ -20,8 +20,6 @@ export default function Home({ lang, searchTerm, user }) {
     const [items, setItems] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
     const [userId, setUserId] = useState(null); // store decoded user ID
-    const [items, setItems] = useState([]);
-    const [selectedFile, setSelectedFile] = useState(null);
     const [isLoading, setIsLoading] = useState(true); // סטייט חדש לטעינה
     const navigate = useNavigate();
     const isRtl = lang === 'he';
@@ -45,7 +43,7 @@ export default function Home({ lang, searchTerm, user }) {
             try {
                 let data;
                 if (searchTerm && searchTerm.trim() !== "") {
-                    data = await searchFiles(userId, searchTerm);
+                    data = await searchFiles(searchTerm);
                 } else {
                     data = await getFiles(userId);
                 }
@@ -62,7 +60,7 @@ export default function Home({ lang, searchTerm, user }) {
         }, 300);
 
         return () => clearTimeout(delayDebounceFn);
-    }, [searchTerm,userId]);
+    }, [searchTerm, userId]);
 
     function openItem(item) {
         if (item.type === "folder") {

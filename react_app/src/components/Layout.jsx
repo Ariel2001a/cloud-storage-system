@@ -1,34 +1,49 @@
 import { Outlet } from "react-router-dom";
-import { useState, useEffect, useRef } from "react"; // 1. הוספנו useEffect ו-useRef
+import { useState, useEffect, useRef } from "react";
 import CreateFileForm from "./CreateFileForm";
 import "./Layout.css";
 import driveLogo from "../logo image/logo.png";
+import { getUserIdFromToken, getDecodedToken } from "../utils/tokenUtils";
+import { useNavigate } from "react-router-dom";
 
-export default function Layout({ children, lang, setLang, currentFolderId, searchTerm, setSearchTerm, user }) {
+export default function Layout({ lang, setLang, currentFolderId, searchTerm, setSearchTerm }) {
     const [showForm, setShowForm] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
-
-    // 2. יצירת ה-Ref כדי שנוכל לדעת מהו אזור הפרופיל
+    const [user, setUser] = useState(null);  // נשתמש ב-state כדי לשמור את פרטי המשתמש
+    const navigate = useNavigate();
     const profileRef = useRef(null);
-
     const isRtl = lang === 'he';
 
-    // 3. לוגיקה לסגירת התפריט בלחיצה בחוץ
+    // Fetch פרטי משתמש מהשרת לפי id שמופיע ב־JWT
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (!token) return;
+
+        const decoded = getDecodedToken();
+        if (!decoded?.id) return;
+
+        fetch(`http://localhost:8080/api/users/${decoded.id}`, {
+            headers: {
+                Authorization: token
+            }
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch user");
+                return res.json();
+            })
+            .then(data => setUser(data))
+            .catch(err => console.error(err));
+    }, []);
+
+    // סגירת התפריט בלחיצה מחוץ לפרופיל
     useEffect(() => {
         function handleClickOutside(event) {
-            // אם התפריט פתוח והלחיצה היא לא בתוך אזור הפרופיל - סגור אותו
             if (showProfile && profileRef.current && !profileRef.current.contains(event.target)) {
                 setShowProfile(false);
             }
         }
-
-        // האזנה ללחיצה על כל ה-document
         document.addEventListener("mousedown", handleClickOutside);
-
-        // ניקוי המאזין כשהקומפוננטה יורדת מהמסך
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [showProfile]);
 
     return (
@@ -56,11 +71,10 @@ export default function Layout({ children, lang, setLang, currentFolderId, searc
                         {isRtl ? "English" : "עברית"}
                     </button>
 
-                    {/* 4. הוספת ה-ref למכולה שעוטפת את כל אזור הפרופיל */}
                     <div className="user-profile-container" ref={profileRef}>
                         <button className="profile-btn" onClick={() => setShowProfile(!showProfile)}>
                             <div className="avatar-placeholder">
-                                {user?.first_name ? user.first_name[0].toUpperCase() : "?"}
+                                {user?.first_name?.[0]?.toUpperCase() || "?"}
                             </div>
                         </button>
 
@@ -68,13 +82,19 @@ export default function Layout({ children, lang, setLang, currentFolderId, searc
                             <div className="profile-dropdown">
                                 <div className="profile-header-box">
                                     <div className="avatar-large">
-                                        {user.first_name[0].toUpperCase()}
+                                        {user?.first_name?.[0]?.toUpperCase() || "?"}
                                     </div>
                                     <p className="user-name">{user.first_name} {user.last_name}</p>
                                     <p className="user-email">{user.email}</p>
                                 </div>
                                 <div className="profile-footer">
-                                    <button className="sign-out-btn">
+                                    <button
+                                        className="sign-out-btn"
+                                        onClick={() => {
+                                            sessionStorage.removeItem("token");
+                                            navigate("/login");
+                                        }}
+                                    >
                                         {isRtl ? "יציאה" : "Sign out"}
                                     </button>
                                 </div>
@@ -86,8 +106,6 @@ export default function Layout({ children, lang, setLang, currentFolderId, searc
 
             {/* ===== MAIN LAYOUT ===== */}
             <div className="main-layout">
-
-                {/* SIDEBAR */}
                 <aside className="sidebar">
                     <button className="new-button" onClick={() => setShowForm(true)}>
                         <span style={{ color: '#34a853', fontSize: '24px' }}>＋</span>
@@ -102,24 +120,22 @@ export default function Layout({ children, lang, setLang, currentFolderId, searc
                     </nav>
                 </aside>
 
-                {/* MAIN CONTENT (פה נטען התוכן של Home / FolderView) */}
                 <main className="main-content">
                     <Outlet />
                 </main>
             </div>
 
-            {/* ===== CREATE FILE POPUP ===== */}
-           {showForm && (
-    <CreateFileForm
-        parentId={currentFolderId}
-        onClose={() => setShowForm(false)}
-        lang={lang}
-        onCreated={() => {
-            setShowForm(false);
-            window.location.reload();
-        }}
-    />
-)}
+            {showForm && (
+                <CreateFileForm
+                    parentId={currentFolderId}
+                    onClose={() => setShowForm(false)}
+                    lang={lang}
+                    onCreated={() => {
+                        setShowForm(false);
+                        window.location.reload();
+                    }}
+                />
+            )}
         </div>
     );
 }

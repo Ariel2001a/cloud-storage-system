@@ -25,7 +25,8 @@ export default function FolderView({ lang, onFolderEnter }) {
 
         async function load() {
             try {
-                const children = await getFolderChildren(userId, id); // pass userId from token
+
+                const children = await getFolderChildren(id); // pass userId from token
                 setItems(children || []);
             } catch (error) {
                 console.error("Error loading folder children:", error);
