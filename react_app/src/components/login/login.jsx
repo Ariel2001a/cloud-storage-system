@@ -38,7 +38,7 @@ function Login({ lang, setLang }) {
       }
 
       const { token } = await res.json();
-      localStorage.setItem('token', token);
+      sessionStorage.setItem('token', token);
       alert(isRtl ? 'התחברת בהצלחה!' : 'Signed in successfully!');
       window.location.href = '/';
     } catch (err) {
@@ -121,6 +121,8 @@ function Login({ lang, setLang }) {
       </div>
     </>
   );
-}
+}  
+
+
 
 export default Login;

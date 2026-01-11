@@ -66,10 +66,10 @@ export async function createFileOrFolder(body) {
     try {
         const res = await fetch(`${API_BASE}`, {
             method: "POST",
-             "Content-Type": "application/json",
-            headers: getAuthHeaders(),
-            body: JSON.stringify(body)
+            headers: getAuthHeaders(), // includes Content-Type + Authorization
+            body: JSON.stringify(body) // ✅ stringify your object
         });
+
         if (!res.ok) throw new Error('Failed to create file/folder');
         return await res.json();
     } catch (err) {

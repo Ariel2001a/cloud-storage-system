@@ -82,3 +82,4 @@ exports.checkUser = (req, res) => {
     // 4️⃣ Send JWT to frontend
     res.json({ token, username });
 };
+

@@ -113,3 +113,5 @@ const data = {
 }
 
 export default Register;
+
+

@@ -57,18 +57,17 @@ export default function Layout({ lang, setLang, currentFolderId }) {
             </div>
 
             {/* ===== CREATE FILE POPUP ===== */}
-            {showForm && (
-                <CreateFileForm
-                    userId={1}
-                    parentId={currentFolderId}
-                    onClose={() => setShowForm(false)}
-                    lang={lang}
-                    onCreated={() => {
-                        setShowForm(false);
-                        window.location.reload();
-                    }}
-                />
-            )}
+           {showForm && (
+    <CreateFileForm
+        parentId={currentFolderId}
+        onClose={() => setShowForm(false)}
+        lang={lang}
+        onCreated={() => {
+            setShowForm(false);
+            window.location.reload();
+        }}
+    />
+)}
         </div>
     );
 }

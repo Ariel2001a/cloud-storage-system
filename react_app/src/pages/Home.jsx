@@ -1,21 +1,32 @@
 import { useState, useEffect } from "react";
 import { getFiles } from "../api/files";
 import FileItem from "../components/FileItem";
-import FileView from "./FileView"; // 1. ייבוא של קומפוננטת התצוגה
+import FileView from "./FileView";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
+import { getUserIdFromToken } from "../utils/tokenUtils";
 
 export default function Home({ lang }) {
     const [items, setItems] = useState([]);
-
-    // 2. State חדש: האם יש קובץ שנבחר לצפייה?
     const [selectedFile, setSelectedFile] = useState(null);
-
+    const [userId, setUserId] = useState(null); // store decoded user ID
     const navigate = useNavigate();
-    const userId = 1;
     const isRtl = lang === 'he';
 
+    // ✅ Decode token and redirect if missing/invalid
     useEffect(() => {
+        const id = getUserIdFromToken();
+        if (!id) {
+            navigate('/login'); // redirect to login if no valid token
+            return;
+        }
+        setUserId(id);
+    }, [navigate]);
+
+    // ✅ Load files after we have userId
+    useEffect(() => {
+        if (!userId) return;
+
         async function load() {
             try {
                 const res = await getFiles(userId);
@@ -24,15 +35,15 @@ export default function Home({ lang }) {
                 console.error("Error loading files:", error);
             }
         }
-        load();
-    }, []);
 
-    // 3. עדכון פונקציית הפתיחה
+        load();
+    }, [userId]);
+
     function openItem(item) {
         if (item.type === "folder") {
-            navigate(`/folder/${item.id}`); // תיקייה עדיין עוברת עמוד
+            navigate(`/folder/${item.id}`);
         } else {
-            setSelectedFile(item); // קובץ נשמר ב-State ופותח מודאל
+            setSelectedFile(item);
         }
     }
 
@@ -58,7 +69,6 @@ export default function Home({ lang }) {
                 )}
             </div>
 
-            {/* 4. הצגת המודאל הצף אם selectedFile אינו null */}
             {selectedFile && (
                 <FileView
                     fileId={selectedFile.id}

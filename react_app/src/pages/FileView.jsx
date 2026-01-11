@@ -1,29 +1,41 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getFileContent } from "../api/files";
 import "./FileView.css";
+import { getUserIdFromToken } from "../utils/tokenUtils";
 
 export default function FileView({ fileId, fileName, onClose, lang = "he" }) {
     const [content, setContent] = useState("");
     const [loading, setLoading] = useState(true);
     const isRtl = lang === "he";
-    const { userId } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
+        const userId = getUserIdFromToken();
+        if (!userId) {
+            navigate("/login"); // redirect if no valid token
+            return;
+        }
+
         async function load() {
             setLoading(true);
-            const c = await getFileContent(userId, fileId);
-            setContent(c);
-            setLoading(false);
+            try {
+                const c = await getFileContent(userId, fileId); // use token-based userId
+                setContent(c);
+            } catch (error) {
+                console.error("Error loading file content:", error);
+            } finally {
+                setLoading(false);
+            }
         }
+
         load();
-    }, [fileId]);
+    }, [fileId, navigate]);
 
     return (
         /* השכבה השקופה מאחור שסוגרת את החלון בלחיצה */
         <div className="file-modal-overlay" onClick={onClose}>
             <div className="file-view-modal" onClick={(e) => e.stopPropagation()}>
-
                 <header className="file-view-header">
                     <div className="header-right">
                         <span className="file-icon">📄</span>
