@@ -9,7 +9,7 @@ import { FileRightClickMenu } from "../components/FileRightClickMenu";
 
 
 
-export default function FolderView({ user,lang, onFolderEnter }) {
+export default function FolderView({ user, lang, onFolderEnter }) {
     const { id } = useParams();
     const navigate = useNavigate();
     const [items, setItems] = useState([]);
@@ -25,8 +25,7 @@ export default function FolderView({ user,lang, onFolderEnter }) {
     });
 
     useEffect(() => {
-        const 
-        Id = getUserIdFromToken();
+        const userId = getUserIdFromToken();
         if (!userId) {
             navigate("/login");
             return;
@@ -50,7 +49,7 @@ export default function FolderView({ user,lang, onFolderEnter }) {
 
         return () => onFolderEnter(null);
     }, [id, navigate, onFolderEnter]);
-    
+
     function handleRightClick(e, file) {
         e.preventDefault(); // חשוב! מונע את התפריט ברירת המחדל של הדפדפן
         setMenu({

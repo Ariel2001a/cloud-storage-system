@@ -14,13 +14,13 @@ import { useLang } from "../context/LangContext";
 
 export default function Home({ searchTerm, user }) {
     const [items, setItems] = useState([]);
-     const { lang, setLang, isRtl } = useLang();
+    const { lang, setLang, isRtl } = useLang();
     const [selectedFile, setSelectedFile] = useState(null);
     const [userId, setUserId] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
-  
-      const [menu, setMenu] = useState({
+
+    const [menu, setMenu] = useState({
         visible: false,
         x: 0,
         y: 0,
@@ -49,7 +49,7 @@ export default function Home({ searchTerm, user }) {
                     data = await getFiles();
                 }
                 setItems(data || []);
-                
+
             } catch (error) {
                 console.error("Error loading files:", error);
             } finally {
@@ -65,15 +65,6 @@ export default function Home({ searchTerm, user }) {
         return () => clearTimeout(delayDebounceFn);
     }, [searchTerm, userId]);
 
-        function handleRightClick(e, file) {
-        e.preventDefault(); // חשוב! מונע את התפריט ברירת המחדל של הדפדפן
-        setMenu({
-            visible: true,
-            x: e.clientX,
-            y: e.clientY,
-            file
-        });
-    };
 
     function openItem(item) {
         if (item.type === "folder") navigate(`/folder/${item.id}`);
@@ -98,9 +89,10 @@ export default function Home({ searchTerm, user }) {
                 isRtl={isRtl}
                 user={user}
                 openItem={openItem}
+                setItems={setItems}
             />
-      <FileRightClickMenu menu={menu} setMenu={setMenu} items={items} setItems={setItems} />
-      
+            <FileRightClickMenu menu={menu} setMenu={setMenu} items={items} setItems={setItems} />
+
 
             {selectedFile && (
                 <FileView

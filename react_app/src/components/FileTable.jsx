@@ -1,5 +1,8 @@
 import React from 'react';
 import "./FileTable.css";
+import { useState } from 'react';
+import { FileRightClickMenu } from "../components/FileRightClickMenu"; // אם עדיין לא ייבאת
+
 
 const formatFileSize = (bytes) => {
     if (!bytes || bytes === 0) return "--";
@@ -9,7 +12,24 @@ const formatFileSize = (bytes) => {
     return "\u200e" + parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 };
 
-export default function FileTable({ items, isLoading, isRtl, user, openItem }) {
+
+export default function FileTable({ items, setItems, isLoading, isRtl, user, openItem }) {
+    const [menu, setMenu] = useState({
+        visible: false,
+        x: 0,
+        y: 0,
+        file: null
+    });
+
+    function handleRightClick(e, file) {
+        e.preventDefault(); // חשוב! מונע את התפריט ברירת המחדל של הדפדפן
+        setMenu({
+            visible: true,
+            x: e.clientX,
+            y: e.clientY,
+            file
+        });
+    };
     return (
         <div className={`table-container ${isRtl ? 'rtl' : 'ltr'}`}>
             <table className="files-table">
@@ -30,7 +50,7 @@ export default function FileTable({ items, isLoading, isRtl, user, openItem }) {
                         </tr>
                     ) : items.length > 0 ? (
                         items.map(item => (
-                            <tr key={item.id} className="file-row" onClick={() => openItem(item)}>
+                            <tr key={item.id} className="file-row" onClick={() => openItem(item)} onContextMenu={(e) => handleRightClick(e, item)}>
                                 <td className="col-name">
                                     <span className="file-icon">{item.type === 'folder' ? '📁' : '📄'}</span>
                                     {item.name}
@@ -62,6 +82,8 @@ export default function FileTable({ items, isLoading, isRtl, user, openItem }) {
                     )}
                 </tbody>
             </table>
+            <FileRightClickMenu menu={menu} setMenu={setMenu} items={items} setItems={setItems} />
         </div>
+
     );
 }
