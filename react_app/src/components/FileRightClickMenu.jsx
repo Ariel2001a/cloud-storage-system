@@ -36,9 +36,9 @@ const handleFileAction = async (apiFunc, file, setItems, setMenu, ...args) => {
 
         // אפשר להוסיף פה גם Move או Share אם רוצים
     };
-
+    
     try {
-        await apiFunc(1, file.id, ...args);
+        await apiFunc(file.id, ...args);
 
         // עדכון ה-state בהתאם לפונקציה
         const updater = stateUpdaters[apiFunc.name];
@@ -164,7 +164,7 @@ export function FileRightClickMenu({ menu, setMenu, items, setItems, lang  }) {
                 onClose={() => setMoveFolderOpen(false)}
                 onMoveConfirm={async (targetFolderId) => {
                     try {
-                        await moveFolder(1, folderToMove.id, targetFolderId); // parent_id = targetFolderId
+                        await moveFolder(folderToMove.id, targetFolderId); // parent_id = targetFolderId
                         setMoveFolderOpen(false);
 
                         // עדכון ה-state אחרי העברה

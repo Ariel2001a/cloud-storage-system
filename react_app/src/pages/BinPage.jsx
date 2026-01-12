@@ -6,11 +6,15 @@ import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import { FileRightClickMenu } from "../components/FileRightClickMenu"; // אם עדיין לא ייבאת
 import { useLang } from "../context/LangContext";
+import { getUserIdFromToken } from "../utils/tokenUtils";
+
 
 export default function BinPage() {
     const [items, setItems] = useState([]);
-    const { lang, setLang, isRtl } = useLang();
-    
+    const { lang, setLang, isRtl } = useLang();    
+    const [userId, setUserId] = useState(null); // store decoded user ID
+    const navigate = useNavigate();
+
 
     const [menu, setMenu] = useState({
         visible: false,
@@ -22,20 +26,31 @@ export default function BinPage() {
     // 2. State חדש: האם יש קובץ שנבחר לצפייה?
     const [selectedFile, setSelectedFile] = useState(null);
 
-    const navigate = useNavigate();
-    const userId = 1;
 
     useEffect(() => {
+        const id = getUserIdFromToken();
+        console.log(id)
+        if (!id) {
+            navigate('/login'); // redirect to login if no valid token
+            return;
+        }
+        setUserId(id);
+    }, [navigate]);
+
+    useEffect(() => {
+        if (!userId) return;
         async function load() {
             try {
-                const res = await getDeletedFiles(userId);
+                console.log(userId)
+                const res = await getDeletedFiles();
                 setItems(res || []);
+                console.log(items)
             } catch (error) {
                 console.error("Error loading files:", error);
             }
         }
         load();
-    }, []);
+    }, [userId]);
 
     function handleRightClick(e, file) {
         e.preventDefault(); // חשוב! מונע את התפריט ברירת המחדל של הדפדפן

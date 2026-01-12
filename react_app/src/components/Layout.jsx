@@ -11,6 +11,7 @@ import { useLang } from "../context/LangContext";
 export default function Layout({children, currentFolderId, searchTerm, setSearchTerm }) {
     const [showForm, setShowForm] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
+    const profileRef = useRef(null);
     const [user, setUser] = useState(null);  // נשתמש ב-state כדי לשמור את פרטי המשתמש
     const navigate = useNavigate();
     const { lang, setLang, isRtl } = useLang();
@@ -123,9 +124,9 @@ export default function Layout({children, currentFolderId, searchTerm, setSearch
                       
                     <div className={`sidebar-buttons ${isRtl ? 'rtl' : 'ltr'}`}>
                         <button className="sidebar-button" onClick={() => window.location.href = "/"}>🏠 {isRtl ? "בית" : "Home"}</button>
-                        <button className="sidebar-button" onClick={() => window.location.href = "/my drive"}>📁 {isRtl ? "האחסון שלי" : "My Drive"}</button>
+                        <button className="sidebar-button" onClick={() => window.location.href = "/my-drive"}>📁 {isRtl ? "האחסון שלי" : "My Drive"}</button>
 
-                        <button className="sidebar-button" onClick={() => window.location.href = "/share with me"}>👤 {isRtl ? "שותף איתי" : "Shared with me"}</button>
+                        <button className="sidebar-button" onClick={() => window.location.href = "/share-with-me"}>👤 {isRtl ? "שותף איתי" : "Shared with me"}</button>
                         <button className="sidebar-button" onClick={() => window.location.href = "/recent"}>⏰ {isRtl ? "אחרונים" : "Recent"}</button>
 
                         <button className="sidebar-button" onClick={() => window.location.href = "/starred"}>⭐ {isRtl ? "מסומנים בכוכב" : "Starred"}</button>

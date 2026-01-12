@@ -6,11 +6,15 @@ import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import { FileRightClickMenu } from "../components/FileRightClickMenu"; // אם עדיין לא ייבאת
 import { useLang } from "../context/LangContext";
+import { getUserIdFromToken } from "../utils/tokenUtils";
+
 
 
 export default function ShareWithMe() {
     const [items, setItems] = useState([]);
     const { lang, setLang, isRtl } = useLang();
+    const [userId, setUserId] = useState(null); // store decoded user ID
+
     
     const [menu, setMenu] = useState({
         visible: false,
@@ -23,12 +27,20 @@ export default function ShareWithMe() {
     const [selectedFile, setSelectedFile] = useState(null);
 
     const navigate = useNavigate();
-    const userId = 1;
+
+    useEffect(() => {
+        const id = getUserIdFromToken();
+        if (!id) {
+            navigate('/login'); // redirect to login if no valid token
+            return;
+        }
+        setUserId(id);
+    }, [navigate]);
 
     useEffect(() => {
         async function load() {
             try {
-                const res = await getSharedFiles(userId);
+                const res = await getSharedFiles();
                 setItems(res || []);
             } catch (error) {
                 console.error("Error loading files:", error);

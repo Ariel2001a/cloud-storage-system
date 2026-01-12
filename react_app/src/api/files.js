@@ -107,11 +107,11 @@ export async function searchFiles(query) {
     }
 }
 
-export async function getUserDetails() {
+export async function getUserDetails(userId) {
     try {
         const res = await fetch(`${API_BASE}/users/${userId}`, {
             method: 'GET',
-            headers: getAuthHeaders() }
+            headers: getAuthHeaders() 
         });
         if (!res.ok) throw new Error('Failed to fetch user');
         return await res.json();
@@ -168,7 +168,7 @@ export async function renameFileOrFolder(fileId, newName) {
 export async function moveFolder(fileId, folderId) {
     const res = await fetch(`${API_BASE}/files/${fileId}`, {
         method: "PATCH",
-        headers: getAuthHeaders()
+        headers: getAuthHeaders(),
         body: JSON.stringify({ parentId: folderId })
     });
     
@@ -221,8 +221,10 @@ export async function getDeletedFiles() {
             method: "GET",
             headers: getAuthHeaders()
         });
+
         if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();
+        console.log(data.files)
         return data.files || [];
     } catch (err) {
         console.error(err);

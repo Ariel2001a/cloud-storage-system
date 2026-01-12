@@ -23,12 +23,11 @@ export default function StarredFiles() {
     const [selectedFile, setSelectedFile] = useState(null);
 
     const navigate = useNavigate();
-    const userId = 1;
 
     useEffect(() => {
         async function load() {
             try {
-                const res = await getStarredFiles(userId);
+                const res = await getStarredFiles();
                 setItems(res || []);
             } catch (error) {
                 console.error("Error loading files:", error);

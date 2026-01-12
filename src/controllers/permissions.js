@@ -9,7 +9,7 @@ const { addPermission, getPermissionsByFileId, updatePermissionById, PERMISSION_
 async function createPermission(req, res) {
     const fileId = parseInt(req.params.id, 10);
     const { userId, permission } = req.body;
-    const ownerId = req.headers['user-id'];
+    const ownerId = req.userId; 
 
    // Check if the request is from a logged-in user
     if (!ownerId) {
@@ -63,7 +63,7 @@ async function createPermission(req, res) {
 async function createPermissionByUsername(req, res) {
     const fileId = parseInt(req.params.id, 10);
     const { username, permission } = req.body;
-    const ownerId = req.headers['user-id'];
+    const ownerId = req.userId; 
 
    // Check if the request is from a logged-in user
     if (!ownerId) {
@@ -121,7 +121,7 @@ async function createPermissionByUsername(req, res) {
  * Get all permissions for a file or folder
  */
 const getPermissionsByFile = (req, res) => {
-    const ownerId = req.headers['user-id'];
+    const ownerId = req.userId; 
     const fileId = req.params.id;
 
     // Ensure the owner has access
@@ -153,7 +153,7 @@ const getPermissionsBySharedFile = (req, res) => {
 };
 
 const getPermissionsByDeletedFile = (req, res) => {
-    const ownerId = req.headers['user-id'];
+    const ownerId = req.userId; 
     const fileId = req.params.id;
 
     // Ensure the owner has access
@@ -172,7 +172,7 @@ const getPermissionsByDeletedFile = (req, res) => {
  * Update an existing permission
  */
 async function updatePermission(req, res) {
-    const ownerId = req.headers['user-id'];
+    const ownerId = req.userId; 
     const fileId = parseInt(req.params.id, 10);
     const pId = parseInt(req.params.pId, 10);
     const { permission } = req.body;
@@ -212,7 +212,7 @@ if (duplicate) {
  * Delete a permission by its ID
  */
 async function deletePermission(req, res) {
-    const ownerId = req.headers['user-id'];
+    const ownerId = req.userId; 
     const fileId = parseInt(req.params.id, 10);
     const pId = parseInt(req.params.pId, 10);
 
@@ -246,5 +246,5 @@ async function deletePermission(req, res) {
     return res.status(204).end();
 }
 
-module.exports = { createPermissionByUsername, getPermissionsByFile, updatePermission, deletePermission,
+module.exports = { createPermission, getPermissionsByFile, updatePermission, deletePermission,
                     getPermissionsBySharedFile,getPermissionsByDeletedFile };

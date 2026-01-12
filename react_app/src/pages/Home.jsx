@@ -54,9 +54,10 @@ export default function Home({ searchTerm, user }) {
                 if (searchTerm && searchTerm.trim() !== "") {
                     data = await searchFiles(searchTerm);
                 } else {
-                    data = await getFiles(userId);
+                    data = await getFiles();
                 }
                 setItems(data || []);
+                
             } catch (error) {
                 console.error("Error loading files:", error);
             } finally {
@@ -70,15 +71,7 @@ export default function Home({ searchTerm, user }) {
         return () => clearTimeout(delayDebounceFn);
     }, [searchTerm, userId]);
 
-    function openItem(item) {
-        if (item.type === "folder") {
-            navigate(`/folder/${item.id}`);
-        } else {
-            setSelectedFile(item);
-        }
-    }
-
-    function handleRightClick(e, file) {
+        function handleRightClick(e, file) {
         e.preventDefault(); // חשוב! מונע את התפריט ברירת המחדל של הדפדפן
         setMenu({
             visible: true,
@@ -88,7 +81,16 @@ export default function Home({ searchTerm, user }) {
         });
     };
 
+    function openItem(item) {
+        if (item.type === "folder") {
+            navigate(`/folder/${item.id}`);
+        } else {
+            setSelectedFile(item);
+        }
+    }
 
+
+    console.log(userId)
 
     return (
         <div className="page-container">
@@ -117,7 +119,7 @@ export default function Home({ searchTerm, user }) {
                             </tr>
                         ) : items.length > 0 ? (
                             items.map(item => (
-                                <tr key={item.id} className="file-row" onClick={() => openItem(item)} onRightClick={handleRightClick}
+                                <tr key={item.id} className="file-row" onClick={() => openItem(item)} onContextMenu={(e) => handleRightClick(e, item)}
 >
                                     <td className="col-name">
                                         <span className="file-icon">{item.type === 'folder' ? '📁' : '📄'}</span>

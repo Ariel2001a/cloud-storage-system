@@ -82,10 +82,8 @@ export default function FolderView({ lang, onFolderEnter }) {
                             onClick={(it) =>
                                 it.type === "folder"
                                     ? navigate(`/folder/${it.id}`)
-                                    : setSelectedFile(it)
+                                    : setSelectedFile(it)}
                             onRightClick={handleRightClick}                        
-
-                            }
                         />
                     ))
                 ) : (

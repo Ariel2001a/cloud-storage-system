@@ -26,10 +26,6 @@ exports.createFileOrFolder = async (req, res) => {
     if (parentId != null) {
         const parent = filesModel.getFileById(userId, parentId);
 
-        console.log("REQ BODY:", req.body);
-        console.log("PARENT ID TYPE:", typeof parentId, "VALUE:", parentId);
-        console.log("PARENT OBJ:", parent);
-
 
         if (!parent || parent.type !== 'folder') {
             return res.status(400).json({ error: "Folder Parent does not exist" });
@@ -121,8 +117,13 @@ exports.getFiles = (req, res) => {
 };
 
 exports.getDeletedFiles = (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId; 
+    console.log(userId);
+    if (!userId) return res.status(401).json({ error: 'User not logged in' });
+
     const user = User.getUserById(parseInt(userId));
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
     const files = filesModel.getUserDeletedFiles(userId);
     res.json({ files });
 };
@@ -137,7 +138,7 @@ exports.getFolderChildren = (req, res) => {
 };
 
 exports.getRecentFiles = (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId; 
     const user = User.getUserById(parseInt(userId));
 
     if (!userId) {
@@ -153,7 +154,7 @@ exports.getRecentFiles = (req, res) => {
 };
 
 exports.getSharedFiles = (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId; 
     const user = User.getUserById(parseInt(userId));
 
     if (!userId) {
@@ -169,7 +170,7 @@ exports.getSharedFiles = (req, res) => {
 };
 
 exports.getStarredFiles = (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId; 
     const user = User.getUserById(parseInt(userId));
 
     if (!userId) {
@@ -345,7 +346,7 @@ exports.deleteFileById = async (req, res) => {
 
 
 exports.starOrUnstarFile = (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId; 
     const user = User.getUserById(parseInt(userId));
     if (!userId) {
         return res.status(401).json({ error: 'User not logged in' });
@@ -363,7 +364,7 @@ exports.starOrUnstarFile = (req, res) => {
 
 
 exports.restoreFileFromBin = (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId; 
     const user = User.getUserById(parseInt(userId));
     if (!userId) {
         return res.status(401).json({ error: 'User not logged in' });
