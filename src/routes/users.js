@@ -13,5 +13,5 @@ router.route('/:id')
 // Get user details by ID
 router.route('/tokens')
         .post(controller.checkUser)
-        
+
 module.exports = router

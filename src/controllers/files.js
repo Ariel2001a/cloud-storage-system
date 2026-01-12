@@ -1,15 +1,17 @@
-const { fileSocket } = require('../FileSocketClient'); // import socket client to communicate with C++ server
-const filesModel = require('../models/files');         // import files model to store/retrieve files
-const User = require('../models/users');               // import user model
-
+const { fileSocket } = require('../FileSocketClient'); // communicate with C++ server
+const filesModel = require('../models/files');         // store/retrieve files
+const User = require('../models/users');               // user model
 const { addPermission } = require('../models/permissions');
 const { PERMISSION_TYPES } = require('../models/permissions');
 
-let filesCounter = 0;
+// Initialize file ID counter
+let filesCounter = Date.now();
 
-// Creates a file or folder for the user
+
+
+// ===== CREATE FILE OR FOLDER =====
 exports.createFileOrFolder = async (req, res) => {
-    const userId = req.headers['user-id'];              // get user ID from headers
+    const userId = req.userId;              // get user ID from headers
     const { name, type, content, parentId } = req.body; // get data from request body
     const user = User.getUserById(parseInt(userId));    // find user by ID
 
@@ -23,6 +25,12 @@ exports.createFileOrFolder = async (req, res) => {
 
     if (parentId != null) {
         const parent = filesModel.getFileById(userId, parentId);
+
+        console.log("REQ BODY:", req.body);
+        console.log("PARENT ID TYPE:", typeof parentId, "VALUE:", parentId);
+        console.log("PARENT OBJ:", parent);
+
+
         if (!parent || parent.type !== 'folder') {
             return res.status(400).json({ error: "Folder Parent does not exist" });
         }
@@ -99,37 +107,33 @@ exports.createFileOrFolder = async (req, res) => {
     }
 };
 
-// Returns user's top-level files
+// ===== GET TOP-LEVEL FILES =====
 exports.getFiles = (req, res) => {
-    const userId = req.headers['user-id'];           // get user ID from headers
-    const user = User.getUserById(parseInt(userId)); // find user by ID
+    const userId = req.userId;
 
-    if (!userId) {                                   // check if user ID is missing
-        return res.status(401).json({ error: 'User not logged in' });
-    }
+    if (!userId) return res.status(401).json({ error: 'User not logged in' });
 
-    if (!user) {                                     // check if user exists
-        return res.status(404).json({ error: "User not found" });
-    }
+    const user = User.getUserById(userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
-    const files = filesModel.getTopLevelFiles(userId); // get top-level files
-    res.json({ files });                               // return files as JSON
+    const files = filesModel.getTopLevelFiles(userId);
+    res.json({ files });
 };
 
 exports.getDeletedFiles = (req, res) => {
     const userId = req.headers['user-id'];
     const user = User.getUserById(parseInt(userId));
-
-    if (!userId) {
-        return res.status(401).json({ error: 'User not logged in' });
-    }
-
-    if (!user) {
-        return res.status(404).json({ error: "User not found" });
-    }
-
     const files = filesModel.getUserDeletedFiles(userId);
     res.json({ files });
+};
+
+
+exports.getFolderChildren = (req, res) => {
+    const userId = req.userId;
+    const folderId = req.params.id;
+    const numericFolderId = Number(folderId);
+    const children = filesModel.getFolderFiles(userId, folderId);
+    res.json({ files: children });
 };
 
 exports.getRecentFiles = (req, res) => {
@@ -180,72 +184,8 @@ exports.getStarredFiles = (req, res) => {
     res.json({ files });
 };
 
-exports.getFolderChildren = (req, res) => {
-    const userId = req.headers['user-id'];
-    const folderId = req.params.id;
-
-    const children = filesModel.getFolderFiles(userId, folderId);
-    res.json({ files: children });
-};
-
 exports.getFileById = async (req, res) => {
-    const userId = req.headers['user-id'];
-
-    // בדיקת תקינות בסיסית
-    if (!userId) {
-        return res.status(401).json({ error: 'User not logged in' });
-    }
-
-    const user = User.getUserById(parseInt(userId));
-    if (!user) {
-        return res.status(404).json({ error: "User not found" });
-    }
-
-    const fileId = req.params.id;
-    const file = filesModel.getFileById(userId, parseInt(fileId));
-
-    if (!file) {
-        return res.status(404).json({ error: 'File not found' });
-    }
-
-    let content = "";
-
-    if (file.type === "file") {
-        try {
-            // ניקוי ה-ID מרווחים לפני השליחה ל-C++ כדי למנוע 404
-            const cppResponse = await fileSocket.sendCommand(`GET ${fileId.toString().trim()}`);
-            console.log("Raw Response from C++:", cppResponse);
-
-            // טיפול בשגיאות שחוזרות מה-C++
-            if (cppResponse.startsWith("404") || cppResponse.includes("LOGICAL_PROBLEM")) {
-                return res.status(404).json({ error: "File not found on storage server" });
-            }
-            if (cppResponse.startsWith("500") || cppResponse.includes("SERVER_ERROR")) {
-                return res.status(500).json({ error: "C++ server internal error" });
-            }
-
-            // חילוץ תוכן חכם:
-            // אנחנו מחליפים רק את ה-200 (וקוד הסטטוס OK אם קיים) בהתחלה במחרוזת ריקה
-            // זה מבטיח שכל ה-1h1e2l1o... יישאר שלם
-            content = cppResponse.replace(/^200\s*(OK)?\s*/i, "");
-
-        } catch (err) {
-            console.error("Socket Error:", err);
-            return res.status(500).json({ error: "Failed to connect to storage server" });
-        }
-    }
-
-    // החזרת ה-JSON במבנה שקבענו
-    return res.json({
-        file: {
-            ...file,
-            content: content // כאן יופיע ה-hello world או הקידוד שלו
-        }
-    });
-};
-
-exports.getFileById2 = async (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
     if (!userId) return res.status(401).json({ error: 'User not logged in' });
 
     const user = User.getUserById(parseInt(userId));
@@ -256,21 +196,22 @@ exports.getFileById2 = async (req, res) => {
 
     if (!file) return res.status(404).json({ error: 'File not found' });
 
-    // הגדרת תוכן כ-null לתיקייה כדי להבדיל בין "ריק" ל"לא קיים"
+
     let content = file.type === "file" ? "" : null;
 
     if (file.type === "file") {
         try {
             const cppResponse = await fileSocket.sendCommand(`GET ${fileId.toString().trim()}`);
-
-            console.log(`--- Debug: Raw Response for File ${fileId} ---`);
-            console.log(`[${cppResponse}]`);
-
             if (cppResponse.startsWith("404")) {
                 return res.status(404).json({ error: "File not found on storage server" });
             }
 
-            content = cppResponse;
+            const okIndex = cppResponse.toLowerCase().indexOf("ok");
+            if (okIndex !== -1) {
+                content = cppResponse.substring(okIndex + 2).trim();
+            } else {
+                content = cppResponse.trim();
+            }
         }
 
         catch (err) {
@@ -280,91 +221,58 @@ exports.getFileById2 = async (req, res) => {
     }
 
     return res.json({
-        file: {
-            ...file,
-            content: content
-        }
+        ...file,
+        content: content
     });
 };
 
 
 // Updates file or folder fields
 exports.patchFileById = async (req, res) => {
-    const userId = req.headers['user-id'];
-    const user = User.getUserById(parseInt(userId));
+    const userId = req.userId;
+    if (!userId) return res.status(401).json({ error: 'User not logged in' });
 
-    if (!userId) {
-        return res.status(401).json({ error: 'User not logged in' });
-    }
-
-    if (!user) {
-        return res.status(404).json({ error: "User not found" });
-    }
-
-    let updateContent = false;
-    let updateName = false;
-    let updateParentId = false;
+    const user = User.getUserById(userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
     const file = filesModel.getFileById(userId, parseInt(req.params.id));
-    if (!file) {
-        return res.status(404).json({ error: 'File not found' });
-    }
+    if (!file) return res.status(404).json({ error: 'File not found' });
 
     const { name, content, parentId } = req.body;
+    let updateContent = false, updateName = false, updateParentId = false;
 
     if (content !== undefined) {
-
-        if (file.type === 'folder') {                         // folders should not have content
-            return res.status(400).json({ error: 'Folders cannot have content' });
-        }
-
+        if (file.type === 'folder') return res.status(400).json({ error: 'Folders cannot have content' });
         updateContent = true;
     }
-    
+
     if (name !== undefined) {
-        if (name.trim() === '') {
-            return res.status(400).json({ error: 'Invalid file name' });
-        }
+        if (name.trim() === '') return res.status(400).json({ error: 'Invalid file name' });
         updateName = true;
     }
 
     if (parentId !== undefined) {
         const parent = filesModel.getFileById(userId, parentId);
-        if (!parent || parent.type !== 'folder') {
-            return res.status(400).json({ error: "Folder Parent does not exist" });
-        }
+        if (!parent || parent.type !== 'folder') return res.status(400).json({ error: 'Folder Parent does not exist' });
         updateParentId = true;
     }
-
 
     if (updateName || updateContent || updateParentId) {
         if (updateName) file.name = name;
         if (updateParentId) file.folderParent = parentId;
+
         if (updateContent) {
             try {
                 const cppResponseDelete = await fileSocket.sendCommand(`DELETE ${file.id}`);
+                if (cppResponseDelete.includes("400")) return res.status(400).json({ error: 'Delete' });
+                if (cppResponseDelete.includes("500")) return res.status(500).json({ error: 'Delete' });
 
-                if (cppResponseDelete.includes("400")) {
-                    return res.status(400).json({ error: 'Delete' });
-                }
-                if (cppResponseDelete.includes("500")) {
-                    return res.status(500).json({ error: 'Delete' });
-                }
-
-                const cppResponsePost = await fileSocket.sendCommand(
-                    `POST ${file.id} ${content || ''}`
-                );
-
-                if (cppResponsePost.includes("400")) {
-                    return res.status(400).json({ error: 'Post' });
-                }
-                if (cppResponsePost.includes("500")) {
-                    return res.status(500).json({ error: 'Post' });
-                }
-            } catch (error) {
+                const cppResponsePost = await fileSocket.sendCommand(`POST ${file.id} ${content || ''}`);
+                if (cppResponsePost.includes("400")) return res.status(400).json({ error: 'Post' });
+                if (cppResponsePost.includes("500")) return res.status(500).json({ error: 'Post' });
+            } catch (err) {
                 return res.status(500).end();
             }
-            
             file.content = content;
         }
         return res.status(204).end();
@@ -373,18 +281,13 @@ exports.patchFileById = async (req, res) => {
     return res.status(400).json({ error: 'fields to update are required' });
 };
 
-// Deletes file or folder by ID
+// ===== DELETE FILE/FOLDER =====
 exports.deleteFileById = async (req, res) => {
-    const userId = req.headers['user-id'];
-    const user = User.getUserById(parseInt(userId));
+    const userId = req.userId;
+    if (!userId) return res.status(401).json({ error: 'User not logged in' });
 
-    if (!userId) {
-        return res.status(401).json({ error: 'User not logged in' });
-    }
-
-    if (!user) {
-        return res.status(404).json({ error: "User not found" });
-    }
+    const user = User.getUserById(userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
     const idToDelete = parseInt(req.params.id);
     let file = filesModel.getFileById(userId, idToDelete);
@@ -414,7 +317,6 @@ exports.deleteFileById = async (req, res) => {
         }
 
         filesModel.deleteFileByIdFromBin(userId, idToDelete);
-
         if (file.type === 'file') {
             try {
                 const cppResponseDelete = await fileSocket.sendCommand(`DELETE ${idToDelete}`);

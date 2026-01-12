@@ -1,13 +1,28 @@
 // src/api/files.js
 
-const API_BASE = 'http://localhost:8080/api/files'; // כתובת ה־API שלך
+const API_BASE = 'http://localhost:8080/api'; // כתובת ה־API שלך
 
-// 1️⃣ הצגת קבצים ותיקיות (top-level)
-export async function getFiles(userId) {
+// helper to get headers with token
+function getAuthHeaders() {
+    const token = sessionStorage.getItem('token');
+    if (!token) throw new Error("No token found");
+    return {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    };
+}
+
+
+
+
+
+// 1️⃣ Get top-level files
+export async function getFiles() {
     try {
-        const res = await fetch(`${API_BASE}`, {
-            headers: { 'user-id': userId }
+        const res = await fetch(`${API_BASE}/files`, {
+            headers: getAuthHeaders()
         });
+
         if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();
         return data.files || [];
@@ -17,15 +32,14 @@ export async function getFiles(userId) {
     }
 }
 
-// 2️⃣ פתיחת תיקייה (children)
-export async function getFolderChildren(userId, folderId) {
+// 2️⃣ Get folder children
+export async function getFolderChildren(folderId) {
     try {
-        const res = await fetch(`${API_BASE}/${folderId}/children`, {
-            headers: { 'user-id': userId }
+        const res = await fetch(`${API_BASE}/files/${folderId}/children`, {
+            headers: getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch folder');
         const data = await res.json();
-
         return data.files || [];
     } catch (err) {
         console.error(err);
@@ -33,44 +47,85 @@ export async function getFolderChildren(userId, folderId) {
     }
 }
 
-// 3️⃣ פתיחת קובץ (content)
-export async function getFileContent(userId, fileId) {
+// 3️⃣ Get file content
+export async function getFileContent(fileId) {
     try {
-        const res = await fetch(`${API_BASE}/${fileId}`, {
-            headers: { 'user-id': userId }
+        const res = await fetch(`${API_BASE}/files/${fileId}`, {
+            headers: getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch file');
         const data = await res.json();
-        // לפי הקוד שלך, content נשמר ב־C++ server => צריך לקרוא ל־content דרך socket
-        // לצורך Frontend, אפשר להחזיר mock: data.file.content
-        return data.file.content || '';
+        return data.content || '';
+
     } catch (err) {
         console.error(err);
         return '';
     }
 }
 
-// 4️⃣ יצירת קובץ או תיקייה   
-export async function createFileOrFolder(userId, body) {
-    const res = await fetch(`${API_BASE}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "user-id": userId
-        },
-        body: JSON.stringify(body)
-    });
-    return await res.json();
+// 4️⃣ Create file or folder
+export async function createFileOrFolder(body) {
+    try {
+        const res = await fetch(`${API_BASE}/files`, {
+            method: "POST",
+            headers: getAuthHeaders(), // includes Content-Type + Authorization
+            body: JSON.stringify(body) // ✅ stringify your object
+        });
+
+        if (!res.ok) throw new Error('Failed to create file/folder');
+        return await res.json();
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
+}
+
+//CHANGE THIS FUNCTIONS
+export async function searchFiles(query) {
+    if (!query || query.trim() === "") return [];
+
+    try {
+        const res = await fetch(`${API_BASE}/search/${encodeURIComponent(query)}`, {
+            method: 'GET',
+            headers: getAuthHeaders(),
+        });
+
+        if (!res.ok) {
+            console.error("Search failed with status:", res.status);
+            return [];
+        }
+
+        const data = await res.json();
+        console.log("Search results received:", data); // לבדיקה בקונסול
+
+        // שינוי קריטי: השרת מחזיר filesList ולא files
+        return data.filesList || [];
+
+    } catch (err) {
+        console.error("Search error:", err);
+        return [];
+    }
+}
+
+export async function getUserDetails() {
+    try {
+        const res = await fetch(`${API_BASE}/users/${userId}`, {
+            method: 'GET',
+            headers: getAuthHeaders() }
+        });
+        if (!res.ok) throw new Error('Failed to fetch user');
+        return await res.json();
+    } catch (err) {
+        console.error("User fetch error:", err);
+        return null;
+    }
 }
 
 
-export async function deleteFileOrFolder(userId, fileId) {
-    const res = await fetch(`${API_BASE}/${fileId}`, {
+export async function deleteFileOrFolder(fileId) {
+    const res = await fetch(`${API_BASE}/files/${fileId}`, {
         method: "DELETE",
-        headers: {
-            "Content-Type": "application/json",
-            "user-id": userId
-        }
+        headers: getAuthHeaders()
     });
     if (!res.ok) {
         const errText = await res.text();
@@ -81,13 +136,10 @@ export async function deleteFileOrFolder(userId, fileId) {
 }
 
 
-export async function restoreFileOrFolder(userId, fileId) {
-    const res = await fetch(`${API_BASE}/deleted/${fileId}`, {
+export async function restoreFileOrFolder(fileId) {
+    const res = await fetch(`${API_BASE}/files/deleted/${fileId}`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "user-id": userId
-        }
+        headers: getAuthHeaders()
     });
     if (!res.ok) {
         const errText = await res.text();
@@ -97,13 +149,10 @@ export async function restoreFileOrFolder(userId, fileId) {
     return text;
 }
 
-export async function renameFileOrFolder(userId, fileId, newName) {
-    const res = await fetch(`${API_BASE}/${fileId}`, {
+export async function renameFileOrFolder(fileId, newName) {
+    const res = await fetch(`${API_BASE}/files/${fileId}`, {
         method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-            "user-id": userId
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ name: newName })
     });
 
@@ -116,13 +165,10 @@ export async function renameFileOrFolder(userId, fileId, newName) {
     return text;
 }
 
-export async function moveFolder(userId, fileId, folderId) {
-    const res = await fetch(`${API_BASE}/${fileId}`, {
+export async function moveFolder(fileId, folderId) {
+    const res = await fetch(`${API_BASE}/files/${fileId}`, {
         method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-            "user-id": userId
-        },
+        headers: getAuthHeaders()
         body: JSON.stringify({ parentId: folderId })
     });
     
@@ -136,13 +182,10 @@ export async function moveFolder(userId, fileId, folderId) {
 }
 
 
-export async function starOrUnstarFile(userId, fileId) {
-    const res = await fetch(`${API_BASE}/${fileId}`, {
+export async function starOrUnstarFile(fileId) {
+    const res = await fetch(`${API_BASE}/files/${fileId}`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "user-id": userId
-        },
+        headers: getAuthHeaders()
     });
     if (!res.ok) {
         const errText = await res.text();
@@ -154,14 +197,11 @@ export async function starOrUnstarFile(userId, fileId) {
 }
 
 
-export async function shareFileOrFolder(userId, fileId, sharedWithUsername, permission) {
+export async function shareFileOrFolder(fileId, sharedWithUsername, permission) {
 
-    const res = await fetch(`${API_BASE}/${fileId}/permissions`, {
+    const res = await fetch(`${API_BASE}/files/${fileId}/permissions`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "user-id": userId
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ username: sharedWithUsername, permission: permission })
 
     });
@@ -175,14 +215,11 @@ export async function shareFileOrFolder(userId, fileId, sharedWithUsername, perm
 }
 
 
-export async function getDeletedFiles(userId) {
+export async function getDeletedFiles() {
     try{
-        const res = await fetch(`${API_BASE}/deleted`, {
+        const res = await fetch(`${API_BASE}/files/deleted`, {
             method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "user-id": userId
-            },
+            headers: getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();
@@ -194,14 +231,11 @@ export async function getDeletedFiles(userId) {
 }
 
 
-export async function getRecentFiles(userId) {
+export async function getRecentFiles() {
     try{
-        const res = await fetch(`${API_BASE}/recent`, {
+        const res = await fetch(`${API_BASE}/files/recent`, {
             method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "user-id": userId
-            },
+            headers: getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();
@@ -212,14 +246,11 @@ export async function getRecentFiles(userId) {
     }
 }
 
-export async function getSharedFiles(userId) {
+export async function getSharedFiles() {
     try{
-        const res = await fetch(`${API_BASE}/shared`, {
+        const res = await fetch(`${API_BASE}/files/shared`, {
             method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "user-id": userId
-            },
+            headers: getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();
@@ -230,14 +261,11 @@ export async function getSharedFiles(userId) {
     }
 }
 
-export async function getStarredFiles(userId) {
+export async function getStarredFiles() {
     try{
-        const res = await fetch(`${API_BASE}/starred`, {
+        const res = await fetch(`${API_BASE}/files/starred`, {
         method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "user-id": userId
-        },
+        headers: getAuthHeaders()
     });
     if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();

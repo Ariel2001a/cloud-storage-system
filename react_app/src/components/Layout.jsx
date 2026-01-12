@@ -1,53 +1,126 @@
-import { useState } from "react";
+import { Outlet } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import CreateFileForm from "./CreateFileForm";
 import "./Layout.css";
-import driveLogo from "../uploads/logo.png";
-import Default_picture from "../uploads/default.png";
+import driveLogo from "../logo image/logo.png";
+import { getUserIdFromToken, getDecodedToken } from "../utils/tokenUtils";
+import { useNavigate } from "react-router-dom";
 import { getFiles, getSharedFiles, getDeletedFiles } from '../api/files';
-import { Navigate } from "react-router-dom";
 import { useLang } from "../context/LangContext";
 
-// הוספנו את currentFolderId לרשימת ה-Props
-export default function Layout({ children, currentFolderId }) {
+export default function Layout({children, currentFolderId, searchTerm, setSearchTerm }) {
     const [showForm, setShowForm] = useState(false);
+    const [showProfile, setShowProfile] = useState(false);
+    const [user, setUser] = useState(null);  // נשתמש ב-state כדי לשמור את פרטי המשתמש
+    const navigate = useNavigate();
     const { lang, setLang, isRtl } = useLang();
-    
+
+
+    // Fetch פרטי משתמש מהשרת לפי id שמופיע ב־JWT
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (!token) return;
+
+        const decoded = getDecodedToken();
+        if (!decoded?.id) return;
+
+        fetch(`http://localhost:8080/api/users/${decoded.id}`, {
+            headers: {
+                Authorization: token
+            }
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch user");
+                return res.json();
+            })
+            .then(data => setUser(data))
+            .catch(err => console.error(err));
+    }, []);
+
+    // סגירת התפריט בלחיצה מחוץ לפרופיל
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (showProfile && profileRef.current && !profileRef.current.contains(event.target)) {
+                setShowProfile(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [showProfile]);
+
     return (
         <div className="home-wrapper" style={{ direction: isRtl ? "rtl" : "ltr" }}>
+
+            {/* ===== TOP BAR ===== */}
             <header className="top-bar">
+              
+              
+              
                 <div className="logo-container">
-                    {/* החלפנו את הטקסט בתמונה */}
-                    <img
-                        src={driveLogo}
-                        className="logo-img"
-                    />
+                    <img src={driveLogo} className="logo-img" alt="Google Drive Logo" />
                 </div>
+
                 <div className="search-container">
+                    <span className="search-icon">🔍</span>
                     <input
                         className="search-input"
                         type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder={isRtl ? "חיפוש ב-Drive" : "Search in Drive"}
                     />
                 </div>
-                <button className="lang-button" onClick={() => setLang(isRtl ? 'en' : 'he')}>
-                    {isRtl ? "English" : "עברית"}
-                </button>
 
-                <div className="logo">
-                    <img
-                    src={Default_picture} 
-                    alt="Logo" 
-                    style={{ width: "50px", height: "50px" }} />
+
+                <div className="header-actions">
+                    <button className="lang-button" onClick={() => setLang(isRtl ? 'en' : 'he')}>
+                        {isRtl ? "English" : "עברית"}
+                    </button>
+
+                    <div className="user-profile-container" ref={profileRef}>
+                        <button className="profile-btn" onClick={() => setShowProfile(!showProfile)}>
+                            <div className="avatar-placeholder">
+                                {user?.first_name?.[0]?.toUpperCase() || "?"}
+                            </div>
+                        </button>
+
+
+                        {showProfile && user && (
+                            <div className="profile-dropdown">
+                                <div className="profile-header-box">
+                                    <div className="avatar-large">
+                                        {user?.first_name?.[0]?.toUpperCase() || "?"}
+                                    </div>
+                                    <p className="user-name">{user.first_name} {user.last_name}</p>
+                                    <p className="user-email">{user.email}</p>
+                                </div>
+                                <div className="profile-footer">
+                                    <button
+                                        className="sign-out-btn"
+                                        onClick={() => {
+                                            sessionStorage.removeItem("token");
+                                            navigate("/login");
+                                        }}
+                                    >
+                                        {isRtl ? "יציאה" : "Sign out"}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </header>
 
+            {/* ===== MAIN LAYOUT ===== */}
             <div className="main-layout">
                 <aside className="sidebar">
                     <button className="new-button" onClick={() => setShowForm(true)}>
-                        <span style={{ color: '#34a853' }}>＋</span>
+                        <span style={{ color: '#34a853', fontSize: '24px' }}>＋</span>
                         {isRtl ? "חדש" : "New"}
                     </button>
                     <br />
+                      
+                      
                     <div className={`sidebar-buttons ${isRtl ? 'rtl' : 'ltr'}`}>
                         <button className="sidebar-button" onClick={() => window.location.href = "/"}>🏠 {isRtl ? "בית" : "Home"}</button>
                         <button className="sidebar-button" onClick={() => window.location.href = "/my drive"}>📁 {isRtl ? "האחסון שלי" : "My Drive"}</button>
@@ -61,14 +134,12 @@ export default function Layout({ children, currentFolderId }) {
                 </aside>
 
                 <main className="main-content">
-                    {children}
+                    <Outlet />
                 </main>
             </div>
 
             {showForm && (
                 <CreateFileForm
-                    userId={1}
-                    // כאן אנחנו מעבירים את התיקייה הנוכחית כ-Parent
                     parentId={currentFolderId}
                     onClose={() => setShowForm(false)}
                     lang={lang}
@@ -77,7 +148,6 @@ export default function Layout({ children, currentFolderId }) {
                         window.location.reload();
                     }}
                 />
-                
             )}
         </div>
     );

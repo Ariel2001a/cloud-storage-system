@@ -36,7 +36,7 @@ const getUserSharedFiles = (userId) => {
 // Add a new file or folder for a user
 const addFileOrFolder = (userId, file) => {
     if (!userFiles[userId]) userFiles[userId] = [];
-        userFiles[userId].push(file);
+    userFiles[userId].push(file);
 };
 
 
@@ -59,6 +59,7 @@ const getFileById = (user_id, id) => {
   }
   return files.find(f => f.id === id) || null;
 };
+
 
 const getFileByIdFromDeleted = (user_id, id) => {
   const files = deletedUserFiles[user_id];
@@ -112,13 +113,6 @@ const RestoreFileByIdFromBin = (user_id, id) => {
     return false;
 };
 
-// Returns IDs of all files contained in a specific folder for a user
-const getFolderFiles = (userId, folderParent) => {
-    const allFiles = getUserFiles(userId);
-    const filesInFolder = allFiles.filter(item => item.folderParent == folderParent);
-    return filesInFolder;
-};
-
 const starOrUnstarFile = (userId, fileId) => {
     const file = getFileById(userId, fileId);
     if (file) {
@@ -126,6 +120,12 @@ const starOrUnstarFile = (userId, fileId) => {
         return true;
     }
     return false;
+};
+
+const getFolderFiles = (userId, folderParent) => {
+    const allFiles = getUserFiles(userId);
+    const filesInFolder = allFiles.filter(item => item.folderParent == folderParent);
+    return filesInFolder;
 };
 
 const sharedWithUsers = (userId, fileId,userToShareId) => {
@@ -160,3 +160,5 @@ module.exports = {
     RestoreFileByIdFromBin,
     getUserRecentFiles
 };
+
+

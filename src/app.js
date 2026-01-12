@@ -15,7 +15,7 @@ const permissionRoutes = require('./routes/permissions.js');
 app.use(cors({
     origin: 'http://localhost:3000',
     methods: ["GET", "POST", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type", "user-id"]
+    allowedHeaders: ["Content-Type", 'Authorization']
 }));
 
 

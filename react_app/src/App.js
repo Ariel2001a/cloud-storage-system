@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import Layout from "./components/Layout";
+import { LangProvider } from "./context/LangContext";
 import Home from "./pages/Home";
 import MyDrive from "./pages/MyDrive";
 import ShareWithMe from "./pages/ShareWithMe";
@@ -10,21 +11,33 @@ import StarredFiles from "./pages/StarredFiles";
 import BinPage from "./pages/BinPage";
 import FolderView from "./pages/FolderView";
 import FileView from "./pages/FileView";
-import { LangProvider } from "./context/LangContext";
-
+import Register from './components/Register/Register';
+import Login from './components/login/login';
+import "./App.css";
 
 function App() {
   const [lang, setLang] = useState('he');
-  const [currentFolderId, setCurrentFolderId] = useState(null); // שמירת התיקייה הנוכחית
+  const [currentFolderId, setCurrentFolderId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   return (
-    <LangProvider>
-      <BrowserRouter>
-        {/* מעבירים ל-Layout את ה-currentFolderId */}
-        <Layout currentFolderId={currentFolderId}>
+  <LangProvider>
+    <BrowserRouter>
+       <Layout currentFolderId={currentFolderId}>
           <Routes>
-            {/* בתוך הבית, התיקייה היא null (שורש) */}
+      
+        {/* מסכים שלא צריכים Layout */}
+        <Route
+          path="/register"
+          element={<Register lang={lang} setLang={setLang} />}
+        />
 
+        <Route
+          path="/login"
+          element={<Login lang={lang} setLang={setLang} />}
+        />
+
+        {/* Layout עטוף בתוך Route */}
             <Route path="/" element={<Home onFolderEnter={() => setCurrentFolderId(null)} />} />
             <Route path="/my drive" element={<MyDrive onFolderEnter={() => setCurrentFolderId(null)} />} />
 
@@ -34,14 +47,22 @@ function App() {
 
             <Route path="/starred" element={<StarredFiles onFolderEnter={() => setCurrentFolderId(null)} />} />
             <Route path="/deleted" element={<BinPage onFolderEnter={() => setCurrentFolderId(null)} />} />
-              
-            {/* בתוך תיקייה, נעדכן את ה-ID שלה */}
-            <Route path="/folder/:id" element={<FolderView onFolderEnter={setCurrentFolderId} />} />
 
-            <Route path="/file/:id" element={<FileView />} />
-          </Routes>
+          <Route
+            index
+            element={<Home lang={lang} searchTerm={searchTerm} onFolderEnter={() => setCurrentFolderId(null)} />}
+          />
+
+          <Route
+            path="folder/:id"
+            element={<FolderView lang={lang} searchTerm={searchTerm} onFolderEnter={setCurrentFolderId} />}
+          />
+
+        </Route>
+
+      </Routes>
         </Layout>
-      </BrowserRouter>
+    </BrowserRouter>
     </LangProvider>
   );
 }

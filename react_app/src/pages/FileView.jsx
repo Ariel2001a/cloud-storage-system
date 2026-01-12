@@ -1,35 +1,44 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { getFileContent } from "../api/files";
 import "./FileView.css";
+import { getUserIdFromToken } from "../utils/tokenUtils";
+
 
 export default function FileView({ fileId, fileName, onClose, lang = "he" }) {
     const [content, setContent] = useState("");
     const [loading, setLoading] = useState(true);
     const isRtl = lang === "he";
-    const userId = 1;
+    const navigate = useNavigate();
 
     useEffect(() => {
+        const userId = getUserIdFromToken();
+        if (!userId) {
+            navigate("/login"); // redirect if no valid token
+            return;
+        }
+
         async function load() {
             setLoading(true);
             try {
-                const data = await getFileContent(userId, fileId);
-                // גישה לנתיב הנכון לפי תמונת ה-Network ששלחת
+                const data = await getFileContent(fileId); // use token-based userId
                 if (data !== null && data !== undefined) {
                     setContent(data);
-                }
-            } catch (error) {
-                console.error("Failed to load file content:", error);
+                } 
+        } catch (error) {
+                console.error("Error loading file content:", error);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         }
         load();
-    }, [fileId]);
+    }, [fileId, navigate]);
+
 
     return (
         /* השכבה השקופה מאחור שסוגרת את החלון בלחיצה */
         <div className="file-modal-overlay" onClick={onClose}>
             <div className="file-view-modal" onClick={(e) => e.stopPropagation()}>
-
                 <header className="file-view-header">
                     <div className="header-right">
                         <span className="file-icon">📄</span>
