@@ -47,15 +47,25 @@ export default function Layout({ lang, setLang, currentFolderId, searchTerm, set
     }, [showProfile]);
 
     // Helper to get avatar src
-    const getAvatarSrc = () => {
-        if (user?.image) {
-            // If the image is Base64
-            if (user.image.startsWith("data:image")) return user.image;
-            // If backend saved it as filename in /uploads
-            return `http://localhost:8080/uploads/${user.image}`;
-        }
-        return null; // fallback to letter placeholder
-    };
+   const getAvatarSrc = () => {
+  if (
+    typeof user?.image === "string" &&
+    user.image.startsWith("data:image")
+  ) {
+    // Base64 image
+    return user.image;
+  }
+
+  if (
+    typeof user?.image === "string" &&
+    user.image.trim() !== ""
+  ) {
+    // Filename from backend
+    return `http://localhost:8080/uploads/${user.image}`;
+  }
+
+  return null; // fallback → letter avatar
+};
 
     return (
         <div className="home-wrapper" style={{ direction: isRtl ? "rtl" : "ltr" }}>

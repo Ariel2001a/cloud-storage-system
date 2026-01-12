@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-
+const path = require('path');
 const cors = require('cors');
 
 // Import the TCP file socket client
@@ -18,16 +18,17 @@ app.use(cors({
     allowedHeaders: ["Content-Type", 'Authorization']
 }));
 
-
 // Enable JSON parsing for incoming requests
 app.use(express.json());
 
-// Register routes
-app.use('/api/users', UserRoutes);  // Users endpoints
-app.use('/api/files', filesRouter); // Files endpoints
-app.use('/api/search', searchRouter);  // Search endpoints
-app.use('/api/files', permissionRoutes);
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Register routes
+app.use('/api/users', UserRoutes);
+app.use('/api/files', filesRouter);
+app.use('/api/search', searchRouter);
+app.use('/api/files', permissionRoutes);
 
 // Start the server
 app.listen(8080, '0.0.0.0', () => {

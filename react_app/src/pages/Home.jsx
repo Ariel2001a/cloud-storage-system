@@ -1,3 +1,4 @@
+// src/pages/Home.jsx
 import { useState, useEffect } from "react";
 import FileItem from "../components/FileItem";
 import { getFiles, searchFiles } from "../api/files";
@@ -5,8 +6,7 @@ import FileView from "./FileView";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import { getUserIdFromToken } from "../utils/tokenUtils";
-
-
+import defaultAvatar from "../images/default.png"; // default avatar
 
 const formatFileSize = (bytes) => {
     if (!bytes || bytes === 0) return "--";
@@ -19,27 +19,27 @@ const formatFileSize = (bytes) => {
 export default function Home({ lang, searchTerm, user }) {
     const [items, setItems] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
-    const [userId, setUserId] = useState(null); // store decoded user ID
-    const [isLoading, setIsLoading] = useState(true); // סטייט חדש לטעינה
+    const [userId, setUserId] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const isRtl = lang === 'he';
 
-    // ✅ Decode token and redirect if missing/invalid
+    // Decode token
     useEffect(() => {
         const id = getUserIdFromToken();
         if (!id) {
-            navigate('/login'); // redirect to login if no valid token
+            navigate('/login');
             return;
         }
         setUserId(id);
     }, [navigate]);
 
-    // ✅ Load files after we have userId
+    // Load files
     useEffect(() => {
         if (!userId) return;
 
         async function load() {
-            setIsLoading(true); // מתחילים טעינה - זה ימנע את הודעת "אין קבצים"
+            setIsLoading(true);
             try {
                 let data;
                 if (searchTerm && searchTerm.trim() !== "") {
@@ -51,14 +51,11 @@ export default function Home({ lang, searchTerm, user }) {
             } catch (error) {
                 console.error("Error loading files:", error);
             } finally {
-                setIsLoading(false); // מסיימים טעינה בכל מקרה (הצלחה או כישלון)
+                setIsLoading(false);
             }
         }
 
-        const delayDebounceFn = setTimeout(() => {
-            load();
-        }, 300);
-
+        const delayDebounceFn = setTimeout(load, 300);
         return () => clearTimeout(delayDebounceFn);
     }, [searchTerm, userId]);
 
@@ -70,10 +67,19 @@ export default function Home({ lang, searchTerm, user }) {
         }
     }
 
+    // ✅ Get avatar for file creator (use logged-in user object)
+    const getCreatorAvatar = () => {
+        if (!user) return defaultAvatar;
+        if (user.image && user.image.startsWith("data:image")) return user.image;
+        if (user.image && user.image.trim() !== "") return `http://localhost:8080/uploads/${user.image}`;
+        return defaultAvatar;
+    };
+
     return (
         <div className="page-container">
             <h2 className="page-title">
-                {searchTerm ? (isRtl ? `תוצאות חיפוש עבור: ${searchTerm}` : `Search results for: ${searchTerm}`)
+                {searchTerm
+                    ? (isRtl ? `תוצאות חיפוש עבור: ${searchTerm}` : `Search results for: ${searchTerm}`)
                     : (isRtl ? "האחסון שלי" : "My Drive")}
             </h2>
 
@@ -88,7 +94,6 @@ export default function Home({ lang, searchTerm, user }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* תנאי משולש: קודם בודקים אם בטעינה, אחר כך אם יש קבצים */}
                         {isLoading ? (
                             <tr>
                                 <td colSpan="4" className="status-msg">
@@ -104,9 +109,17 @@ export default function Home({ lang, searchTerm, user }) {
                                     </td>
                                     <td className="col-owner">
                                         <div className="owner-info">
-                                            <div className="owner-avatar-mini">
-                                                {user?.first_name ? user.first_name[0].toUpperCase() : "U"}
-                                            </div>
+                                            <img
+                                                src={getCreatorAvatar()}
+                                                alt="Creator"
+                                                className="owner-avatar-mini"
+                                                style={{
+                                                    width: "32px",
+                                                    height: "32px",
+                                                    borderRadius: "50%",
+                                                    objectFit: "cover"
+                                                }}
+                                            />
                                             <span>{isRtl ? "אני" : "me"}</span>
                                         </div>
                                     </td>
