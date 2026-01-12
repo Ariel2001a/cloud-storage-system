@@ -246,5 +246,5 @@ async function deletePermission(req, res) {
     return res.status(204).end();
 }
 
-module.exports = { createPermission, getPermissionsByFile, updatePermission, deletePermission,
+module.exports = { createPermissionByUsername, getPermissionsByFile, updatePermission, deletePermission,
                     getPermissionsBySharedFile,getPermissionsByDeletedFile };
