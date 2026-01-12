@@ -85,9 +85,6 @@ export function FileRightClickMenu({ menu, setMenu, items, setItems, lang  }) {
   if (!menu.visible || !menu.file) return null;
 
   const isBinPage = window.location.pathname.includes("deleted");
-  const isStarredPage = window.location.pathname.includes("starred");
-  
-
 
   const file = menu.file;
 

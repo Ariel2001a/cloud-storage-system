@@ -199,12 +199,14 @@ export async function starOrUnstarFile(fileId) {
 
 export async function shareFileOrFolder(fileId, sharedWithUsername, permission) {
 
+    console.log(fileId, sharedWithUsername, permission);
     const res = await fetch(`${API_BASE}/files/${fileId}/permissions`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify({ username: sharedWithUsername, permission: permission })
 
     });
+
 
     if (!res.ok) {
         const errText = await res.text();
