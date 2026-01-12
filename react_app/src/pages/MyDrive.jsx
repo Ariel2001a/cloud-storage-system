@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getFiles, searchFiles, } from "../api/files";
+import { getFiles, searchFiles } from "../api/files";
 import FileItem from "../components/FileItem";
 import FileView from "./FileView"; // 1. ייבוא של קומפוננטת התצוגה
 import { useNavigate } from "react-router-dom";

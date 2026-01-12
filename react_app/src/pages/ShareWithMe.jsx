@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getFiles, getSharedFiles } from "../api/files";
+import { getSharedFiles, searchFiles } from "../api/files";
 import FileItem from "../components/FileItem";
 import FileView from "./FileView"; // 1. ייבוא של קומפוננטת התצוגה
 import { useNavigate } from "react-router-dom";
@@ -7,15 +7,17 @@ import "./Home.css";
 import { FileRightClickMenu } from "../components/FileRightClickMenu"; // אם עדיין לא ייבאת
 import { useLang } from "../context/LangContext";
 import { getUserIdFromToken } from "../utils/tokenUtils";
+import FileTable from "../components/FileTable";
 
 
 
-export default function ShareWithMe() {
+export default function ShareWithMe({ searchTerm, user }) {
     const [items, setItems] = useState([]);
     const { lang, setLang, isRtl } = useLang();
     const [userId, setUserId] = useState(null); // store decoded user ID
+    const [isLoading, setIsLoading] = useState(true);
 
-    
+
     const [menu, setMenu] = useState({
         visible: false,
         x: 0,
@@ -38,16 +40,34 @@ export default function ShareWithMe() {
     }, [navigate]);
 
     useEffect(() => {
+        if (!userId) return;
         async function load() {
+            setIsLoading(true);
             try {
-                const res = await getSharedFiles();
-                setItems(res || []);
+
+
+                let data;
+                if (searchTerm && searchTerm.trim() !== "") {
+                    data = await searchFiles(searchTerm);
+                } else {
+                    data = await getSharedFiles();
+                }
+                setItems(data || []);
+
             } catch (error) {
                 console.error("Error loading files:", error);
+            } finally {
+                setIsLoading(false);
             }
         }
-        load();
-    }, []);
+
+
+        const delayDebounceFn = setTimeout(() => {
+            load();
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchTerm, userId]);
 
     function handleRightClick(e, file) {
         e.preventDefault(); // חשוב! מונע את התפריט ברירת המחדל של הדפדפן
@@ -71,29 +91,23 @@ export default function ShareWithMe() {
     return (
         <div className="page-container">
             <h2 className="page-title">
-                {isRtl ? "שותף איתי" : "Share With Me"}
+
+                {searchTerm ? (isRtl ? `תוצאות עבור: ${searchTerm}` : `Results for: ${searchTerm}`)
+                    : (isRtl ? "שותף איתי" : "Share With Me")}
             </h2>
 
-            <div className="file-list">
-                {items.length > 0 ? (
-                    items.map(item => (
-                        <FileItem
-                            key={item.id}
-                            item={item}
-                            onClick={() => openItem(item)}
-                            onRightClick={handleRightClick}
-                        />
-                    ))
-                ) : (
-                    <p className="status-msg">
-                        {isRtl ? "אין קבצים להצגה" : "No files to show"}
-                    </p>
-                )}
-            </div>
-
+            {/* ✅ כל הטבלה הצטמצמה לשורה אחת חכמה! */}
+            <FileTable
+                items={items}
+                isLoading={isLoading}
+                isRtl={isRtl}
+                user={user}
+                openItem={openItem}
+                setItems={setItems}
+            />
             <FileRightClickMenu menu={menu} setMenu={setMenu} items={items} setItems={setItems} />
 
-            {/* 4. הצגת המודאל הצף אם selectedFile אינו null */}
+
             {selectedFile && (
                 <FileView
                     fileId={selectedFile.id}
