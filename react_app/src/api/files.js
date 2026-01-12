@@ -123,7 +123,7 @@ export async function moveFolder(userId, fileId, folderId) {
             "Content-Type": "application/json",
             "user-id": userId
         },
-        body: JSON.stringify({ parent_id: folderId })
+        body: JSON.stringify({ parentId: folderId })
     });
     
     if (!res.ok) {

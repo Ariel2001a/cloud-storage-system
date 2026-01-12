@@ -311,7 +311,6 @@ exports.patchFileById = async (req, res) => {
     }
 
     const { name, content, parentId } = req.body;
-    console.log(parentId);
 
     if (content !== undefined) {
 
