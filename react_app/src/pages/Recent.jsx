@@ -99,6 +99,7 @@ export default function Recent({ searchTerm, user }) {
             {/* ✅ כל הטבלה הצטמצמה לשורה אחת חכמה! */}
             <FileTable
                 items={items}
+                isRtl={isRtl}
                 isLoading={isLoading}
                 user={user}
                 openItem={openItem}
