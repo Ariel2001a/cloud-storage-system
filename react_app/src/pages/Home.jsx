@@ -5,14 +5,27 @@ import FileTable from "../components/FileTable"; // ✅ הייבוא החדש
 import { useNavigate } from "react-router-dom";
 import { getUserIdFromToken } from "../utils/tokenUtils";
 import "./Home.css";
+import FileItem from "../components/FileItem";
+import { FileRightClickMenu } from "../components/FileRightClickMenu"; // אם עדיין לא ייבאת
+import { useLang } from "../context/LangContext";
 
-export default function Home({ lang, searchTerm, user }) {
+
+
+
+export default function Home({ searchTerm, user }) {
     const [items, setItems] = useState([]);
+     const { lang, setLang, isRtl } = useLang();
     const [selectedFile, setSelectedFile] = useState(null);
     const [userId, setUserId] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
-    const isRtl = lang === 'he';
+  
+      const [menu, setMenu] = useState({
+        visible: false,
+        x: 0,
+        y: 0,
+        file: null
+    });
 
     // אימות משתמש
     useEffect(() => {
@@ -27,30 +40,55 @@ export default function Home({ lang, searchTerm, user }) {
         async function load() {
             setIsLoading(true);
             try {
-                const data = searchTerm?.trim()
-                    ? await searchFiles(searchTerm)
-                    : await getFiles(userId);
+
+
+                let data;
+                if (searchTerm && searchTerm.trim() !== "") {
+                    data = await searchFiles(searchTerm);
+                } else {
+                    data = await getFiles();
+                }
                 setItems(data || []);
+                
             } catch (error) {
                 console.error("Error loading files:", error);
             } finally {
                 setIsLoading(false);
             }
         }
-        const timeout = setTimeout(load, 300);
-        return () => clearTimeout(timeout);
+
+
+        const delayDebounceFn = setTimeout(() => {
+            load();
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
     }, [searchTerm, userId]);
+
+        function handleRightClick(e, file) {
+        e.preventDefault(); // חשוב! מונע את התפריט ברירת המחדל של הדפדפן
+        setMenu({
+            visible: true,
+            x: e.clientX,
+            y: e.clientY,
+            file
+        });
+    };
 
     function openItem(item) {
         if (item.type === "folder") navigate(`/folder/${item.id}`);
         else setSelectedFile(item);
     }
 
+
+    console.log(userId)
+
     return (
         <div className="page-container">
             <h2 className="page-title">
+
                 {searchTerm ? (isRtl ? `תוצאות עבור: ${searchTerm}` : `Results for: ${searchTerm}`)
-                    : (isRtl ? "האחסון שלי" : "My Drive")}
+                    : (isRtl ? "עמוד בית" : "Home Page")}
             </h2>
 
             {/* ✅ כל הטבלה הצטמצמה לשורה אחת חכמה! */}
@@ -61,6 +99,8 @@ export default function Home({ lang, searchTerm, user }) {
                 user={user}
                 openItem={openItem}
             />
+      <FileRightClickMenu menu={menu} setMenu={setMenu} items={items} setItems={setItems} />
+      
 
             {selectedFile && (
                 <FileView

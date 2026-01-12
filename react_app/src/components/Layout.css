@@ -25,8 +25,39 @@
 
 .logo-img {
     height: 40px;
-    width: auto;
+      width: auto;
     object-fit: contain;
+}
+
+.sidebar-buttons {
+  display: flex;
+  flex-direction: column; /* אנכיות */
+  gap: 8px;               /* רווח אחיד בין כפתורים */
+}
+
+.sidebar-buttons.ltr {
+  direction: ltr;
+  text-align: left;
+}
+
+.sidebar-buttons.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.sidebar-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  background: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 15px;
+  width: 100%;
 }
 
 .search-container {

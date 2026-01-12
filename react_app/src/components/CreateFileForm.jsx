@@ -28,8 +28,18 @@ export default function CreateFileForm({ onCreated, onClose, parentId }) {
         e.preventDefault();
         if (!name.trim()) return alert("חובה להזין שם!");
 
-        setLoading(true);
+        // חילוץ ה-ID מה-URL
+        const currentPath = window.location.pathname;
+        const parts = currentPath.split('/');
+        const folderIdIndex = parts.indexOf('folder');
+        let idFromUrl = null;
 
+
+        if (folderIdIndex !== -1 && parts[folderIdIndex + 1]) {
+            idFromUrl = Number(parts[folderIdIndex + 1]);
+        }
+
+        setLoading(true);
         try {
             // Only pass the object, do NOT pass userId
             const bodyToSend = {

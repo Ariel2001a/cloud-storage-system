@@ -5,8 +5,11 @@ import FileView from "./FileView";
 import FileTable from "../components/FileTable"; // ✅ משתמשים רק בזה
 import "./Home.css";
 import { getUserIdFromToken } from "../utils/tokenUtils";
+import { FileRightClickMenu } from "../components/FileRightClickMenu";
 
-export default function FolderView({ lang, onFolderEnter, user }) {
+
+
+export default function FolderView({ user,lang, onFolderEnter }) {
     const { id } = useParams();
     const navigate = useNavigate();
     const [items, setItems] = useState([]);
@@ -14,8 +17,16 @@ export default function FolderView({ lang, onFolderEnter, user }) {
     const [isLoading, setIsLoading] = useState(true);
     const isRtl = lang === "he";
 
+    const [menu, setMenu] = useState({
+        visible: false,
+        x: 0,
+        y: 0,
+        file: null
+    });
+
     useEffect(() => {
-        const userId = getUserIdFromToken();
+        const 
+        Id = getUserIdFromToken();
         if (!userId) {
             navigate("/login");
             return;
@@ -39,6 +50,16 @@ export default function FolderView({ lang, onFolderEnter, user }) {
 
         return () => onFolderEnter(null);
     }, [id, navigate, onFolderEnter]);
+    
+    function handleRightClick(e, file) {
+        e.preventDefault(); // חשוב! מונע את התפריט ברירת המחדל של הדפדפן
+        setMenu({
+            visible: true,
+            x: e.clientX,
+            y: e.clientY,
+            file
+        });
+    };
 
     function openItem(item) {
         if (item.type === "folder") {
@@ -78,6 +99,7 @@ export default function FolderView({ lang, onFolderEnter, user }) {
                 <span style={{ fontSize: "24px" }}>📁</span>
             </header>
 
+
             {/* ✅ הטבלה מחליפה את כל ה-file-list הישן */}
             <FileTable
                 items={items}
@@ -86,6 +108,8 @@ export default function FolderView({ lang, onFolderEnter, user }) {
                 user={user}
                 openItem={openItem}
             />
+
+            <FileRightClickMenu menu={menu} setMenu={setMenu} items={items} setItems={setItems} lang={lang} />
 
             {selectedFile && (
                 <FileView

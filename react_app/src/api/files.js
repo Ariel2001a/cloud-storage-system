@@ -40,7 +40,6 @@ export async function getFolderChildren(folderId) {
         });
         if (!res.ok) throw new Error('Failed to fetch folder');
         const data = await res.json();
-        console.log("Server Response for folder:", data);
         return data.files || [];
     } catch (err) {
         console.error(err);
@@ -112,7 +111,7 @@ export async function getUserDetails(userId) {
     try {
         const res = await fetch(`${API_BASE}/users/${userId}`, {
             method: 'GET',
-            headers: { 'user-id': userId.toString() }
+            headers: getAuthHeaders() 
         });
         if (!res.ok) throw new Error('Failed to fetch user');
         return await res.json();
@@ -122,3 +121,159 @@ export async function getUserDetails(userId) {
     }
 }
 
+
+export async function deleteFileOrFolder(fileId) {
+    const res = await fetch(`${API_BASE}/files/${fileId}`, {
+        method: "DELETE",
+        headers: getAuthHeaders()
+    });
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Failed to delete: " + errText);
+    }
+    const text = await res.text(); // קורא את הגוף כטקסט
+    return text;
+}
+
+
+export async function restoreFileOrFolder(fileId) {
+    const res = await fetch(`${API_BASE}/files/deleted/${fileId}`, {
+        method: "POST",
+        headers: getAuthHeaders()
+    });
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Failed to delete: " + errText);
+    }
+    const text = await res.text(); // קורא את הגוף כטקסט
+    return text;
+}
+
+export async function renameFileOrFolder(fileId, newName) {
+    const res = await fetch(`${API_BASE}/files/${fileId}`, {
+        method: "PATCH",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ name: newName })
+    });
+
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Failed to rename: " + errText);
+    }
+
+    const text = await res.text(); // קורא את הגוף כטקסט
+    return text;
+}
+
+export async function moveFolder(fileId, folderId) {
+    const res = await fetch(`${API_BASE}/files/${fileId}`, {
+        method: "PATCH",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ parentId: folderId })
+    });
+    
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Failed to move folder: " + errText);
+    }
+
+    const text = await res.text(); // קורא את הגוף כטקסט
+    return text;
+}
+
+
+export async function starOrUnstarFile(fileId) {
+    const res = await fetch(`${API_BASE}/files/${fileId}`, {
+        method: "POST",
+        headers: getAuthHeaders()
+    });
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Failed to star/unstar: " + errText);
+    }
+
+    const text = await res.text(); // קורא את הגוף כטקסט
+    return text;
+}
+
+
+export async function shareFileOrFolder(fileId, sharedWithUsername, permission) {
+
+    const res = await fetch(`${API_BASE}/files/${fileId}/permissions`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ username: sharedWithUsername, permission: permission })
+
+    });
+
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Failed to share file/folder: " + errText);
+    }
+    const text = await res.text(); // קורא את הגוף כטקסט
+    return text;
+}
+
+
+export async function getDeletedFiles() {
+    try{
+        const res = await fetch(`${API_BASE}/files/deleted`, {
+            method: "GET",
+            headers: getAuthHeaders()
+        });
+
+        if (!res.ok) throw new Error('Failed to fetch files');
+        const data = await res.json();
+        console.log(data.files)
+        return data.files || [];
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}
+
+
+export async function getRecentFiles() {
+    try{
+        const res = await fetch(`${API_BASE}/files/recent`, {
+            method: "GET",
+            headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to fetch files');
+        const data = await res.json();
+        return data.files || [];
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}
+
+export async function getSharedFiles() {
+    try{
+        const res = await fetch(`${API_BASE}/files/shared`, {
+            method: "GET",
+            headers: getAuthHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to fetch files');
+        const data = await res.json();
+        return data.files || [];
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}
+
+export async function getStarredFiles() {
+    try{
+        const res = await fetch(`${API_BASE}/files/starred`, {
+        method: "GET",
+        headers: getAuthHeaders()
+    });
+    if (!res.ok) throw new Error('Failed to fetch files');
+        const data = await res.json();
+        return data.files || [];
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}
