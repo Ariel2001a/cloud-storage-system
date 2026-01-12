@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import { getFolderChildren } from "../api/files";
 import FileItem from "../components/FileItem";
 import FileView from "./FileView";
-import "./Home.css";
+import "./Home.css"; // שימוש באותו עיצוב של דף הבית
+import { FileRightClickMenu } from "../components/FileRightClickMenu";
 import { getUserIdFromToken } from "../utils/tokenUtils"; // ✅ import token utils
+
 
 export default function FolderView({ lang, onFolderEnter }) {
     const { id } = useParams();
@@ -12,6 +14,13 @@ export default function FolderView({ lang, onFolderEnter }) {
     const [items, setItems] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
     const isRtl = lang === "he";
+
+    const [menu, setMenu] = useState({
+        visible: false,
+        x: 0,
+        y: 0,
+        file: null
+    });
 
     useEffect(() => {
         // ✅ check token and redirect if missing/invalid
@@ -37,6 +46,16 @@ export default function FolderView({ lang, onFolderEnter }) {
 
         return () => onFolderEnter(null);
     }, [id, navigate, onFolderEnter]);
+    
+    function handleRightClick(e, file) {
+        e.preventDefault(); // חשוב! מונע את התפריט ברירת המחדל של הדפדפן
+        setMenu({
+            visible: true,
+            x: e.clientX,
+            y: e.clientY,
+            file
+        });
+    };
 
     return (
         <div className="page-container">
@@ -64,6 +83,8 @@ export default function FolderView({ lang, onFolderEnter }) {
                                 it.type === "folder"
                                     ? navigate(`/folder/${it.id}`)
                                     : setSelectedFile(it)
+                            onRightClick={handleRightClick}                        
+
                             }
                         />
                     ))
@@ -73,6 +94,8 @@ export default function FolderView({ lang, onFolderEnter }) {
                     </p>
                 )}
             </div>
+            <FileRightClickMenu menu={menu} setMenu={setMenu} items={items} setItems={setItems} lang={lang} />
+
 
             {selectedFile && (
                 <FileView

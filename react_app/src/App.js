@@ -1,7 +1,14 @@
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import Layout from "./components/Layout";
+import { LangProvider } from "./context/LangContext";
 import Home from "./pages/Home";
+import MyDrive from "./pages/MyDrive";
+import ShareWithMe from "./pages/ShareWithMe";
+import Recent from "./pages/Recent";
+import StarredFiles from "./pages/StarredFiles";
+import BinPage from "./pages/BinPage";
 import FolderView from "./pages/FolderView";
 import FileView from "./pages/FileView";
 import Register from './components/Register/Register';
@@ -14,9 +21,11 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
 
   return (
+  <LangProvider>
     <BrowserRouter>
-      <Routes>
-
+       <Layout currentFolderId={currentFolderId}>
+          <Routes>
+      
         {/* מסכים שלא צריכים Layout */}
         <Route
           path="/register"
@@ -29,10 +38,15 @@ function App() {
         />
 
         {/* Layout עטוף בתוך Route */}
-        <Route
-          path="/"
-          element={<Layout lang={lang} setLang={setLang} currentFolderId={currentFolderId} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}
-        >
+            <Route path="/" element={<Home onFolderEnter={() => setCurrentFolderId(null)} />} />
+            <Route path="/my drive" element={<MyDrive onFolderEnter={() => setCurrentFolderId(null)} />} />
+
+            <Route path="/share with me" element={<ShareWithMe onFolderEnter={() => setCurrentFolderId(null)} />} />
+
+            <Route path="/recent" element={<Recent onFolderEnter={() => setCurrentFolderId(null)} />} />
+
+            <Route path="/starred" element={<StarredFiles onFolderEnter={() => setCurrentFolderId(null)} />} />
+            <Route path="/deleted" element={<BinPage onFolderEnter={() => setCurrentFolderId(null)} />} />
 
           <Route
             index
@@ -47,7 +61,9 @@ function App() {
         </Route>
 
       </Routes>
+        </Layout>
     </BrowserRouter>
+    </LangProvider>
   );
 }
 

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import FileItem from "../components/FileItem";
-import { getFiles, searchFiles } from "../api/files";
-import FileView from "./FileView";
+import FileView from "./FileView"; // 1. ייבוא של קומפוננטת התצוגה
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
+import { FileRightClickMenu } from "../components/FileRightClickMenu"; // אם עדיין לא ייבאת
+import { useLang } from "../context/LangContext";
+import { getFiles, searchFiles } from "../api/files";
 import { getUserIdFromToken } from "../utils/tokenUtils";
-
-
 
 const formatFileSize = (bytes) => {
     if (!bytes || bytes === 0) return "--";
@@ -16,13 +16,22 @@ const formatFileSize = (bytes) => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 };
 
-export default function Home({ lang, searchTerm, user }) {
+
+
+export default function Home({ searchTerm, user }) {
     const [items, setItems] = useState([]);
+     const { lang, setLang, isRtl } = useLang();
     const [selectedFile, setSelectedFile] = useState(null);
     const [userId, setUserId] = useState(null); // store decoded user ID
     const [isLoading, setIsLoading] = useState(true); // סטייט חדש לטעינה
     const navigate = useNavigate();
-    const isRtl = lang === 'he';
+  
+      const [menu, setMenu] = useState({
+        visible: false,
+        x: 0,
+        y: 0,
+        file: null
+    });
 
     // ✅ Decode token and redirect if missing/invalid
     useEffect(() => {
@@ -54,7 +63,6 @@ export default function Home({ lang, searchTerm, user }) {
                 setIsLoading(false); // מסיימים טעינה בכל מקרה (הצלחה או כישלון)
             }
         }
-
         const delayDebounceFn = setTimeout(() => {
             load();
         }, 300);
@@ -70,11 +78,23 @@ export default function Home({ lang, searchTerm, user }) {
         }
     }
 
+    function handleRightClick(e, file) {
+        e.preventDefault(); // חשוב! מונע את התפריט ברירת המחדל של הדפדפן
+        setMenu({
+            visible: true,
+            x: e.clientX,
+            y: e.clientY,
+            file
+        });
+    };
+
+
+
     return (
         <div className="page-container">
             <h2 className="page-title">
                 {searchTerm ? (isRtl ? `תוצאות חיפוש עבור: ${searchTerm}` : `Search results for: ${searchTerm}`)
-                    : (isRtl ? "האחסון שלי" : "My Drive")}
+                    : (isRtl ? "עמוד בית" : "Home Page")}
             </h2>
 
             <div className="table-container">
@@ -97,7 +117,8 @@ export default function Home({ lang, searchTerm, user }) {
                             </tr>
                         ) : items.length > 0 ? (
                             items.map(item => (
-                                <tr key={item.id} className="file-row" onClick={() => openItem(item)}>
+                                <tr key={item.id} className="file-row" onClick={() => openItem(item)} onRightClick={handleRightClick}
+>
                                     <td className="col-name">
                                         <span className="file-icon">{item.type === 'folder' ? '📁' : '📄'}</span>
                                         {item.name}
@@ -128,7 +149,9 @@ export default function Home({ lang, searchTerm, user }) {
                     </tbody>
                 </table>
             </div>
-
+            
+      <FileRightClickMenu menu={menu} setMenu={setMenu} items={items} setItems={setItems} />
+      
             {selectedFile && (
                 <FileView
                     fileId={selectedFile.id}

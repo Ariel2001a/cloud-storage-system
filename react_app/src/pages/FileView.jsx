@@ -4,6 +4,7 @@ import { getFileContent } from "../api/files";
 import "./FileView.css";
 import { getUserIdFromToken } from "../utils/tokenUtils";
 
+
 export default function FileView({ fileId, fileName, onClose, lang = "he" }) {
     const [content, setContent] = useState("");
     const [loading, setLoading] = useState(true);
@@ -20,17 +21,19 @@ export default function FileView({ fileId, fileName, onClose, lang = "he" }) {
         async function load() {
             setLoading(true);
             try {
-                const c = await getFileContent(fileId); // use token-based userId
-                setContent(c);
-            } catch (error) {
+                const data = await getFileContent(fileId); // use token-based userId
+                if (data !== null && data !== undefined) {
+                    setContent(data);
+                } 
+        } catch (error) {
                 console.error("Error loading file content:", error);
             } finally {
                 setLoading(false);
             }
         }
-
         load();
     }, [fileId, navigate]);
+
 
     return (
         /* השכבה השקופה מאחור שסוגרת את החלון בלחיצה */

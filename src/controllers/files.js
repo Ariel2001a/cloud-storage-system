@@ -58,7 +58,8 @@ exports.createFileOrFolder = async (req, res) => {
                 name,
                 type,
                 date: Date.now(),
-                folderParent: parentId || null
+                folderParent: parentId || null,
+                starred: false
             });
 
             const perms = PERMISSION_TYPES[type];
@@ -119,15 +120,68 @@ exports.getFiles = (req, res) => {
     res.json({ files });
 };
 
+exports.getDeletedFiles = (req, res) => {
+    const userId = req.headers['user-id'];
+    const user = User.getUserById(parseInt(userId));
+    const files = filesModel.getUserDeletedFiles(userId);
+    res.json({ files });
+};
+
 
 exports.getFolderChildren = (req, res) => {
     const userId = req.userId;
     const folderId = req.params.id;
-
     const numericFolderId = Number(folderId);
-
-    const children = filesModel.getFolderFiles(userId, numericFolderId);
+    const children = filesModel.getFolderFiles(userId, folderId);
     res.json({ files: children });
+};
+
+exports.getRecentFiles = (req, res) => {
+    const userId = req.headers['user-id'];
+    const user = User.getUserById(parseInt(userId));
+
+    if (!userId) {
+        return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+
+    const files = filesModel.getUserRecentFiles(userId);
+    res.json({ files });
+};
+
+exports.getSharedFiles = (req, res) => {
+    const userId = req.headers['user-id'];
+    const user = User.getUserById(parseInt(userId));
+
+    if (!userId) {
+        return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+
+    const files = filesModel.getUserSharedFiles(userId);
+    res.json({ files });
+};
+
+exports.getStarredFiles = (req, res) => {
+    const userId = req.headers['user-id'];
+    const user = User.getUserById(parseInt(userId));
+
+    if (!userId) {
+        return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+
+    const files = filesModel.getStarredFiles(userId);
+    res.json({ files });
 };
 
 exports.getFileById = async (req, res) => {
@@ -236,30 +290,91 @@ exports.deleteFileById = async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     const idToDelete = parseInt(req.params.id);
-    const file = filesModel.getFileById(userId, idToDelete);
-    if (!file) return res.status(404).json({ error: 'File not found' });
+    let file = filesModel.getFileById(userId, idToDelete);
+    if (!file){
+        file = filesModel.getFileByIdFromDeleted(userId, idToDelete);
+        if (!file) {
+            return res.status(404).json({ error: 'File not found' });
+        } 
 
-    try {
         if (file.type === 'folder') {
             const id_files_in_folder = filesModel.getFolderFiles(userId, idToDelete);
             for (const id of id_files_in_folder) {
-                filesModel.deleteFileById(userId, id);
-                const cppResponseDelete = await fileSocket.sendCommand(`DELETE ${id}`);
-                if (cppResponseDelete.includes("400") || cppResponseDelete.includes("500")) return res.status(500).end();
+                filesModel.deleteFileByIdFromBin(userId, id);
+                try {
+                    const cppResponseDelete = await fileSocket.sendCommand(`DELETE ${id}`);
+
+                    if (cppResponseDelete.includes("400")) {
+                        return res.status(400).json({ error: 'Delete' });
+                    }
+                    if (cppResponseDelete.includes("500")) {
+                        return res.status(500).json({ error: 'Delete' });
+                    }
+                } catch (error) {
+                    return res.status(500).end();
+                }
             }
         }
 
-        filesModel.deleteFileById(userId, idToDelete);
-
+        filesModel.deleteFileByIdFromBin(userId, idToDelete);
         if (file.type === 'file') {
-            const cppResponseDelete = await fileSocket.sendCommand(`DELETE ${idToDelete}`);
-            if (cppResponseDelete.includes("400") || cppResponseDelete.includes("500")) return res.status(500).end();
-        }
+            try {
+                const cppResponseDelete = await fileSocket.sendCommand(`DELETE ${idToDelete}`);
 
-        return res.status(204).end();
-    } catch (err) {
-        return res.status(500).end();
+                if (cppResponseDelete.includes("400")) {
+                    return res.status(400).json({ error: 'Delete' });
+                }
+                if (cppResponseDelete.includes("500")) {
+                    return res.status(500).json({ error: 'Delete' });
+                }
+            } catch (error) {
+                return res.status(500).end();
+            }
+        }
     }
+    else {
+        filesModel.deleteFileByIdFromUserFiles(userId, idToDelete);
+        if (file.type === 'file') {
+            if (file.starred) {
+                filesModel.starOrUnstarFile(userId, idToDelete);
+            }
+        }
+    }
+    return res.status(204).end();
 };
 
 
+exports.starOrUnstarFile = (req, res) => {
+    const userId = req.headers['user-id'];
+    const user = User.getUserById(parseInt(userId));
+    if (!userId) {
+        return res.status(401).json({ error: 'User not logged in' });
+    } 
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+    const fileId = parseInt(req.params.id);
+    const success = filesModel.starOrUnstarFile(userId, fileId);
+    if (!success) {
+        return res.status(404).json({ error: 'File not found' });
+    }
+    return res.status(204).end();
+};
+
+
+exports.restoreFileFromBin = (req, res) => {
+    const userId = req.headers['user-id'];
+    const user = User.getUserById(parseInt(userId));
+    if (!userId) {
+        return res.status(401).json({ error: 'User not logged in' });
+    } 
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+    const fileId = parseInt(req.params.id);
+    const success = filesModel.RestoreFileByIdFromBin(userId, fileId);
+    if (!success) {
+        return res.status(404).json({ error: 'File not found' });
+    }
+    return res.status(204).end();
+};
