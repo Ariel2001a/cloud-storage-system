@@ -1,18 +1,20 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getFolderChildren } from "../api/files";
-import FileItem from "../components/FileItem";
 import FileView from "./FileView";
-import "./Home.css"; // שימוש באותו עיצוב של דף הבית
+import FileTable from "../components/FileTable"; // ✅ משתמשים רק בזה
+import "./Home.css";
+import { getUserIdFromToken } from "../utils/tokenUtils";
 import { FileRightClickMenu } from "../components/FileRightClickMenu";
-import { getUserIdFromToken } from "../utils/tokenUtils"; // ✅ import token utils
 
 
-export default function FolderView({ lang, onFolderEnter }) {
+
+export default function FolderView({ user,lang, onFolderEnter }) {
     const { id } = useParams();
     const navigate = useNavigate();
     const [items, setItems] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const isRtl = lang === "he";
 
     const [menu, setMenu] = useState({
@@ -23,22 +25,24 @@ export default function FolderView({ lang, onFolderEnter }) {
     });
 
     useEffect(() => {
-        // ✅ check token and redirect if missing/invalid
-        const userId = getUserIdFromToken();
+        const 
+        Id = getUserIdFromToken();
         if (!userId) {
             navigate("/login");
             return;
         }
 
-        onFolderEnter(id); // tell Layout we are inside a folder
+        onFolderEnter(id);
 
         async function load() {
+            setIsLoading(true); // ✅ מתחילים טעינה
             try {
-
-                const children = await getFolderChildren(id); // pass userId from token
+                const children = await getFolderChildren(id);
                 setItems(children || []);
             } catch (error) {
                 console.error("Error loading folder children:", error);
+            } finally {
+                setIsLoading(false); // ✅ חייב להתעדכן ל-false כדי להציג את הטבלה
             }
         }
 
@@ -57,43 +61,55 @@ export default function FolderView({ lang, onFolderEnter }) {
         });
     };
 
+    function openItem(item) {
+        if (item.type === "folder") {
+            navigate(`/folder/${item.id}`);
+        } else {
+            setSelectedFile(item);
+        }
+    }
+
     return (
         <div className="page-container">
             <header
                 className="folder-header-row"
-                style={{ display: "flex", alignItems: "center", gap: "15px" }}
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "15px",
+                    marginBottom: "20px",
+                    direction: isRtl ? "rtl" : "ltr"
+                }}
             >
                 <button
                     className="back-btn"
                     onClick={() => navigate(-1)}
-                    style={{ cursor: "pointer" }}
+                    style={{
+                        cursor: "pointer",
+                        background: "none",
+                        border: "none",
+                        fontSize: "20px"
+                    }}
                 >
                     {isRtl ? "→" : "←"}
                 </button>
-                <h2 className="page-title">{isRtl ? "תיקייה" : "Folder"}</h2>
+                <h2 className="page-title" style={{ margin: 0 }}>
+                    {isRtl ? "תיקייה" : "Folder"}
+                </h2>
+                <span style={{ fontSize: "24px" }}>📁</span>
             </header>
 
-            <div className="file-list">
-                {items.length > 0 ? (
-                    items.map((item) => (
-                        <FileItem
-                            key={item.id}
-                            item={item}
-                            onClick={(it) =>
-                                it.type === "folder"
-                                    ? navigate(`/folder/${it.id}`)
-                                    : setSelectedFile(it)}
-                            onRightClick={handleRightClick}                        
-                        />
-                    ))
-                ) : (
-                    <p className="status-msg">
-                        {isRtl ? "התיקייה ריקה" : "Folder is empty"}
-                    </p>
-                )}
-            </div>
-            <FileRightClickMenu menu={menu} setMenu={setMenu} items={items} setItems={setItems} lang={lang} />
 
+            {/* ✅ הטבלה מחליפה את כל ה-file-list הישן */}
+            <FileTable
+                items={items}
+                isLoading={isLoading}
+                isRtl={isRtl}
+                user={user}
+                openItem={openItem}
+            />
+
+            <FileRightClickMenu menu={menu} setMenu={setMenu} items={items} setItems={setItems} lang={lang} />
 
             {selectedFile && (
                 <FileView
