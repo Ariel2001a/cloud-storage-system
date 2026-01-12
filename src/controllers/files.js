@@ -132,6 +132,21 @@ exports.getDeletedFiles = (req, res) => {
     res.json({ files });
 };
 
+exports.getRecentFiles = (req, res) => {
+    const userId = req.headers['user-id'];
+    const user = User.getUserById(parseInt(userId));
+
+    if (!userId) {
+        return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+
+    const files = filesModel.getUserRecentFiles(userId);
+    res.json({ files });
+};
 
 exports.getSharedFiles = (req, res) => {
     const userId = req.headers['user-id'];
@@ -172,7 +187,6 @@ exports.getFolderChildren = (req, res) => {
     const children = filesModel.getFolderFiles(userId, folderId);
     res.json({ files: children });
 };
-
 
 exports.getFileById = async (req, res) => {
     const userId = req.headers['user-id'];
@@ -297,6 +311,7 @@ exports.patchFileById = async (req, res) => {
     }
 
     const { name, content, parentId } = req.body;
+    console.log(parentId);
 
     if (content !== undefined) {
 
@@ -439,6 +454,24 @@ exports.starOrUnstarFile = (req, res) => {
     }
     const fileId = parseInt(req.params.id);
     const success = filesModel.starOrUnstarFile(userId, fileId);
+    if (!success) {
+        return res.status(404).json({ error: 'File not found' });
+    }
+    return res.status(204).end();
+};
+
+
+exports.restoreFileFromBin = (req, res) => {
+    const userId = req.headers['user-id'];
+    const user = User.getUserById(parseInt(userId));
+    if (!userId) {
+        return res.status(401).json({ error: 'User not logged in' });
+    } 
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+    const fileId = parseInt(req.params.id);
+    const success = filesModel.RestoreFileByIdFromBin(userId, fileId);
     if (!success) {
         return res.status(404).json({ error: 'File not found' });
     }

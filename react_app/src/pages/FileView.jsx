@@ -14,8 +14,8 @@ export default function FileView({ fileId, fileName, onClose, lang = "he" }) {
             try {
                 const data = await getFileContent(userId, fileId);
                 // גישה לנתיב הנכון לפי תמונת ה-Network ששלחת
-                if (data && data.file) {
-                    setContent(data.file.content || "");
+                if (data !== null && data !== undefined) {
+                    setContent(data);
                 }
             } catch (error) {
                 console.error("Failed to load file content:", error);

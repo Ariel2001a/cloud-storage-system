@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getFiles } from "../api/files";
+import { getFiles, getSharedFiles } from "../api/files";
 import FileItem from "../components/FileItem";
 import FileView from "./FileView"; // 1. ייבוא של קומפוננטת התצוגה
 import { useNavigate } from "react-router-dom";
@@ -8,10 +8,10 @@ import { FileRightClickMenu } from "../components/FileRightClickMenu"; // אם �
 import { useLang } from "../context/LangContext";
 
 
-export default function Home() {
+export default function ShareWithMe() {
     const [items, setItems] = useState([]);
     const { lang, setLang, isRtl } = useLang();
-
+    
     const [menu, setMenu] = useState({
         visible: false,
         x: 0,
@@ -28,7 +28,7 @@ export default function Home() {
     useEffect(() => {
         async function load() {
             try {
-                const res = await getFiles(userId);
+                const res = await getSharedFiles(userId);
                 setItems(res || []);
             } catch (error) {
                 console.error("Error loading files:", error);
@@ -59,7 +59,7 @@ export default function Home() {
     return (
         <div className="page-container">
             <h2 className="page-title">
-                {isRtl ? "עמוד בית" : "Home Page"}
+                {isRtl ? "שותף איתי" : "Share With Me"}
             </h2>
 
             <div className="file-list">

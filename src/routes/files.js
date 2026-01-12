@@ -11,8 +11,14 @@ router.route('/')
 router.route('/deleted')
         .get(filesController.getDeletedFiles); // Get all deleted files/folders
 
+router.route('/deleted/:id')
+        .post(filesController.restoreFileFromBin); // Restore a file/folder by ID
+
 router.route('/shared')
         .get(filesController.getSharedFiles); // Get all shared files/folders
+
+router.route('/recent')
+        .get(filesController.getRecentFiles); // Get all recent files/folders (last week)
 
 router.route('/starred')
         .get(filesController.getStarredFiles); // Get all starred files/folders
@@ -22,7 +28,7 @@ router.route('/:id')
         .get(filesController.getFileById2)   // Get a file/folder by ID
         .patch(filesController.patchFileById)  // Update a file/folder by ID
         .delete(filesController.deleteFileById) // Delete a file/folder by ID
-        .post(filesController.starOrUnstarFile); // Restore a deleted file/folder by ID
+        .post(filesController.starOrUnstarFile)
 
 
 router.route('/:id/children')

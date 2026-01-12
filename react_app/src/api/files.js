@@ -81,6 +81,22 @@ export async function deleteFileOrFolder(userId, fileId) {
 }
 
 
+export async function restoreFileOrFolder(userId, fileId) {
+    const res = await fetch(`${API_BASE}/deleted/${fileId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "user-id": userId
+        }
+    });
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Failed to delete: " + errText);
+    }
+    const text = await res.text(); // קורא את הגוף כטקסט
+    return text;
+}
+
 export async function renameFileOrFolder(userId, fileId, newName) {
     const res = await fetch(`${API_BASE}/${fileId}`, {
         method: "PATCH",
@@ -137,14 +153,16 @@ export async function starOrUnstarFile(userId, fileId) {
     return text;
 }
 
-export async function shareFileOrFolder(userId, fileId, sharedWithUserId, permission) {
+
+export async function shareFileOrFolder(userId, fileId, sharedWithUsername, permission) {
+
     const res = await fetch(`${API_BASE}/${fileId}/permissions`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "user-id": userId
         },
-        body: JSON.stringify({ shared_with_user_id: sharedWithUserId, permission: permission })
+        body: JSON.stringify({ username: sharedWithUsername, permission: permission })
 
     });
 
@@ -158,34 +176,74 @@ export async function shareFileOrFolder(userId, fileId, sharedWithUserId, permis
 
 
 export async function getDeletedFiles(userId) {
-    const res = await fetch(`${API_BASE}/deleted`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "user-id": userId
-        },
-    });
-    return await res.json();
+    try{
+        const res = await fetch(`${API_BASE}/deleted`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "user-id": userId
+            },
+        });
+        if (!res.ok) throw new Error('Failed to fetch files');
+        const data = await res.json();
+        return data.files || [];
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}
+
+
+export async function getRecentFiles(userId) {
+    try{
+        const res = await fetch(`${API_BASE}/recent`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "user-id": userId
+            },
+        });
+        if (!res.ok) throw new Error('Failed to fetch files');
+        const data = await res.json();
+        return data.files || [];
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
 }
 
 export async function getSharedFiles(userId) {
-    const res = await fetch(`${API_BASE}/shared`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "user-id": userId
-        },
-    });
-    return await res.json();
+    try{
+        const res = await fetch(`${API_BASE}/shared`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "user-id": userId
+            },
+        });
+        if (!res.ok) throw new Error('Failed to fetch files');
+        const data = await res.json();
+        return data.files || [];
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
 }
 
 export async function getStarredFiles(userId) {
-    const res = await fetch(`${API_BASE}/starred`, {
+    try{
+        const res = await fetch(`${API_BASE}/starred`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
             "user-id": userId
         },
     });
-    return await res.json();
+    if (!res.ok) throw new Error('Failed to fetch files');
+        const data = await res.json();
+        return data.files || [];
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
 }

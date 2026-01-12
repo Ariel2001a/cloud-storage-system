@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 // Import controller functions for handling permissions
-const {createPermission, getPermissionsByFile, updatePermission, deletePermission, getPermissionsByDeletedFile,getPermissionsBySharedFile} = require('../controllers/permissions');
+const {createPermissionByUsername, getPermissionsByFile, updatePermission, deletePermission, getPermissionsByDeletedFile,getPermissionsBySharedFile} = require('../controllers/permissions');
 
 // Define routes for managing permissions
-router.post('/:id/permissions', createPermission);
+router.post('/:id/permissions', createPermissionByUsername);
 router.get('/:id/permissions', getPermissionsByFile);
 router.patch('/:id/permissions/:pId', updatePermission);
 router.delete('/:id/permissions/:pId', deletePermission);

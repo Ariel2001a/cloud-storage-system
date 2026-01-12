@@ -20,6 +20,7 @@ export default function CreateFileForm({ userId, onCreated, onClose }) {
         const folderIdIndex = parts.indexOf('folder');
         let idFromUrl = null;
 
+
         if (folderIdIndex !== -1 && parts[folderIdIndex + 1]) {
             idFromUrl = Number(parts[folderIdIndex + 1]);
         }

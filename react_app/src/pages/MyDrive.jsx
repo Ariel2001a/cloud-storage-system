@@ -8,7 +8,7 @@ import { FileRightClickMenu } from "../components/FileRightClickMenu"; // אם �
 import { useLang } from "../context/LangContext";
 
 
-export default function Home() {
+export default function MyDrive() {
     const [items, setItems] = useState([]);
     const { lang, setLang, isRtl } = useLang();
 
@@ -59,7 +59,7 @@ export default function Home() {
     return (
         <div className="page-container">
             <h2 className="page-title">
-                {isRtl ? "עמוד בית" : "Home Page"}
+                {isRtl ? "האחסון שלי" : "My Drive"}
             </h2>
 
             <div className="file-list">

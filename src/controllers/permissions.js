@@ -60,6 +60,62 @@ async function createPermission(req, res) {
     return res.status(201).json(newPermission);
 }
 
+async function createPermissionByUsername(req, res) {
+    const fileId = parseInt(req.params.id, 10);
+    const { username, permission } = req.body;
+    const ownerId = req.headers['user-id'];
+
+   // Check if the request is from a logged-in user
+    if (!ownerId) {
+        return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    const owner = User.getUserById(parseInt(ownerId));
+    if (!owner) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+
+ 
+    // Ensure the owner has access to the file
+    const userFiles = filesModel.getUserFiles(ownerId);
+    const file = userFiles.find(f => f.id == fileId);
+
+    if (!file) {
+        return res.status(404).json({ error: 'File or folder not found' });
+    }
+
+ 
+    // Validate input
+    if (!username || !permission) {
+        return res.status(400).json({ error: 'Missing fields' });
+    }
+
+ 
+    const targetUser = User.getUserByUsername(username);
+    if (!targetUser) {
+        return res.status(404).json({ error: 'Target user not found' });
+    }
+
+    if (!PERMISSION_TYPES[file.type].includes(permission)) {
+        return res.status(400).json({ error: `Invalid permission type for ${file.type}` });
+    }
+
+    let userId = targetUser.id;
+
+    // Add the permission
+    const newPermission = addPermission({ userId, fileId, permission, type: file.type });
+    if (!newPermission) {
+        return res.status(409).json({ error: 'Permission already exists' });
+    }
+    
+    let success = filesModel.sharedWithUsers(ownerId, fileId, userId);
+    if (!success) {
+        return res.status(400).json({ error: 'Failed to share file with user' });
+    }
+    return res.status(201).json(newPermission);
+}
+
+
 
 /**
  * Get all permissions for a file or folder
@@ -190,5 +246,5 @@ async function deletePermission(req, res) {
     return res.status(204).end();
 }
 
-module.exports = { createPermission, getPermissionsByFile, updatePermission, deletePermission,
+module.exports = { createPermissionByUsername, getPermissionsByFile, updatePermission, deletePermission,
                     getPermissionsBySharedFile,getPermissionsByDeletedFile };

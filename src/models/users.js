@@ -22,6 +22,9 @@ const isValidName = (name) => {
 // Checks if a name contains only valid letters
 const getUserById = (id) =>  users.find(u => u.id===id)
 
+const getUserByUsername = (email) =>  users.find(u => u.email===email)
+
+
 // Checks if a name contains only valid letters
 const checkUserByUsername = (email) =>  users.find(u => u.email===email)
 
@@ -30,5 +33,6 @@ module.exports = {
     createUser,
     isValidName,
     getUserById,
-    checkUserByUsername
+    checkUserByUsername,
+    getUserByUsername
 }

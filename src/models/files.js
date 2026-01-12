@@ -2,6 +2,9 @@ const userFiles = {}; // store files/folders for each user (key = userId)
 const deletedUserFiles = {}; // store deleted files/folders for each user (key = userId)
 const sharedFiles = {}; // store shared files/folders for each user (key = userId)
 
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const DAKA = 2 * 60 * 1000;
+
 // Get all files/folders for a user
 const getUserFiles = (userId) => {
     if (!userFiles[userId]) {       // if user has no files yet, create empty array
@@ -16,6 +19,11 @@ const getUserDeletedFiles = (userId) => {
         deletedUserFiles[userId] = [];
     }
     return deletedUserFiles[userId];       // return user's deleted files
+};
+
+const getUserRecentFiles = (userId) => {
+    files = getUserFiles(userId);
+    return files.filter((item => Date.now() - item.date <= DAKA))       // return user's recent files
 };
 
 const getUserSharedFiles = (userId) => {
@@ -36,6 +44,11 @@ const addFileOrFolder = (userId, file) => {
 const getTopLevelFiles = (userId) => {
     const files = getUserFiles(userId);
     return files.filter(item => item.folderParent == null);
+};
+
+const getStarredFiles = (userId) => {
+    const files = getUserFiles(userId);
+    return files.filter(item => item.starred === true);
 };
 
 // Returns a file/folder by its ID for a given user
@@ -85,19 +98,25 @@ const deleteFileByIdFromBin = (user_id, id) => {
     }
 
     return false;
+};
 
+const RestoreFileByIdFromBin = (user_id, id) => {
+    let file = getFileByIdFromDeleted(user_id, id);
+
+    if (file) {
+        deletedUserFiles[user_id] = deletedUserFiles[user_id].filter(a => a.id !== id);
+        userFiles[user_id].push(file);
+        return true;
+    }
+
+    return false;
 };
 
 // Returns IDs of all files contained in a specific folder for a user
 const getFolderFiles = (userId, folderParent) => {
-    let files = getUserFiles(userId);
-    files = files.filter(item => item.folderParent == folderParent);
-    const id_files_in_folder = []
-    files.forEach(file => {
-        id_files_in_folder.push(file.id)
-    });
-
-    return id_files_in_folder
+    const allFiles = getUserFiles(userId);
+    const filesInFolder = allFiles.filter(item => item.folderParent == folderParent);
+    return filesInFolder;
 };
 
 const starOrUnstarFile = (userId, fileId) => {
@@ -136,5 +155,8 @@ module.exports = {
     getFileByIdFromDeleted,
     sharedWithUsers,
     getUserSharedFiles,
-    getFileByIdFromShared
+    getFileByIdFromShared,
+    getStarredFiles,
+    RestoreFileByIdFromBin,
+    getUserRecentFiles
 };

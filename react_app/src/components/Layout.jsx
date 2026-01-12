@@ -4,12 +4,14 @@ import "./Layout.css";
 import driveLogo from "../uploads/logo.png";
 import Default_picture from "../uploads/default.png";
 import { getFiles, getSharedFiles, getDeletedFiles } from '../api/files';
+import { Navigate } from "react-router-dom";
+import { useLang } from "../context/LangContext";
 
 // הוספנו את currentFolderId לרשימת ה-Props
-export default function Layout({ children, lang, setLang, currentFolderId }) {
+export default function Layout({ children, currentFolderId }) {
     const [showForm, setShowForm] = useState(false);
-    const isRtl = lang === 'he';
-
+    const { lang, setLang, isRtl } = useLang();
+    
     return (
         <div className="home-wrapper" style={{ direction: isRtl ? "rtl" : "ltr" }}>
             <header className="top-bar">
@@ -47,14 +49,14 @@ export default function Layout({ children, lang, setLang, currentFolderId }) {
                     </button>
                     <br />
                     <div className={`sidebar-buttons ${isRtl ? 'rtl' : 'ltr'}`}>
-                        <button className="sidebar-button">🏠 {isRtl ? "בית" : "Home"}</button>
-                        <button className="sidebar-button" onClick={getFiles}>📁 {isRtl ? "האחסון שלי" : "My Drive"}</button>
+                        <button className="sidebar-button" onClick={() => window.location.href = "/"}>🏠 {isRtl ? "בית" : "Home"}</button>
+                        <button className="sidebar-button" onClick={() => window.location.href = "/my drive"}>📁 {isRtl ? "האחסון שלי" : "My Drive"}</button>
 
-                        <button className="sidebar-button" onClick={getSharedFiles}>👤 {isRtl ? "שותף איתי" : "Shared with me"}</button>
-                        <button className="sidebar-button">⏰ {isRtl ? "אחרונים" : "Recent"}</button>
+                        <button className="sidebar-button" onClick={() => window.location.href = "/share with me"}>👤 {isRtl ? "שותף איתי" : "Shared with me"}</button>
+                        <button className="sidebar-button" onClick={() => window.location.href = "/recent"}>⏰ {isRtl ? "אחרונים" : "Recent"}</button>
 
-                        <button className="sidebar-button">⭐ {isRtl ? "מסומנים בכוכב" : "Starred"}</button>
-                        <button className="sidebar-button" onClick={getDeletedFiles}>🗑️ {isRtl ? "אשפה" : "Bin"}</button>
+                        <button className="sidebar-button" onClick={() => window.location.href = "/starred"}>⭐ {isRtl ? "מסומנים בכוכב" : "Starred"}</button>
+                        <button className="sidebar-button" onClick={() => window.location.href = "/deleted"}>🗑️ {isRtl ? "אשפה" : "Bin"}</button>
                     </div>
                 </aside>
 
