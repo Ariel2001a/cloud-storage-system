@@ -19,7 +19,6 @@ export default function Home({ searchTerm, user }) {
     const [userId, setUserId] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
-
     const [menu, setMenu] = useState({
         visible: false,
         x: 0,

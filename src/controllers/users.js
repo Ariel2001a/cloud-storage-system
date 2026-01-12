@@ -76,7 +76,7 @@ exports.checkUser = (req, res) => {
     const token = jwt.sign(
         { id: user.id, username },  // include username in payload
         SECRET_KEY,
-        { expiresIn: '1h' }
+        { expiresIn: '5h' }
     );
 
     // 4️⃣ Send JWT to frontend

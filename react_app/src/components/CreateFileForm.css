@@ -85,3 +85,49 @@
     cursor: pointer;
     color: #5f6368;
 }
+
+/* ================= Dark Mode Overrides ================= */
+.home-wrapper.dark .modal-content {
+    background-color: #2c2c44; /* Darker modal background */
+    color: #ffffff; /* Text color */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6); /* Stronger shadow */
+}
+
+.home-wrapper.dark .modal-content h2 {
+    color: #ffffff;
+}
+
+.home-wrapper.dark .drive-input,
+.home-wrapper.dark .drive-select,
+.home-wrapper.dark .drive-textarea {
+    background-color: #3a3a55; /* Darker input background */
+    border: 1px solid #55557a; /* Dark border */
+    color: #ffffff; /* Text color */
+}
+
+.home-wrapper.dark .drive-input:focus,
+.home-wrapper.dark .drive-select:focus,
+.home-wrapper.dark .drive-textarea:focus {
+    border-color: #ffe066;
+    box-shadow: 0 0 0 2px rgba(255, 224, 102, 0.3);
+}
+
+.home-wrapper.dark .drive-btn-primary {
+    background-color: #fdcb00; /* Yellow primary button */
+    color: #1f1f2e;
+}
+
+.home-wrapper.dark .drive-btn-primary:hover {
+    background-color: #ffd633;
+}
+
+.home-wrapper.dark .drive-btn-secondary {
+    background-color: #55557a;
+    border: 1px solid #7777a0;
+    color: #ffffff;
+}
+
+.home-wrapper.dark .drive-btn-secondary:hover {
+    background-color: #6b6b8e;
+    border-color: #9999b3;
+}
