@@ -181,6 +181,21 @@ export async function moveFolder(fileId, folderId) {
     return text;
 }
 
+export const patchFileById = async (id, body) => {
+    const res = await fetch(`http://localhost:8080/api/files/${id}`, {
+        method: "PATCH",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Failed to edit file: " + errText);
+    }
+
+    // If backend returns no JSON, just return true
+    return true;
+};
 
 export async function starOrUnstarFile(fileId) {
     const res = await fetch(`${API_BASE}/files/${fileId}`, {
