@@ -2,24 +2,26 @@
 import { useState, useEffect } from "react";
 import { getFiles, searchFiles } from "../api/files";
 import FileView from "./FileView";
-import FileTable from "../components/FileTable"; // ✅ הייבוא החדש
+import FileTable from "../components/FileTable";
 import { useNavigate } from "react-router-dom";
 import { getUserIdFromToken } from "../utils/tokenUtils";
-import defaultAvatar from "../images/default.png"; // default avatar
+import defaultAvatar from "../images/default.png";
 import "./Home.css";
 import FileItem from "../components/FileItem";
-import { FileRightClickMenu } from "../components/FileRightClickMenu"; // אם עדיין לא ייבאת
+import { FileRightClickMenu } from "../components/FileRightClickMenu";
 import { useLang } from "../context/LangContext";
+import { useUser } from "../context/UserContext";
 
 
 
-export default function Home({ searchTerm, user }) {
+export default function Home({ searchTerm }) {
     const [items, setItems] = useState([]);
     const { lang, setLang, isRtl } = useLang();
     const [selectedFile, setSelectedFile] = useState(null);
     const [userId, setUserId] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
+    const { user } = useUser();
     const [menu, setMenu] = useState({
         visible: false,
         x: 0,
@@ -27,14 +29,14 @@ export default function Home({ searchTerm, user }) {
         file: null
     });
 
-    // אימות משתמש
+
     useEffect(() => {
         const id = getUserIdFromToken();
         if (!id) { navigate('/login'); return; }
         setUserId(id);
     }, [navigate]);
 
-    // טעינת קבצים
+
     useEffect(() => {
         if (!userId) return;
         async function load() {
@@ -70,7 +72,7 @@ export default function Home({ searchTerm, user }) {
         else setSelectedFile(item);
     }
 
-    // ✅ Get avatar for file creator (use logged-in user object)
+
     const getCreatorAvatar = () => {
         if (!user) return defaultAvatar;
         if (user.image && user.image.startsWith("data:image")) return user.image;
@@ -86,7 +88,7 @@ export default function Home({ searchTerm, user }) {
                     : (isRtl ? "עמוד בית" : "Home Page")}
             </h2>
 
-            {/* ✅ כל הטבלה הצטמצמה לשורה אחת חכמה! */}
+
             <FileTable
                 items={items}
                 isLoading={isLoading}

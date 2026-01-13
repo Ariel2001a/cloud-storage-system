@@ -12,6 +12,7 @@ import FolderView from "./pages/FolderView";
 import Register from "./components/Register/Register";
 import Login from "./components/login/login";
 import "./App.css";
+import { UserProvider } from "./context/UserContext";
 
 function App() {
   const [lang, setLang] = useState("he");
@@ -20,60 +21,62 @@ function App() {
 
   return (
     <LangProvider>
-      <BrowserRouter>
-        <Routes>
+      <UserProvider>
+        <BrowserRouter>
+          <Routes>
 
-          {/* בלי Layout */}
-          <Route path="/register" element={<Register lang={lang} setLang={setLang} />} />
-          <Route path="/login" element={<Login lang={lang} setLang={setLang} />} />
 
-          {/* עם Layout */}
-          <Route element={<Layout currentFolderId={currentFolderId} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}>
+            <Route path="/register" element={<Register lang={lang} setLang={setLang} />} />
+            <Route path="/login" element={<Login lang={lang} setLang={setLang} />} />
 
-            <Route
-              path="/home"
-              element={<Home searchTerm={searchTerm} setSearchTerm={setSearchTerm} onFolderEnter={() => setCurrentFolderId(null)} />}
-            />
 
-            <Route
-              path="/my-drive"
-              element={<MyDrive searchTerm={searchTerm} setSearchTerm={setSearchTerm} onFolderEnter={() => setCurrentFolderId(null)} />}
-            />
+            <Route element={<Layout currentFolderId={currentFolderId} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}>
 
-            <Route
-              path="/share-with-me"
-              element={<ShareWithMe searchTerm={searchTerm} setSearchTerm={setSearchTerm} onFolderEnter={() => setCurrentFolderId(null)} />}
-            />
+              <Route
+                path="/"
+                element={<Home searchTerm={searchTerm} setSearchTerm={setSearchTerm} onFolderEnter={() => setCurrentFolderId(null)} />}
+              />
 
-            <Route
-              path="/recent"
-              element={<Recent searchTerm={searchTerm} setSearchTerm={setSearchTerm} onFolderEnter={() => setCurrentFolderId(null)} />}
-            />
+              <Route
+                path="/my-drive"
+                element={<MyDrive searchTerm={searchTerm} setSearchTerm={setSearchTerm} onFolderEnter={() => setCurrentFolderId(null)} />}
+              />
 
-            <Route
-              path="/starred"
-              element={<StarredFiles searchTerm={searchTerm} setSearchTerm={setSearchTerm} onFolderEnter={() => setCurrentFolderId(null)} />}
-            />
+              <Route
+                path="/share-with-me"
+                element={<ShareWithMe searchTerm={searchTerm} setSearchTerm={setSearchTerm} onFolderEnter={() => setCurrentFolderId(null)} />}
+              />
 
-            <Route
-              path="/deleted"
-              element={<BinPage searchTerm={searchTerm} setSearchTerm={setSearchTerm} onFolderEnter={() => setCurrentFolderId(null)} />}
-            />
+              <Route
+                path="/recent"
+                element={<Recent searchTerm={searchTerm} setSearchTerm={setSearchTerm} onFolderEnter={() => setCurrentFolderId(null)} />}
+              />
 
-            <Route
-              path="folder/:id"
-              element={
-                <FolderView
-                  searchTerm={searchTerm}
-                  setSearchTerm={setSearchTerm}
-                  onFolderEnter={setCurrentFolderId}
-                />
-              }
-            />
+              <Route
+                path="/starred"
+                element={<StarredFiles searchTerm={searchTerm} setSearchTerm={setSearchTerm} onFolderEnter={() => setCurrentFolderId(null)} />}
+              />
 
-          </Route>
-        </Routes>
-      </BrowserRouter>
+              <Route
+                path="/deleted"
+                element={<BinPage searchTerm={searchTerm} setSearchTerm={setSearchTerm} onFolderEnter={() => setCurrentFolderId(null)} />}
+              />
+
+              <Route
+                path="folder/:id"
+                element={
+                  <FolderView
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    onFolderEnter={setCurrentFolderId}
+                  />
+                }
+              />
+
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </UserProvider>
     </LangProvider>
   );
 }

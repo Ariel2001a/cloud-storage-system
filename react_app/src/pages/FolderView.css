@@ -26,7 +26,7 @@
     color: #202124;
 }
 
-/* שימוש ב-flex-direction לוגי עבור ה-FileItem */
+
 .file-list {
     display: flex;
     flex-direction: column;

@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getFolderChildren, searchFiles } from "../api/files";
 import FileView from "./FileView";
-import FileTable from "../components/FileTable"; // ✅ משתמשים רק בזה
+import FileTable from "../components/FileTable";
 import "./Home.css";
 import { useLang } from "../context/LangContext";
 import { getUserIdFromToken } from "../utils/tokenUtils";
@@ -48,7 +48,7 @@ export default function FolderView({ user, onFolderEnter, searchTerm }) {
             } catch (error) {
                 console.error("Error loading folder children:", error);
             } finally {
-                setIsLoading(false); // ✅ חייב להתעדכן ל-false כדי להציג את הטבלה
+                setIsLoading(false);
             }
         }
 
@@ -58,7 +58,7 @@ export default function FolderView({ user, onFolderEnter, searchTerm }) {
     }, [id, navigate, onFolderEnter, searchTerm]);
 
     function handleRightClick(e, file) {
-        e.preventDefault(); // חשוב! מונע את התפריט ברירת המחדל של הדפדפן
+        e.preventDefault();
         setMenu({
             visible: true,
             x: e.clientX,
@@ -106,7 +106,7 @@ export default function FolderView({ user, onFolderEnter, searchTerm }) {
                 </h2>
             </header>
 
-            {/* ✅ הטבלה מחליפה את כל ה-file-list הישן */}
+
             <FileTable
                 items={items}
                 isLoading={isLoading}

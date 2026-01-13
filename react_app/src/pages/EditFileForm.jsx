@@ -10,15 +10,15 @@ export default function EditFileForm({ file, onClose, onEdit, lang }) {
 
   const isImage = file.type === "image";
 
-  // טיפול בבחירת תמונה חדשה
+
   const handleImageChange = (e) => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      setContent(reader.result); // שומר את ה-Base64 החדש ב-content
-      setPreview(reader.result); // מציג תצוגה מקדימה
+      setContent(reader.result);
+      setPreview(reader.result);
     };
     reader.readAsDataURL(selectedFile);
   };
@@ -30,7 +30,7 @@ export default function EditFileForm({ file, onClose, onEdit, lang }) {
     setLoading(true);
     try {
       await deleteFileOrFolder(file.id);
-      window.location.reload(); // רענון פשוט לעדכון הרשימה
+      window.location.reload();
     } catch (err) {
       alert("Delete failed");
     } finally {
@@ -99,7 +99,7 @@ export default function EditFileForm({ file, onClose, onEdit, lang }) {
           </div>
 
           <div className="form-actions" style={{ justifyContent: "space-between", display: "flex", width: "100%" }}>
-            {/* כפתור מחיקה בצד אחד */}
+
             <button
               type="button"
               className="drive-btn-danger"
@@ -109,7 +109,7 @@ export default function EditFileForm({ file, onClose, onEdit, lang }) {
               {lang === "he" ? "מחק" : "Delete"}
             </button>
 
-            {/* כפתורי אישור וביטול בצד שני */}
+
             <div style={{ display: "flex", gap: "10px" }}>
               <button type="button" className="drive-btn-secondary" onClick={onClose}>
                 {lang === "he" ? "ביטול" : "Cancel"}

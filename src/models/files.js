@@ -3,7 +3,6 @@ const deletedUserFiles = {}; // store deleted files/folders for each user (key =
 const sharedFiles = {}; // store shared files/folders for each user (key = userId)
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
-const DAKA = 2 * 60 * 1000;
 
 // Get all files/folders for a user
 const getUserFiles = (userId) => {
@@ -23,7 +22,7 @@ const getUserDeletedFiles = (userId) => {
 
 const getUserRecentFiles = (userId) => {
     files = getUserFiles(userId);
-    return files.filter((item => Date.now() - item.date <= DAKA))       // return user's recent files
+    return files.filter((item => Date.now() - item.date <= WEEK_MS))       // return user's recent files
 };
 
 const getUserSharedFiles = (userId) => {
@@ -164,7 +163,7 @@ const sharedWithUsers = (userId, fileId, userToShareId) => {
 const doFilePublic = (userId, fileId) => {
     const file = getFileById(userId, fileId);
     if (file) {
-        file.pub =true;
+        file.pub = true;
         return true;
     }
     return false;

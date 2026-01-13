@@ -6,10 +6,9 @@
 
 .top-bar {
     display: grid;
-    /* לוגו, חיפוש, וכפתורים */
+
     grid-template-columns: 250px 1fr auto;
     align-items: center;
-    /* מיישר את הכל לאמצע הגובה */
     padding: 0 16px;
     background: #f8f9fa;
     height: 64px;
@@ -25,39 +24,39 @@
 
 .logo-img {
     height: 40px;
-      width: auto;
+    width: auto;
     object-fit: contain;
 }
 
 .sidebar-buttons {
-  display: flex;
-  flex-direction: column; /* אנכיות */
-  gap: 8px;               /* רווח אחיד בין כפתורים */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .sidebar-buttons.ltr {
-  direction: ltr;
-  text-align: left;
+    direction: ltr;
+    text-align: left;
 }
 
 .sidebar-buttons.rtl {
-  direction: rtl;
-  text-align: right;
+    direction: rtl;
+    text-align: right;
 }
 
 .sidebar-button {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  background: white;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-  padding: 12px 16px;
-  border-radius: 12px;
-  font-size: 15px;
-  width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    background: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 15px;
+    width: 100%;
 }
 
 .search-container {
@@ -67,7 +66,7 @@
     width: 100%;
     max-width: 500px;
     position: relative;
-    /* הסרתי את ה-transform כדי שיהיה ממורכז מול שאר האלמנטים */
+
 }
 
 .search-input {
@@ -89,12 +88,11 @@
     pointer-events: none;
 }
 
-/* --- סידור הכפתורים בצד שמאל --- */
+
 .header-actions {
     display: flex;
     align-items: center;
     gap: 12px;
-    /* row-reverse דוחף את הפרופיל לקצה השמאלי ואת השפה לימינו */
     flex-direction: row-reverse;
 }
 
@@ -108,7 +106,7 @@
     font-size: 14px;
 }
 
-/* --- עיצוב הפרופיל (החזרתי למקור) --- */
+
 .user-profile-container {
     position: relative;
 }
@@ -137,12 +135,11 @@
     font-size: 16px;
 }
 
-/* החלונית המרחפת המקורית */
+
 .profile-dropdown {
     position: absolute;
     top: 52px;
     inset-inline-end: 0;
-    /* נצמד לקצה הכפתור */
     width: 280px;
     background-color: white;
     border-radius: 20px;
@@ -189,7 +186,7 @@
     width: 100%;
 }
 
-/* --- שאר המבנה --- */
+
 .main-layout {
     display: flex;
     flex: 1;
@@ -243,13 +240,13 @@
         box-shadow 0.2s ease;
 }
 
-/* ☀️ Sun */
+
 .theme-toggle-btn.sun {
     background: radial-gradient(circle, #ffe066, #fcbf49);
     box-shadow: 0 3px 8px rgba(255, 200, 0, 0.45);
 }
 
-/* 🌙 Moon */
+
 .theme-toggle-btn.moon {
     background: radial-gradient(circle, #3a3a55, #1f1f2e);
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
@@ -263,12 +260,15 @@
 .theme-toggle-btn:active {
     transform: scale(0.95);
 }
+
 /* =========================
    DARK MODE
    ========================= */
 .home-wrapper.dark {
-    background-color: #121212; /* main page background */
-    color: #e8eaed;            /* default text color */
+    background-color: #121212;
+    /* main page background */
+    color: #e8eaed;
+    /* default text color */
 }
 
 /* Top bar */
@@ -335,7 +335,7 @@
 .home-wrapper.dark .profile-dropdown {
     background-color: #1e1e1e;
     color: #e8eaed;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.5);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .home-wrapper.dark .avatar-large,
@@ -362,7 +362,7 @@
 /* Theme button: invert background for moon if you want extra contrast */
 .home-wrapper.dark .theme-toggle-btn.moon {
     background: radial-gradient(circle, #4b4b6b, #1f1f2e);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
 }
 
 /* ===========================
@@ -409,7 +409,8 @@
    Dark Mode
    ------------------------------ */
 .home-wrapper.dark .file-right-click-menu {
-    background-color: #3a3a55; /* Dark background */
+    background-color: #3a3a55;
+    /* Dark background */
     border: 1px solid #55557a;
     color: #ffffff;
 }

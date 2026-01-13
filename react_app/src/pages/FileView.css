@@ -43,10 +43,10 @@
     justify-content: center;
     align-items: center;
     z-index: 12000;
-    /* מעל ה-Sidebar וה-Header */
+
 }
 
-/* החלון הצף עצמו */
+
 .file-view-modal {
     display: flex;
     flex-direction: column;
@@ -54,7 +54,7 @@
     max-width: 900px;
     height: 85vh;
     background-color: #f1f3f4;
-    /* הרקע האפור מסביב לדף */
+
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);

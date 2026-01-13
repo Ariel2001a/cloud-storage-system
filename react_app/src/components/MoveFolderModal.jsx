@@ -7,14 +7,14 @@ export function MoveFolderModal({ startFolderId = null, onClose, onMoveConfirm, 
     const [currentFolderId, setCurrentFolderId] = useState(startFolderId);
     const [items, setItems] = useState([]);
     const [folderStack, setFolderStack] = useState([startFolderId]);
-    const [selectedFolderId, setSelectedFolderId] = useState(null); // התיקייה שנבחרה
+    const [selectedFolderId, setSelectedFolderId] = useState(null);
     const idMyDrive = 0;
 
-    // טען תוכן תיקייה
+
     useEffect(() => {
         async function load() {
             try {
-                // שלב 1 – מסך ראשי: My Drive בלבד
+
                 if (currentFolderId === null) {
                     setItems([
                         {
@@ -27,7 +27,7 @@ export function MoveFolderModal({ startFolderId = null, onClose, onMoveConfirm, 
                     return;
                 }
 
-                // שלב 2 – נכנסנו ל־My Drive
+
                 let children;
                 if (currentFolderId === idMyDrive) {
                     children = await getFiles();
@@ -35,7 +35,7 @@ export function MoveFolderModal({ startFolderId = null, onClose, onMoveConfirm, 
                     children = await getFolderChildren(currentFolderId);
                 }
 
-                // רק תיקיות
+
                 setItems((children || []).filter(item => item.type === "folder"));
 
             } catch (err) {
@@ -47,13 +47,13 @@ export function MoveFolderModal({ startFolderId = null, onClose, onMoveConfirm, 
         load();
     }, [currentFolderId]);
 
-    // כניסה לתיקייה פנימית
+
     const handleFolderClick = (folder) => {
         setCurrentFolderId(folder.id);
         setFolderStack(prev => [...prev, folder.id]);
     };
 
-    // כפתור Back
+
     const handleBack = () => {
         if (folderStack.length > 1) {
             const newStack = [...folderStack];
@@ -66,27 +66,27 @@ export function MoveFolderModal({ startFolderId = null, onClose, onMoveConfirm, 
         }
     };
 
-    // בחירת תיקייה
+
     const handleSelectFolder = (folderId) => {
         setSelectedFolderId(folderId);
     };
 
-    // כפתור Confirm
+
     const handleConfirm = () => {
-    if (
-        selectedFolderId === null ||
-        selectedFolderId === file.id ||
-        (selectedFolderId === idMyDrive && file.folderParent == null)
-    ) {
-        alert(isRtl ? "לא בחרת תיקייה חוקית" : "No valid folder selected");
-        return;
-    }
+        if (
+            selectedFolderId === null ||
+            selectedFolderId === file.id ||
+            (selectedFolderId === idMyDrive && file.folderParent == null)
+        ) {
+            alert(isRtl ? "לא בחרת תיקייה חוקית" : "No valid folder selected");
+            return;
+        }
 
-    const targetFolderId =
-        selectedFolderId === idMyDrive ? null : selectedFolderId;
+        const targetFolderId =
+            selectedFolderId === idMyDrive ? null : selectedFolderId;
 
-    onMoveConfirm(targetFolderId);
-    onClose();
+        onMoveConfirm(targetFolderId);
+        onClose();
     };
 
 
@@ -118,7 +118,7 @@ export function MoveFolderModal({ startFolderId = null, onClose, onMoveConfirm, 
                                     alignItems: 'center'
                                 }}
                             >
-                                {/* שם התיקייה – Single Click לבחירה */}
+
                                 <span
                                     onClick={() => {
                                         if (item.id !== file.id && item.id !== file.folderParent) {
@@ -127,7 +127,7 @@ export function MoveFolderModal({ startFolderId = null, onClose, onMoveConfirm, 
                                     }}
                                     style={{
                                         cursor:
-                                            item.id === file.id || item.id === file.folderParent|| (item.id === idMyDrive && file.folderParent == null)
+                                            item.id === file.id || item.id === file.folderParent || (item.id === idMyDrive && file.folderParent == null)
                                                 ? "not-allowed"
                                                 : "pointer",
                                         color:
@@ -136,18 +136,18 @@ export function MoveFolderModal({ startFolderId = null, onClose, onMoveConfirm, 
                                                 : "inherit"
                                     }}
                                     title={
-                                        (item.id === file.id) ? (isRtl ? "זאת התיקייה להעברה" : "This is the request folder to move"):
-                                        (((item.id === idMyDrive && file.folderParent == null))
-                                            ? (isRtl ? "כבר נמצא בתיקייה זו" : "Already in this folder")
-                                            : item.id === file.folderParent
-                                            ? (isRtl ? "לא ניתן להעביר לתוך אותה תיקייה" : "Cannot move into itself")
-                                            : "")
+                                        (item.id === file.id) ? (isRtl ? "זאת התיקייה להעברה" : "This is the request folder to move") :
+                                            (((item.id === idMyDrive && file.folderParent == null))
+                                                ? (isRtl ? "כבר נמצא בתיקייה זו" : "Already in this folder")
+                                                : item.id === file.folderParent
+                                                    ? (isRtl ? "לא ניתן להעביר לתוך אותה תיקייה" : "Cannot move into itself")
+                                                    : "")
                                     }
                                 >
                                     {item.name}
                                 </span>
 
-                                {/* כפתור כניסה פנימית */}
+
                                 <button
                                     onClick={() => handleFolderClick(item)}
                                     style={{ cursor: item.id === file.id ? "not-allowed" : "pointer" }}

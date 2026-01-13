@@ -1,7 +1,7 @@
 import React from 'react';
 import "./FileTable.css";
 import { useState } from 'react';
-import { FileRightClickMenu } from "../components/FileRightClickMenu"; // אם עדיין לא ייבאת
+import { FileRightClickMenu } from "../components/FileRightClickMenu";
 
 
 const formatFileSize = (bytes) => {
@@ -22,7 +22,7 @@ export default function FileTable({ items, setItems, isLoading, isRtl, user, ope
     });
 
     function handleRightClick(e, file) {
-        e.preventDefault(); // חשוב! מונע את התפריט ברירת המחדל של הדפדפן
+        e.preventDefault();
         setMenu({
             visible: true,
             x: e.clientX,

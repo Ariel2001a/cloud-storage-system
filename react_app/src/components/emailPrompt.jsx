@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./emailPrompt.css";
-import {checkPermission, starOrUnstarFileOrPublic} from "../api/files.js"
+import { checkPermission, starOrUnstarFileOrPublic } from "../api/files.js"
 
 export function EmailPromptModal({ defaultDomain = "@ead.com", file, onSubmit, onCancel, isRtl }) {
   const [username, setUsername] = useState("");
@@ -25,14 +25,6 @@ export function EmailPromptModal({ defaultDomain = "@ead.com", file, onSubmit, o
     if (!username.trim()) return alert("Enter username");
 
     try {
-      // בדיקה אסינכרונית
-      if (permission === "owner") {
-        const canWrite = await checkPermission(username, file.id, "write");
-        if (!canWrite) onSubmit(`${username}${defaultDomain}`, "write");
-
-        const canRead = await checkPermission(username, file.id, "read");
-        if (!canRead) onSubmit(`${username}${defaultDomain}`, "read");
-      }
 
       if (permission === "write") {
         const canRead = await checkPermission(username, file.id, "read");
@@ -51,7 +43,7 @@ export function EmailPromptModal({ defaultDomain = "@ead.com", file, onSubmit, o
         await starOrUnstarFileOrPublic(file.id, "public");
       }
 
-      // איפוס שדות
+
       setUsername("");
       setPermission("read");
       setIsPublic(false);
@@ -89,7 +81,7 @@ export function EmailPromptModal({ defaultDomain = "@ead.com", file, onSubmit, o
             }}
           >
             {isRtl ? "ead.com@" : defaultDomain}
-            
+
           </span>
         </div>
 
@@ -97,15 +89,14 @@ export function EmailPromptModal({ defaultDomain = "@ead.com", file, onSubmit, o
           value={permission}
           onChange={(e) => setPermission(e.target.value)}
           style={{ width: "100%", marginBottom: "10px" }}
-        > 
-          
+        >
+
           <option value="read">{isRtl ? "קריאה" : "Read"}</option>
           <option value="write">{isRtl ? "כתיבה" : "Write"}</option>
-          <option value= "owner">{isRtl ? "העברת בעלות" : "Owner"}</option>
-          {isFolder && <option value= "share">{isRtl ? "שיתוף" : "Share"}</option>}
+          {isFolder && <option value="share">{isRtl ? "שיתוף" : "Share"}</option>}
         </select>
 
-        {/* ✅ Checkbox ל-Public */}
+
         {!isSharedPage && !file.pub && <div style={{ marginBottom: "10px" }}>
           <label>
             <input

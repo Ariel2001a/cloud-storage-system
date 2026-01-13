@@ -17,7 +17,6 @@ export function LangProvider({ children }) {
     );
 }
 
-// Hook נוח לשימוש
 export function useLang() {
     return useContext(LangContext);
 }

@@ -11,7 +11,7 @@ import {
 } from "../api/files.js";
 import { MoveFolderModal } from "./MoveFolderModal";
 
-// פונקציה כללית לטיפול בפעולות קבצים
+
 const handleFileAction = async (apiFunc, file, setItems, setMenu, ...args) => {
   const isStarredPage = window.location.pathname.includes("starred");
 
@@ -22,7 +22,7 @@ const handleFileAction = async (apiFunc, file, setItems, setMenu, ...args) => {
     },
     starOrUnstarFileOrPublic: (prevItems) => {
       if (isStarredPage) {
-        return prevItems.filter(f => f.id !== file.id); // הסרה מהעמוד Starred
+        return prevItems.filter(f => f.id !== file.id);
       } else {
         return prevItems.map(f =>
           f.id === file.id ? { ...f, starred: !f.starred } : f
@@ -57,7 +57,7 @@ export function FileRightClickMenu({ menu, setMenu, items, setItems, lang, isRTL
 
   const closeMenu = () => setMenu(prev => ({ ...prev, visible: false }));
 
-  // סגירה בלחיצה מחוץ לתפריט
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -100,7 +100,7 @@ export function FileRightClickMenu({ menu, setMenu, items, setItems, lang, isRTL
     setMoveFolderOpen(true);
   };
 
-  // 🌟 משתמשים ב־items מה־state כדי לעדכן Starred מיד
+
   const isStarred = items.find(f => f.id === file.id)?.starred ?? file.starred;
 
   return (
@@ -181,7 +181,7 @@ export function FileRightClickMenu({ menu, setMenu, items, setItems, lang, isRTL
 
       {moveFolderOpen && fileToMove && (
         <MoveFolderModal
-          startFolderId={null} // תיקייה ראשית
+          startFolderId={null}
           lang={lang}
           isRtl={isRTL}
           file={fileToMove}
@@ -191,7 +191,7 @@ export function FileRightClickMenu({ menu, setMenu, items, setItems, lang, isRTL
               await moveFolder(fileToMove.id, targetFolderId);
               setMoveFolderOpen(false);
 
-              // עדכון ה-state אחרי העברה
+
               setItems(prev => prev.filter(f => f.id !== fileToMove.id));
             } catch (err) {
               console.error(err);

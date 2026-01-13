@@ -1,13 +1,13 @@
 .modal-overlay {
   position: fixed;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  background: rgba(0,0,0,0.4); /* רקע אפרורי */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
-  align-items: center; /* מרכז את החלון */
+  align-items: center;
   z-index: 10000;
 }
 
@@ -15,7 +15,7 @@
   background: white;
   padding: 20px;
   margin-left: 37%;
-  margin-top: 12% ;
+  margin-top: 12%;
   border-radius: 8px;
   width: 25%;
   height: 40%;
@@ -23,5 +23,5 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;           /* רווח בין input/select/buttons */
+  gap: 10px;
 }

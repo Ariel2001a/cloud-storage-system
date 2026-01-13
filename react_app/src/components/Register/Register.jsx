@@ -36,6 +36,15 @@ function Register({ lang, setLang }) {
       return;
     }
 
+    if (!/^[a-zA-Z0-9]+$/.test(username)) {
+      alert(
+        isRtl
+          ? 'שם משתמש חייב להכיל רק אותיות באנגלית ומספרים'
+          : 'Username must contain only english letters and numbers!'
+      );
+      return;
+    }
+
     if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
       alert(
         isRtl

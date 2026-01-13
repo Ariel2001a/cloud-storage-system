@@ -17,7 +17,10 @@ function Login({ lang, setLang }) {
       return;
     }
 
-    const email = username + '@ead.com';
+    let email = username;
+    if (!username.endsWith("@ead.com")) {
+      email = username + "@ead.com";
+    }
     const data = { email, password };
 
     try {
@@ -40,7 +43,7 @@ function Login({ lang, setLang }) {
       const { token } = await res.json();
       sessionStorage.setItem('token', token);
       alert(isRtl ? 'התחברת בהצלחה!' : 'Signed in successfully!');
-      window.location.href = '/home';
+      window.location.href = '/';
     } catch (err) {
       alert(
         isRtl

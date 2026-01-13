@@ -1,14 +1,12 @@
-
-/* המכולה הראשית של כל דף תוכן (Home או Folder) */
 .page-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
     animation: fadeIn 0.3s ease;
-    /* אנימציה עדינה בכניסת עמוד */
+
 }
 
-/* כותרת העמוד (האחסון שלי / שם התיקייה) */
+
 .page-title {
     font-size: 1.5rem;
     font-weight: 400;
@@ -16,7 +14,7 @@
     margin: 0;
 }
 
-/* הודעה במקרה של רשימה ריקה */
+
 .status-msg {
     text-align: center;
     padding: 50px;
@@ -24,7 +22,7 @@
     font-size: 1.1rem;
 }
 
-/* אנימציית כניסה חלקה */
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -46,10 +44,10 @@
     width: 100%;
     border-collapse: collapse;
     text-align: right;
-    /* התאמה לעברית */
+
 }
 
-/* כותרות */
+
 .files-table th {
     padding: 12px 16px;
     border-bottom: 1px solid #dadce0;
@@ -58,7 +56,7 @@
     font-weight: 500;
 }
 
-/* שורות */
+
 .file-row {
     border-bottom: 1px solid #f1f3f4;
     cursor: pointer;
@@ -75,7 +73,7 @@
     color: #3c4043;
 }
 
-/* עמודת שם הקובץ */
+
 .col-name {
     display: flex;
     align-items: center;
@@ -83,7 +81,7 @@
     font-weight: 500;
 }
 
-/* עמודת בעלים */
+
 .owner-info {
     display: flex;
     align-items: center;

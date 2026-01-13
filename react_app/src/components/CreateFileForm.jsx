@@ -4,7 +4,7 @@ import { createFileOrFolder } from "../api/files";
 import { getUserIdFromToken } from "../utils/tokenUtils";
 import "./CreateFileForm.css";
 
-// הוספתי את lang לרשימת ה-Props כפי שמופיע ב-Layout שלך
+
 export default function CreateFileForm({ onCreated, onClose, parentId, lang }) {
     const [name, setName] = useState("");
     const [type, setType] = useState("file");
@@ -12,7 +12,7 @@ export default function CreateFileForm({ onCreated, onClose, parentId, lang }) {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    // יצירת משתנה עזר לבדיקה אם השפה היא עברית
+
     const isRtl = lang === "he";
 
     useEffect(() => {

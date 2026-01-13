@@ -32,11 +32,11 @@ exports.createFileOrFolder = async (req, res) => {
         let finalContentForCpp = content || '';
         let fileSize = 0;
 
-        // --- טיפול מיוחד בתמונה ---
+
         if (type === 'image' && content && content.startsWith('data:image')) {
             try {
                 const matches = content.match(/^data:(.+);base64,(.+)$/);
-                const ext = matches[1].split("/")[1]; // למשל png או jpeg
+                const ext = matches[1].split("/")[1];
                 const data = matches[2];
                 const buffer = Buffer.from(data, "base64");
 
@@ -50,7 +50,7 @@ exports.createFileOrFolder = async (req, res) => {
 
                 fs.writeFileSync(fullPath, buffer);
 
-                // במקום לשלוח ל-C++ את כל ה-Base64, נשלח רק את ה-URL
+
                 finalContentForCpp = `/uploads/${fileName}`;
                 fileSize = buffer.length;
             } catch (err) {
@@ -61,7 +61,7 @@ exports.createFileOrFolder = async (req, res) => {
             fileSize = Buffer.byteLength(content || '', 'utf8');
         }
 
-        // --- שליחה לשרת C++ (עבור תמונה נשלח רק את הנתיב) ---
+
         if (type === 'file' || type === 'image') {
             const cppResponse = await fileSocket.sendCommand(
                 `POST ${++filesCounter} ${finalContentForCpp}`
@@ -70,11 +70,11 @@ exports.createFileOrFolder = async (req, res) => {
             if (cppResponse.includes("400")) return res.status(400).end();
             if (cppResponse.includes("500")) return res.status(500).end();
         } else {
-            // עבור תיקייה
+
             filesCounter++;
         }
 
-        // --- שמירה במודל המקומי (Database/JSON) ---
+
         filesModel.addFileOrFolder(userId, {
             id: filesCounter,
             name,
@@ -83,12 +83,11 @@ exports.createFileOrFolder = async (req, res) => {
             size: fileSize,
             folderParent: parentId || null,
             starred: false,
-            // אם זו תמונה, נשמור את הנתיב כדי שנוכל להציג אותה ב-Frontend
+
             path: type === 'image' ? finalContentForCpp : null,
-            pub : false
+            pub: false
         });
 
-        // הוספת הרשאות
         const perms = PERMISSION_TYPES[type] || PERMISSION_TYPES['file'];
         perms.forEach(p => {
             addPermission({
@@ -258,11 +257,11 @@ exports.patchFileById = async (req, res) => {
 
     if (parentId !== undefined) {
 
-        // ROOT (My Drive)
+
         if (parentId === null) {
             updateParentId = true;
-        } 
-        // תיקייה רגילה
+        }
+
         else {
             const parent = filesModel.getFileById(userId, parentId);
             if (!parent || parent.type !== 'folder') {
@@ -315,7 +314,7 @@ exports.patchFileById = async (req, res) => {
                 }
 
 
-                file.content = finalContentForCpp; // הנתיב או הטקסט
+                file.content = finalContentForCpp;
                 file.size = newSize;
             } catch (err) {
                 console.error("Socket Error:", err);
@@ -352,7 +351,7 @@ exports.deleteFileById = async (req, res) => {
         const userIds = permissionsShare.map(permissionsShare => permissionsShare.userId);
 
         userIds.forEach(userShareId => {
-            filesModel.deleteFileByIdFromSharedFiles(userShareId,idToDelete)
+            filesModel.deleteFileByIdFromSharedFiles(userShareId, idToDelete)
         });
 
         const deletePhysicalFile = (fileObj) => {
@@ -416,8 +415,8 @@ exports.deleteFileById = async (req, res) => {
 };
 
 exports.starOrUnstarFile = (req, res) => {
-    const userId = req.userId; 
-    const {request} = req.body;
+    const userId = req.userId;
+    const { request } = req.body;
     let success = false;
 
     const user = User.getUserById(parseInt(userId));
@@ -428,13 +427,13 @@ exports.starOrUnstarFile = (req, res) => {
         return res.status(404).json({ error: "User not found" });
     }
     const fileId = parseInt(req.params.id);
-    if(request == "star"){
+    if (request == "star") {
         success = filesModel.starOrUnstarFile(userId, fileId);
     }
-    if(request == "public"){
+    if (request == "public") {
         success = filesModel.doFilePublic(userId, fileId);
     }
-  
+
     if (!success) {
         return res.status(404).json({ error: 'File not found' });
     }

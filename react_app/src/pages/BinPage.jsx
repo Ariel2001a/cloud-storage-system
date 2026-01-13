@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { getDeletedFiles, searchFiles } from "../api/files";
 import FileItem from "../components/FileItem";
-import FileView from "./FileView"; // 1. ייבוא של קומפוננטת התצוגה
+import FileView from "./FileView";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
-import { FileRightClickMenu } from "../components/FileRightClickMenu"; // אם עדיין לא ייבאת
+import { FileRightClickMenu } from "../components/FileRightClickMenu";
 import { useLang } from "../context/LangContext";
 import { getUserIdFromToken } from "../utils/tokenUtils";
 import FileTable from "../components/FileTable";
@@ -27,7 +27,7 @@ export default function BinPage({ searchTerm, user }) {
         file: null
     });
 
-    // 2. State חדש: האם יש קובץ שנבחר לצפייה?
+
     const [selectedFile, setSelectedFile] = useState(null);
 
 
@@ -72,7 +72,7 @@ export default function BinPage({ searchTerm, user }) {
     }, [searchTerm, userId]);
 
     function handleRightClick(e, file) {
-        e.preventDefault(); // חשוב! מונע את התפריט ברירת המחדל של הדפדפן
+        e.preventDefault();
         setMenu({
             visible: true,
             x: e.clientX,
@@ -81,12 +81,12 @@ export default function BinPage({ searchTerm, user }) {
         });
     };
 
-    // 3. עדכון פונקציית הפתיחה
+
     function openItem(item) {
         if (item.type === "folder") {
-            navigate(`/folder/${item.id}`); // תיקייה עדיין עוברת עמוד
+            navigate(`/folder/${item.id}`);
         } else {
-            setSelectedFile(item); // קובץ נשמר ב-State ופותח מודאל
+            setSelectedFile(item);
         }
     }
 
@@ -98,7 +98,7 @@ export default function BinPage({ searchTerm, user }) {
                     : (isRtl ? "אשפה" : "Bin")}
             </h2>
 
-            {/* ✅ כל הטבלה הצטמצמה לשורה אחת חכמה! */}
+
             <FileTable
                 items={items}
                 isLoading={isLoading}

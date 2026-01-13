@@ -1,6 +1,6 @@
 // src/api/files.js
 
-const API_BASE = 'http://localhost:8080/api'; // כתובת ה־API שלך
+const API_BASE = 'http://localhost:8080/api';
 
 // helper to get headers with token
 function getAuthHeaders() {
@@ -94,9 +94,9 @@ export async function searchFiles(query) {
         }
 
         const data = await res.json();
-        console.log("Search results received:", data); // לבדיקה בקונסול
+        console.log("Search results received:", data);
 
-        // שינוי קריטי: השרת מחזיר filesList ולא files
+
         return data.filesList || [];
 
     } catch (err) {
@@ -129,7 +129,7 @@ export async function deleteFileOrFolder(fileId) {
         const errText = await res.text();
         throw new Error("Failed to delete: " + errText);
     }
-    const text = await res.text(); // קורא את הגוף כטקסט
+    const text = await res.text();
     return text;
 }
 
@@ -143,7 +143,7 @@ export async function restoreFileOrFolder(fileId) {
         const errText = await res.text();
         throw new Error("Failed to delete: " + errText);
     }
-    const text = await res.text(); // קורא את הגוף כטקסט
+    const text = await res.text();
     return text;
 }
 
@@ -159,7 +159,7 @@ export async function renameFileOrFolder(fileId, newName) {
         throw new Error("Failed to rename: " + errText);
     }
 
-    const text = await res.text(); // קורא את הגוף כטקסט
+    const text = await res.text();
     return text;
 }
 
@@ -175,7 +175,7 @@ export async function moveFolder(fileId, folderId) {
         throw new Error("Failed to move folder: " + errText);
     }
 
-    const text = await res.text(); // קורא את הגוף כטקסט
+    const text = await res.text();
     return text;
 }
 
@@ -195,7 +195,7 @@ export const patchFileById = async (id, body) => {
     return await res.json();
 };
 
-export async function starOrUnstarFileOrPublic(fileId,request) {
+export async function starOrUnstarFileOrPublic(fileId, request) {
     const res = await fetch(`${API_BASE}/files/${fileId}`, {
         method: "POST",
         headers: getAuthHeaders(),
@@ -206,7 +206,7 @@ export async function starOrUnstarFileOrPublic(fileId,request) {
         throw new Error("Failed to star/unstar: " + errText);
     }
 
-    const text = await res.text(); // קורא את הגוף כטקסט
+    const text = await res.text();
     return text;
 }
 
@@ -226,7 +226,7 @@ export async function shareFileOrFolder(fileId, sharedWithUsername, permission) 
         const errText = await res.text();
         throw new Error("Failed to share file/folder: " + errText);
     }
-    const text = await res.text(); // קורא את הגוף כטקסט
+    const text = await res.text();
     return text;
 }
 
@@ -244,8 +244,8 @@ export async function checkPermission(username, fileId, permission) {
         const errText = await res.text();
         throw new Error("Failed to search permission" + errText);
     }
-    const data = await res.json(); // עכשיו קוראים JSON
-    console.log(data.allowed); // כאן יהיה true או false
+    const data = await res.json();
+    console.log(data.allowed);
     return data.allowed;
 }
 
