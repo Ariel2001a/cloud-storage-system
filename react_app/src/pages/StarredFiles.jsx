@@ -1,25 +1,18 @@
-// src/pages/Home.jsx
 import { useState, useEffect } from "react";
-import { getFiles, searchFiles } from "../api/files";
-import FileView from "./FileView";
-import FileTable from "../components/FileTable"; // ✅ הייבוא החדש
-import { useNavigate } from "react-router-dom";
-import { getUserIdFromToken } from "../utils/tokenUtils";
-import defaultAvatar from "../images/default.png"; // default avatar
-import "./Home.css";
+import { getStarredFiles, searchFiles } from "../api/files";
 import FileItem from "../components/FileItem";
+import FileView from "./FileView"; // 1. ייבוא של קומפוננטת התצוגה
+import { useNavigate } from "react-router-dom";
+import "./Home.css";
 import { FileRightClickMenu } from "../components/FileRightClickMenu"; // אם עדיין לא ייבאת
 import { useLang } from "../context/LangContext";
+import FileTable from "../components/FileTable";
 
-
-
-export default function Home({ searchTerm, user }) {
+export default function StarredFiles({ searchTerm, user }) {
     const [items, setItems] = useState([]);
     const { lang, setLang, isRtl } = useLang();
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [userId, setUserId] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const navigate = useNavigate();
+
 
     const [menu, setMenu] = useState({
         visible: false,
@@ -28,16 +21,24 @@ export default function Home({ searchTerm, user }) {
         file: null
     });
 
-    // אימות משתמש
-    useEffect(() => {
-        const id = getUserIdFromToken();
-        if (!id) { navigate('/login'); return; }
-        setUserId(id);
-    }, [navigate]);
+    // 2. State חדש: האם יש קובץ שנבחר לצפייה?
+    const [selectedFile, setSelectedFile] = useState(null);
 
-    // טעינת קבצים
+    const navigate = useNavigate();
+
     useEffect(() => {
-        if (!userId) return;
+        async function load() {
+            try {
+                const res = await getStarredFiles();
+                setItems(res || []);
+            } catch (error) {
+                console.error("Error loading files:", error);
+            }
+        }
+        load();
+    }, []);
+
+    useEffect(() => {
         async function load() {
             setIsLoading(true);
             try {
@@ -47,7 +48,7 @@ export default function Home({ searchTerm, user }) {
                 if (searchTerm && searchTerm.trim() !== "") {
                     data = await searchFiles(searchTerm);
                 } else {
-                    data = await getFiles();
+                    data = await getStarredFiles();
                 }
                 setItems(data || []);
 
@@ -58,33 +59,39 @@ export default function Home({ searchTerm, user }) {
             }
         }
 
+
         const delayDebounceFn = setTimeout(() => {
             load();
         }, 300);
 
-      return () => clearTimeout(delayDebounceFn);
-    }, [searchTerm, userId]);
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchTerm]);
 
-
-    function openItem(item) {
-        if (item.type === "folder") navigate(`/folder/${item.id}`);
-        else setSelectedFile(item);
-    }
-
-    // ✅ Get avatar for file creator (use logged-in user object)
-    const getCreatorAvatar = () => {
-        if (!user) return defaultAvatar;
-        if (user.image && user.image.startsWith("data:image")) return user.image;
-        if (user.image && user.image.trim() !== "") return `http://localhost:8080/uploads/${user.image}`;
-        return defaultAvatar;
+    function handleRightClick(e, file) {
+        e.preventDefault(); // חשוב! מונע את התפריט ברירת המחדל של הדפדפן
+        setMenu({
+            visible: true,
+            x: e.clientX,
+            y: e.clientY,
+            file
+        });
     };
+
+    // 3. עדכון פונקציית הפתיחה
+    function openItem(item) {
+        if (item.type === "folder") {
+            navigate(`/folder/${item.id}`); // תיקייה עדיין עוברת עמוד
+        } else {
+            setSelectedFile(item); // קובץ נשמר ב-State ופותח מודאל
+        }
+    }
 
     return (
         <div className="page-container">
             <h2 className="page-title">
 
                 {searchTerm ? (isRtl ? `תוצאות עבור: ${searchTerm}` : `Results for: ${searchTerm}`)
-                    : (isRtl ? "עמוד בית" : "Home Page")}
+                    : (isRtl ? "מסומנים בכוכב" : "Starred")}
             </h2>
 
             {/* ✅ כל הטבלה הצטמצמה לשורה אחת חכמה! */}
@@ -110,3 +117,6 @@ export default function Home({ searchTerm, user }) {
         </div>
     );
 }
+
+
+

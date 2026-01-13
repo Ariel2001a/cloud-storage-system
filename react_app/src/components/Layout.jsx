@@ -5,14 +5,17 @@ import "./Layout.css";
 import driveLogo from "../logo image/logo.png";
 import { getDecodedToken } from "../utils/tokenUtils";
 import { useNavigate } from "react-router-dom";
+import { getFiles, getSharedFiles, getDeletedFiles } from '../api/files';
+import { useLang } from "../context/LangContext";
 
-export default function Layout({ lang, setLang, currentFolderId, searchTerm, setSearchTerm }) {
+export default function Layout({children, currentFolderId, searchTerm, setSearchTerm }) {
     const [showForm, setShowForm] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
-    const [user, setUser] = useState(null);  // user data
-    const navigate = useNavigate();
     const profileRef = useRef(null);
-    const isRtl = lang === 'he';
+    const [user, setUser] = useState(null);  // נשתמש ב-state כדי לשמור את פרטי המשתמש
+    const navigate = useNavigate();
+    const { lang, setLang, isRtl } = useLang();
+
 
     // Fetch user details from backend
     useEffect(() => {
@@ -72,6 +75,9 @@ export default function Layout({ lang, setLang, currentFolderId, searchTerm, set
 
             {/* ===== TOP BAR ===== */}
             <header className="top-bar">
+              
+              
+              
                 <div className="logo-container">
                     <img src={driveLogo} className="logo-img" alt="Google Drive Logo" />
                 </div>
@@ -86,6 +92,7 @@ export default function Layout({ lang, setLang, currentFolderId, searchTerm, set
                         placeholder={isRtl ? "חיפוש ב-Drive" : "Search in Drive"}
                     />
                 </div>
+
 
                 <div className="header-actions">
                     <button className="lang-button" onClick={() => setLang(isRtl ? 'en' : 'he')}>
@@ -112,6 +119,7 @@ export default function Layout({ lang, setLang, currentFolderId, searchTerm, set
                                 </div>
                             )}
                         </button>
+
 
                         {showProfile && user && (
                             <div className="profile-dropdown">
@@ -160,13 +168,19 @@ export default function Layout({ lang, setLang, currentFolderId, searchTerm, set
                         <span style={{ color: '#34a853', fontSize: '24px' }}>＋</span>
                         {isRtl ? "חדש" : "New"}
                     </button>
+                    <br />
+                      
+                      
+                    <div className={`sidebar-buttons ${isRtl ? 'rtl' : 'ltr'}`}>
+                        <button className="sidebar-button" onClick={() => window.location.href = "/"}>🏠 {isRtl ? "בית" : "Home"}</button>
+                        <button className="sidebar-button" onClick={() => window.location.href = "/my-drive"}>📁 {isRtl ? "האחסון שלי" : "My Drive"}</button>
 
-                    <nav className="side-nav">
-                        <div className="nav-item active">
-                            <span className="nav-icon">📁</span>
-                            {isRtl ? "האחסון שלי" : "My Drive"}
-                        </div>
-                    </nav>
+                        <button className="sidebar-button" onClick={() => window.location.href = "/share-with-me"}>👤 {isRtl ? "שותף איתי" : "Shared with me"}</button>
+                        <button className="sidebar-button" onClick={() => window.location.href = "/recent"}>⏰ {isRtl ? "אחרונים" : "Recent"}</button>
+
+                        <button className="sidebar-button" onClick={() => window.location.href = "/starred"}>⭐ {isRtl ? "מסומנים בכוכב" : "Starred"}</button>
+                        <button className="sidebar-button" onClick={() => window.location.href = "/deleted"}>🗑️ {isRtl ? "אשפה" : "Bin"}</button>
+                    </div>
                 </aside>
 
                 <main className="main-content">
