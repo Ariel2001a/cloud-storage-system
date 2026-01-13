@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import CreateFileForm from "./CreateFileForm";
 import "./Layout.css";
 import driveLogo from "../logo image/logo.png";
-import { getUserIdFromToken, getDecodedToken } from "../utils/tokenUtils";
+import { getDecodedToken } from "../utils/tokenUtils";
 import { useNavigate } from "react-router-dom";
 import { getFiles, getSharedFiles, getDeletedFiles } from '../api/files';
 import { useLang } from "../context/LangContext";
@@ -17,7 +17,7 @@ export default function Layout({children, currentFolderId, searchTerm, setSearch
     const { lang, setLang, isRtl } = useLang();
 
 
-    // Fetch פרטי משתמש מהשרת לפי id שמופיע ב־JWT
+    // Fetch user details from backend
     useEffect(() => {
         const token = sessionStorage.getItem("token");
         if (!token) return;
@@ -38,7 +38,7 @@ export default function Layout({children, currentFolderId, searchTerm, setSearch
             .catch(err => console.error(err));
     }, []);
 
-    // סגירת התפריט בלחיצה מחוץ לפרופיל
+    // Close profile dropdown if clicked outside
     useEffect(() => {
         function handleClickOutside(event) {
             if (showProfile && profileRef.current && !profileRef.current.contains(event.target)) {
@@ -48,6 +48,27 @@ export default function Layout({children, currentFolderId, searchTerm, setSearch
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [showProfile]);
+
+    // Helper to get avatar src
+   const getAvatarSrc = () => {
+  if (
+    typeof user?.image === "string" &&
+    user.image.startsWith("data:image")
+  ) {
+    // Base64 image
+    return user.image;
+  }
+
+  if (
+    typeof user?.image === "string" &&
+    user.image.trim() !== ""
+  ) {
+    // Filename from backend
+    return `http://localhost:8080/uploads/${user.image}`;
+  }
+
+  return null; // fallback → letter avatar
+};
 
     return (
         <div className="home-wrapper" style={{ direction: isRtl ? "rtl" : "ltr" }}>
@@ -80,18 +101,46 @@ export default function Layout({children, currentFolderId, searchTerm, setSearch
 
                     <div className="user-profile-container" ref={profileRef}>
                         <button className="profile-btn" onClick={() => setShowProfile(!showProfile)}>
-                            <div className="avatar-placeholder">
-                                {user?.first_name?.[0]?.toUpperCase() || "?"}
-                            </div>
+                            {getAvatarSrc() ? (
+                                <img
+                                    src={getAvatarSrc()}
+                                    alt="Profile"
+                                    className="avatar-img"
+                                    style={{
+                                        width: "32px",
+                                        height: "32px",
+                                        borderRadius: "50%",
+                                        objectFit: "cover"
+                                    }}
+                                />
+                            ) : (
+                                <div className="avatar-placeholder">
+                                    {user?.first_name?.[0]?.toUpperCase() || "?"}
+                                </div>
+                            )}
                         </button>
 
 
                         {showProfile && user && (
                             <div className="profile-dropdown">
                                 <div className="profile-header-box">
-                                    <div className="avatar-large">
-                                        {user?.first_name?.[0]?.toUpperCase() || "?"}
-                                    </div>
+                                    {getAvatarSrc() ? (
+                                        <img
+                                            src={getAvatarSrc()}
+                                            alt="Profile"
+                                            className="avatar-large-img"
+                                            style={{
+                                                width: "80px",
+                                                height: "80px",
+                                                borderRadius: "50%",
+                                                objectFit: "cover"
+                                            }}
+                                        />
+                                    ) : (
+                                        <div className="avatar-large">
+                                            {user?.first_name?.[0]?.toUpperCase() || "?"}
+                                        </div>
+                                    )}
                                     <p className="user-name">{user.first_name} {user.last_name}</p>
                                     <p className="user-email">{user.email}</p>
                                 </div>
