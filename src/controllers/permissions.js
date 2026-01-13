@@ -107,6 +107,7 @@ async function createPermissionByUsername(req, res) {
     if (!newPermission) {
         return res.status(409).json({ error: 'Permission already exists' });
     }
+
     
     let success = filesModel.sharedWithUsers(ownerId, fileId, userId);
     if (!success) {
@@ -246,5 +247,60 @@ async function deletePermission(req, res) {
     return res.status(204).end();
 }
 
+const getPermissionsByDetails = (req, res) => {
+    const ownerId = req.userId; 
+    const {username} = req.query; 
+    const fileId = req.params.id;
+    const { permission } = req.query;
+
+    console.log("fileId: " + fileId)
+
+    if (!username || !permission) {
+        return res.status(400).json({ error: 'Missing fields' });
+    }
+
+    console.log(username)
+    const targetUser = User.getUserByUsername(username+"@ead.com");
+    console.log(targetUser)
+    if (!targetUser) {
+        return res.status(404).json({ error: 'Target user not found' });
+    }
+
+    let userId = targetUser.id;
+    console.log(" ui:" + userId)
+
+    // Ensure the owner has access
+
+    let files = filesModel.getUserFiles(ownerId);
+    let file = files.find(f => f.id == fileId);
+    console.log(" file:" , file)
+
+
+    if (!file) {
+        files = filesModel.getUserSharedFiles(ownerId);
+        file = files.find(f => f.id == fileId);
+        console.log(" file:" , file)
+
+        if(!file){
+            return res.status(404).json({ error: "File or folder not found" });
+        }
+    }
+
+    if (!PERMISSION_TYPES[file.type].includes(permission)) {
+        return res.status(400).json({ error: `Invalid permission type for ${file.type}` });
+    }
+
+    const permissions = getPermissionsByFileId(fileId) || [];
+
+    if(permissions.find(p=> p.userId == userId && p.permission == permission)){
+        console.log("true")
+        return res.json({ allowed: true });
+
+    }else{
+        console.log("false")
+        return res.json({ allowed: false });
+    }
+};
+
 module.exports = { createPermissionByUsername, getPermissionsByFile, updatePermission, deletePermission,
-                    getPermissionsBySharedFile,getPermissionsByDeletedFile };
+                    getPermissionsBySharedFile,getPermissionsByDeletedFile, getPermissionsByDetails };

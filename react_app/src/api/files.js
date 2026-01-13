@@ -182,10 +182,11 @@ export async function moveFolder(fileId, folderId) {
 }
 
 
-export async function starOrUnstarFile(fileId) {
+export async function starOrUnstarFileOrPublic(fileId,request) {
     const res = await fetch(`${API_BASE}/files/${fileId}`, {
         method: "POST",
-        headers: getAuthHeaders()
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ request: request })
     });
     if (!res.ok) {
         const errText = await res.text();
@@ -216,6 +217,24 @@ export async function shareFileOrFolder(fileId, sharedWithUsername, permission) 
     return text;
 }
 
+export async function checkPermission(username, fileId, permission) {
+
+    console.log(fileId, permission);
+    const res = await fetch(`${API_BASE}/files/${fileId}/permission?username=${username}&permission=${permission}`, {
+        method: "GET",
+        headers: getAuthHeaders(),
+
+    });
+
+
+    if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Failed to search permission" + errText);
+    }
+    const data = await res.json(); // עכשיו קוראים JSON
+    console.log(data.allowed); // כאן יהיה true או false
+    return data.allowed;
+}
 
 export async function getDeletedFiles() {
     try{

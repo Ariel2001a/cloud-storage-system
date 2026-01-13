@@ -1,7 +1,7 @@
 const { fileSocket } = require('../FileSocketClient'); // communicate with C++ server
 const filesModel = require('../models/files');         // store/retrieve files
 const User = require('../models/users');               // user model
-const { addPermission } = require('../models/permissions');
+const { addPermission, getPermissionsByFileId } = require('../models/permissions');
 const { PERMISSION_TYPES } = require('../models/permissions');
 
 // Initialize file ID counter
@@ -59,8 +59,8 @@ exports.createFileOrFolder = async (req, res) => {
                 date: Date.now(),
                 size: fileSize,
                 folderParent: parentId || null,
-                starred: false
-
+                starred: false,
+                pub : false
             });
 
             const perms = PERMISSION_TYPES[type];
@@ -258,10 +258,21 @@ exports.patchFileById = async (req, res) => {
     }
 
     if (parentId !== undefined) {
-        const parent = filesModel.getFileById(userId, parentId);
-        if (!parent || parent.type !== 'folder') return res.status(400).json({ error: 'Folder Parent does not exist' });
-        updateParentId = true;
+
+        // ROOT (My Drive)
+        if (parentId === null) {
+            updateParentId = true;
+        } 
+        // תיקייה רגילה
+        else {
+            const parent = filesModel.getFileById(userId, parentId);
+            if (!parent || parent.type !== 'folder') {
+                return res.status(400).json({ error: 'Folder Parent does not exist' });
+            }
+            updateParentId = true;
+        }
     }
+
 
     if (updateName || updateContent || updateParentId) {
         if (updateName) file.name = name;
@@ -303,7 +314,14 @@ exports.deleteFileById = async (req, res) => {
         file = filesModel.getFileByIdFromDeleted(userId, idToDelete);
         if (!file) {
             return res.status(404).json({ error: 'File not found' });
-        } 
+        }
+
+        const permissionsShare = getPermissionsByFileId(idToDelete);
+        const userIds = permissionsShare.map(permissionsShare => permissionsShare.userId);
+
+        userIds.forEach(userShareId => {
+            filesModel.deleteFileByIdFromSharedFiles(userShareId,idToDelete)
+        });
 
         if (file.type === 'folder') {
             const id_files_in_folder = filesModel.getFolderFiles(userId, idToDelete);
@@ -354,6 +372,8 @@ exports.deleteFileById = async (req, res) => {
 
 exports.starOrUnstarFile = (req, res) => {
     const userId = req.userId; 
+    const {request} = req.body;
+    let success = false;
     const user = User.getUserById(parseInt(userId));
     if (!userId) {
         return res.status(401).json({ error: 'User not logged in' });
@@ -362,7 +382,15 @@ exports.starOrUnstarFile = (req, res) => {
         return res.status(404).json({ error: "User not found" });
     }
     const fileId = parseInt(req.params.id);
-    const success = filesModel.starOrUnstarFile(userId, fileId);
+    if(request == "star"){
+        success = filesModel.starOrUnstarFile(userId, fileId);
+    }
+    if(request == "public"){
+        success = filesModel.doFilePublic(userId, fileId);
+    }
+    if(request == "public"){
+        success = filesModel.doFilePublic(userId, fileId);
+    }
     if (!success) {
         return res.status(404).json({ error: 'File not found' });
     }

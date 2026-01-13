@@ -82,7 +82,7 @@ export default function FileTable({ items, setItems, isLoading, isRtl, user, ope
                     )}
                 </tbody>
             </table>
-            <FileRightClickMenu menu={menu} setMenu={setMenu} items={items} setItems={setItems} />
+            <FileRightClickMenu menu={menu} setMenu={setMenu} items={items} setItems={setItems} isRTL={isRtl} />
         </div>
 
     );
