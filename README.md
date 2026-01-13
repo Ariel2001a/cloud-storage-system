@@ -80,7 +80,7 @@ Dependencies
 
 - logged in with full mail - (username@ead.com)
 
-##                                           first user in light mode + hebrew 
+##                                           first user homepage light mode + hebrew 
 
 ![first user in light mode + hebrew ](images/task4_readme/first_light_he_home.png) 
 
@@ -120,6 +120,8 @@ Dependencies
  ##                                           share item form
 
  ![share item](images/task4_readme/share_file_form.png) 
+
+- in the example - sharing a file named "create file"
 
  - here you can share file/folder/picture
  - you can choose what type of permission to give
