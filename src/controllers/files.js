@@ -84,7 +84,7 @@ exports.createFileOrFolder = async (req, res) => {
             folderParent: parentId || null,
             starred: false,
             // אם זו תמונה, נשמור את הנתיב כדי שנוכל להציג אותה ב-Frontend
-            path: type === 'image' ? finalContentForCpp : null
+            path: type === 'image' ? finalContentForCpp : null,
             pub : false
         });
 
