@@ -40,7 +40,7 @@ function Login({ lang, setLang }) {
       const { token } = await res.json();
       sessionStorage.setItem('token', token);
       alert(isRtl ? 'התחברת בהצלחה!' : 'Signed in successfully!');
-      window.location.href = '/';
+      window.location.href = '/home';
     } catch (err) {
       alert(
         isRtl
@@ -58,7 +58,7 @@ function Login({ lang, setLang }) {
 
   return (
     <>
-      
+
       <LangButton lang={lang} setLang={setLang} />
 
       {/* ===== LOGIN CARD ===== */}
@@ -96,7 +96,7 @@ function Login({ lang, setLang }) {
             className="form-control"
             placeholder={isRtl ? 'שם משתמש' : 'Username'}
             value={username}
-          title={isRtl ? 'ניתן להזין שם משתמש או כתובת מייל (username@ead.com)' : 'You can enter a username or email address (username@ead.com)'}
+            title={isRtl ? 'ניתן להזין שם משתמש או כתובת מייל (username@ead.com)' : 'You can enter a username or email address (username@ead.com)'}
             onChange={(e) => setUsername(e.target.value)}
           />
 
@@ -121,7 +121,7 @@ function Login({ lang, setLang }) {
       </div>
     </>
   );
-}  
+}
 
 
 
