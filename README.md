@@ -96,7 +96,7 @@ Dependencies
 
 - light mode dark mode switch
 
-- user profile picture preview - clicking it will open menu with more user infoand logout button
+- user profile picture preview - clicking it will open menu with more user info and logout button
 
 - search bar
 
