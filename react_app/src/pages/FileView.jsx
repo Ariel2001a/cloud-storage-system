@@ -5,12 +5,13 @@ import "./FileView.css";
 import { getUserIdFromToken } from "../utils/tokenUtils";
 import EditFileForm from "./EditFileForm.jsx";
 
-export default function FileView({ fileId, fileName, onClose, lang = "he" }) {
+export default function FileView({ fileId, fileType, fileName, onClose, lang = "he" }) {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
   const isRtl = lang === "he";
   const navigate = useNavigate();
   const [editingFile, setEditingFile] = useState(false); // toggle edit form
+  const SERVER_URL = "http://localhost:8080";
 
   useEffect(() => {
     const userId = getUserIdFromToken();
@@ -38,7 +39,7 @@ export default function FileView({ fileId, fileName, onClose, lang = "he" }) {
       <div className="file-view-modal" onClick={(e) => e.stopPropagation()}>
         <header className="file-view-header">
           <div className="header-right">
-            <span className="file-icon">📄</span>
+            <span className="file-icon">{fileType === "image" ? "🖼️" : "📄"} </span>
             <h2>{fileName || (isRtl ? "צפייה בקובץ" : "File View")}</h2>
           </div>
 
@@ -53,22 +54,32 @@ export default function FileView({ fileId, fileName, onClose, lang = "he" }) {
           </div>
         </header>
 
-        <div className="document-paper">
+        <div className={`document-paper ${fileType === "image" ? "is-image" : ""}`}>
           {loading ? (
             <div className="loading-spinner">{isRtl ? "טוען..." : "Loading..."}</div>
           ) : (
-            <textarea
-              className="file-textarea"
-              value={content}
-              readOnly
-              style={{ direction: isRtl ? "rtl" : "ltr" }}
-            />
+            fileType === "image" ? (
+              <div className="image-view-container">
+                <img
+                  src={`${SERVER_URL}${content}`}
+                  alt={fileName}
+                  className="file-view-image"
+                />
+              </div>
+            ) : (
+              <textarea
+                className="file-textarea"
+                value={content}
+                readOnly
+                style={{ direction: isRtl ? "rtl" : "ltr" }}
+              />
+            )
           )}
         </div>
 
         {editingFile && (
           <EditFileForm
-            file={{ id: fileId, name: fileName, type: "file", content }}
+            file={{ id: fileId, name: fileName, type: fileType, content }}
             lang={lang}
             onClose={() => setEditingFile(false)}
             onEdit={(id, updated) => setContent(updated.content || "")}

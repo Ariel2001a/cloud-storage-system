@@ -114,6 +114,7 @@ export default function BinPage({ searchTerm, user }) {
                 <FileView
                     fileId={selectedFile.id}
                     fileName={selectedFile.name}
+                    fileType={selectedFile.type}
                     lang={lang}
                     onClose={() => setSelectedFile(null)}
                 />

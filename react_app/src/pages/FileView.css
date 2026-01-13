@@ -1,4 +1,37 @@
-/* השכבה המכהה מסביב */
+.file-view-header h2 {
+    color: #000000;
+    font-size: 40px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.image-view-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+.file-view-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.document-paper.is-image {
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+
 .file-modal-overlay {
     position: fixed;
     top: 0;
@@ -84,17 +117,28 @@
 }
 
 /* ================= Dark Mode for File View Modal ================= */
+
+.home-wrapper.dark .file-view-header h2 {
+    color: #ffffff;
+    font-size: 40px;
+    font-weight: 400;
+    margin: 0;
+}
+
 .home-wrapper.dark .file-modal-overlay {
-    background-color: rgba(0, 0, 0, 0.8); /* Darker overlay */
+    background-color: rgba(0, 0, 0, 0.8);
+    /* Darker overlay */
 }
 
 .home-wrapper.dark .file-view-modal {
-    background-color: #2c2c44; /* Dark modal background */
+    background-color: #2c2c44;
+    /* Dark modal background */
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
 }
 
 .home-wrapper.dark .file-view-header {
-    background-color: #3a3a55; /* Dark header */
+    background-color: #3a3a55;
+    /* Dark header */
     border-bottom: 1px solid #55557a;
 }
 
@@ -107,12 +151,14 @@
 }
 
 .home-wrapper.dark .document-paper {
-    background-color: #3a3a55; /* Dark content background */
+    background-color: #3a3a55;
+    /* Dark content background */
     color: #ffffff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .home-wrapper.dark .file-textarea {
-    background-color: transparent; /* Keep it same as document-paper */
+    background-color: transparent;
+    /* Keep it same as document-paper */
     color: #ffffff;
 }

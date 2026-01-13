@@ -7,7 +7,7 @@ import { getDecodedToken } from "../utils/tokenUtils";
 import { useNavigate } from "react-router-dom";
 import { useLang } from "../context/LangContext";
 
-export default function Layout({children, currentFolderId, searchTerm, setSearchTerm }) {
+export default function Layout({ children, currentFolderId, searchTerm, setSearchTerm }) {
     const [showForm, setShowForm] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
     const profileRef = useRef(null);
@@ -17,17 +17,17 @@ export default function Layout({children, currentFolderId, searchTerm, setSearch
 
     // ✅ Dark mode state
     const [isDarkMode, setIsDarkMode] = useState(() => {
-    const saved = localStorage.getItem("darkMode");
-    return saved === "true" ? true : false;
-});
-
-// Whenever the button is clicked, also save to localStorage
-const toggleDarkMode = () => {
-    setIsDarkMode(prev => {
-        localStorage.setItem("darkMode", !prev);
-        return !prev;
+        const saved = localStorage.getItem("darkMode");
+        return saved === "true" ? true : false;
     });
-};
+
+    // Whenever the button is clicked, also save to localStorage
+    const toggleDarkMode = () => {
+        setIsDarkMode(prev => {
+            localStorage.setItem("darkMode", !prev);
+            return !prev;
+        });
+    };
 
     // ✅ Check if current page is home
     const location = useLocation();
@@ -64,25 +64,25 @@ const toggleDarkMode = () => {
     }, [showProfile]);
 
     // Helper to get avatar src
-   const getAvatarSrc = () => {
-  if (
-    typeof user?.image === "string" &&
-    user.image.startsWith("data:image")
-  ) {
-    // Base64 image
-    return user.image;
-  }
+    const getAvatarSrc = () => {
+        if (
+            typeof user?.image === "string" &&
+            user.image.startsWith("data:image")
+        ) {
+            // Base64 image
+            return user.image;
+        }
 
-  if (
-    typeof user?.image === "string" &&
-    user.image.trim() !== ""
-  ) {
-    // Filename from backend
-    return `http://localhost:8080/uploads/${user.image}`;
-  }
+        if (
+            typeof user?.image === "string" &&
+            user.image.trim() !== ""
+        ) {
+            // Filename from backend
+            return `http://localhost:8080/uploads/${user.image}`;
+        }
 
-  return null; // fallback → letter avatar
-};
+        return null; // fallback → letter avatar
+    };
 
     return (
         <div
@@ -114,14 +114,14 @@ const toggleDarkMode = () => {
                     </button>
 
                     {/* Theme button – only on Home */}
-                  {(
-   <button
-    className={`theme-toggle-btn ${isDarkMode ? "moon" : "sun"}`}
-    onClick={toggleDarkMode}
->
-    {isDarkMode ? "🌙" : "🌞"}
-</button>
-)}
+                    {(
+                        <button
+                            className={`theme-toggle-btn ${isDarkMode ? "sun" : "moon"}`}
+                            onClick={toggleDarkMode}
+                        >
+                            {isDarkMode ? "🌞" : "🌙"}
+                        </button>
+                    )}
                     {/* User profile */}
                     <div className="user-profile-container" ref={profileRef}>
                         <button className="profile-btn" onClick={() => setShowProfile(!showProfile)}>

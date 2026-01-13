@@ -23,6 +23,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    volumes:
+      - ./src:/usr/src/app         
+      - ./uploads:/usr/src/app/uploads
+      - /usr/src/app/node_modules
     networks:
       - local
 
