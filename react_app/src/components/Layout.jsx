@@ -1,23 +1,39 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import CreateFileForm from "./CreateFileForm";
 import "./Layout.css";
 import driveLogo from "../logo image/logo.png";
 import { getDecodedToken } from "../utils/tokenUtils";
 import { useNavigate } from "react-router-dom";
-import { getFiles, getSharedFiles, getDeletedFiles } from '../api/files';
 import { useLang } from "../context/LangContext";
 
 export default function Layout({children, currentFolderId, searchTerm, setSearchTerm }) {
     const [showForm, setShowForm] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
     const profileRef = useRef(null);
-    const [user, setUser] = useState(null);  // נשתמש ב-state כדי לשמור את פרטי המשתמש
+    const [user, setUser] = useState(null);
     const navigate = useNavigate();
     const { lang, setLang, isRtl } = useLang();
 
+    // ✅ Dark mode state
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+    const saved = localStorage.getItem("darkMode");
+    return saved === "true" ? true : false;
+});
 
-    // Fetch user details from backend
+// Whenever the button is clicked, also save to localStorage
+const toggleDarkMode = () => {
+    setIsDarkMode(prev => {
+        localStorage.setItem("darkMode", !prev);
+        return !prev;
+    });
+};
+
+    // ✅ Check if current page is home
+    const location = useLocation();
+    const isHomePage = location.pathname === "/";
+
+    // Fetch user details
     useEffect(() => {
         const token = sessionStorage.getItem("token");
         if (!token) return;
@@ -26,9 +42,7 @@ export default function Layout({children, currentFolderId, searchTerm, setSearch
         if (!decoded?.id) return;
 
         fetch(`http://localhost:8080/api/users/${decoded.id}`, {
-            headers: {
-                Authorization: token
-            }
+            headers: { Authorization: token }
         })
             .then(res => {
                 if (!res.ok) throw new Error("Failed to fetch user");
@@ -38,7 +52,7 @@ export default function Layout({children, currentFolderId, searchTerm, setSearch
             .catch(err => console.error(err));
     }, []);
 
-    // Close profile dropdown if clicked outside
+    // Close profile dropdown on click outside
     useEffect(() => {
         function handleClickOutside(event) {
             if (showProfile && profileRef.current && !profileRef.current.contains(event.target)) {
@@ -71,15 +85,15 @@ export default function Layout({children, currentFolderId, searchTerm, setSearch
 };
 
     return (
-        <div className="home-wrapper" style={{ direction: isRtl ? "rtl" : "ltr" }}>
+        <div
+            className={`home-wrapper ${isDarkMode ? "dark" : ""}`}
+            style={{ direction: isRtl ? "rtl" : "ltr" }}
+        >
 
             {/* ===== TOP BAR ===== */}
             <header className="top-bar">
-              
-              
-              
                 <div className="logo-container">
-                    <img src={driveLogo} className="logo-img" alt="Google Drive Logo" />
+                    <img src={driveLogo} className="logo-img" alt="Drive Logo" />
                 </div>
 
                 <div className="search-container">
@@ -93,12 +107,22 @@ export default function Layout({children, currentFolderId, searchTerm, setSearch
                     />
                 </div>
 
-
                 <div className="header-actions">
+                    {/* Language button */}
                     <button className="lang-button" onClick={() => setLang(isRtl ? 'en' : 'he')}>
                         {isRtl ? "English" : "עברית"}
                     </button>
 
+                    {/* Theme button – only on Home */}
+                  {(
+   <button
+    className={`theme-toggle-btn ${isDarkMode ? "moon" : "sun"}`}
+    onClick={toggleDarkMode}
+>
+    {isDarkMode ? "🌙" : "🌞"}
+</button>
+)}
+                    {/* User profile */}
                     <div className="user-profile-container" ref={profileRef}>
                         <button className="profile-btn" onClick={() => setShowProfile(!showProfile)}>
                             {getAvatarSrc() ? (
@@ -119,7 +143,6 @@ export default function Layout({children, currentFolderId, searchTerm, setSearch
                                 </div>
                             )}
                         </button>
-
 
                         {showProfile && user && (
                             <div className="profile-dropdown">
@@ -169,15 +192,11 @@ export default function Layout({children, currentFolderId, searchTerm, setSearch
                         {isRtl ? "חדש" : "New"}
                     </button>
                     <br />
-                      
-                      
                     <div className={`sidebar-buttons ${isRtl ? 'rtl' : 'ltr'}`}>
                         <button className="sidebar-button" onClick={() => window.location.href = "/"}>🏠 {isRtl ? "בית" : "Home"}</button>
                         <button className="sidebar-button" onClick={() => window.location.href = "/my-drive"}>📁 {isRtl ? "האחסון שלי" : "My Drive"}</button>
-
                         <button className="sidebar-button" onClick={() => window.location.href = "/share-with-me"}>👤 {isRtl ? "שותף איתי" : "Shared with me"}</button>
                         <button className="sidebar-button" onClick={() => window.location.href = "/recent"}>⏰ {isRtl ? "אחרונים" : "Recent"}</button>
-
                         <button className="sidebar-button" onClick={() => window.location.href = "/starred"}>⭐ {isRtl ? "מסומנים בכוכב" : "Starred"}</button>
                         <button className="sidebar-button" onClick={() => window.location.href = "/deleted"}>🗑️ {isRtl ? "אשפה" : "Bin"}</button>
                     </div>
