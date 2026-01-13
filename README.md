@@ -117,6 +117,7 @@ Dependencies
  ![Item creation](images/task4_readme/create_item_form.png) 
 
  - here you can create file/folder/picture
+ - you can create file in any folder you want
 
  ##                                           item right click menu
 
@@ -131,6 +132,7 @@ Dependencies
 
  - here you can share file/folder/picture
  - you can choose what type of permission to give
+ - you can set the item to be public so others will be able to share it also.
 
  ##                                           starred file
 
@@ -153,6 +155,12 @@ Dependencies
  ![Item creation](images/task4_readme/trash.png) 
 
  - here you can see the files you moved to trash bin but havent deleted yet.
+
+ ##                                           right click intrash bin page
+
+ ![Item creation](images/task4_readme/tbrc.png) 
+
+ - you can either restore file or delete it forever.
 
 
 ##                                           upload picture
