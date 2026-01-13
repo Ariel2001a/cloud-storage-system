@@ -118,7 +118,7 @@ Dependencies
 
  ![Item creation](images/task4_readme/trash.png) 
 
- - here you can see the files you deleted.
+ - here you can see the files you moved to trash bin but havent deleted yet.
 
 
 ##                                           upload picture
