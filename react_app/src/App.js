@@ -64,7 +64,6 @@ function App() {
               path="folder/:id"
               element={
                 <FolderView
-                  lang={lang}
                   searchTerm={searchTerm}
                   setSearchTerm={setSearchTerm}
                   onFolderEnter={setCurrentFolderId}

@@ -5,6 +5,8 @@ export function EmailPromptModal({ defaultDomain = "@ead.com", file, onSubmit, o
   const [username, setUsername] = useState("");
   const [permission, setPermission] = useState("read");
 
+  if (!file) return null;
+
   const handleSubmit = () => {
     if (!username.trim()) return alert("Enter username");
     onSubmit(`${username}${defaultDomain}`, permission);
@@ -54,9 +56,9 @@ export function EmailPromptModal({ defaultDomain = "@ead.com", file, onSubmit, o
           {isFolder && <option value= "share">Share</option>}
         </select>
 
-        <div style={{ textAlign: "right" }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+          <button onClick={onCancel}>Cancel</button>
           <button onClick={handleSubmit}>OK</button>
-          <button onClick={onCancel} style={{ marginLeft: "5px" }}>Cancel</button>
         </div>
       </div>
     </div>

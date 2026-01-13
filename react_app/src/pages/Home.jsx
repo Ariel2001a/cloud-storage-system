@@ -1,14 +1,15 @@
+// src/pages/Home.jsx
 import { useState, useEffect } from "react";
 import { getFiles, searchFiles } from "../api/files";
 import FileView from "./FileView";
 import FileTable from "../components/FileTable"; // ✅ הייבוא החדש
 import { useNavigate } from "react-router-dom";
 import { getUserIdFromToken } from "../utils/tokenUtils";
+import defaultAvatar from "../images/default.png"; // default avatar
 import "./Home.css";
 import FileItem from "../components/FileItem";
 import { FileRightClickMenu } from "../components/FileRightClickMenu"; // אם עדיין לא ייבאת
 import { useLang } from "../context/LangContext";
-
 
 
 
@@ -56,12 +57,11 @@ export default function Home({ searchTerm, user }) {
             }
         }
 
-
         const delayDebounceFn = setTimeout(() => {
             load();
         }, 300);
 
-        return () => clearTimeout(delayDebounceFn);
+      return () => clearTimeout(delayDebounceFn);
     }, [searchTerm, userId]);
 
 
@@ -70,8 +70,13 @@ export default function Home({ searchTerm, user }) {
         else setSelectedFile(item);
     }
 
-
-    console.log(userId)
+    // ✅ Get avatar for file creator (use logged-in user object)
+    const getCreatorAvatar = () => {
+        if (!user) return defaultAvatar;
+        if (user.image && user.image.startsWith("data:image")) return user.image;
+        if (user.image && user.image.trim() !== "") return `http://localhost:8080/uploads/${user.image}`;
+        return defaultAvatar;
+    };
 
     return (
         <div className="page-container">

@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import CreateFileForm from "./CreateFileForm";
 import "./Layout.css";
 import driveLogo from "../logo image/logo.png";
-import { getUserIdFromToken, getDecodedToken } from "../utils/tokenUtils";
+import { getDecodedToken } from "../utils/tokenUtils";
 import { useNavigate } from "react-router-dom";
 import { useLang } from "../context/LangContext";
 
@@ -63,6 +63,27 @@ const toggleDarkMode = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [showProfile]);
 
+    // Helper to get avatar src
+   const getAvatarSrc = () => {
+  if (
+    typeof user?.image === "string" &&
+    user.image.startsWith("data:image")
+  ) {
+    // Base64 image
+    return user.image;
+  }
+
+  if (
+    typeof user?.image === "string" &&
+    user.image.trim() !== ""
+  ) {
+    // Filename from backend
+    return `http://localhost:8080/uploads/${user.image}`;
+  }
+
+  return null; // fallback → letter avatar
+};
+
     return (
         <div
             className={`home-wrapper ${isDarkMode ? "dark" : ""}`}
@@ -104,17 +125,45 @@ const toggleDarkMode = () => {
                     {/* User profile */}
                     <div className="user-profile-container" ref={profileRef}>
                         <button className="profile-btn" onClick={() => setShowProfile(!showProfile)}>
-                            <div className="avatar-placeholder">
-                                {user?.first_name?.[0]?.toUpperCase() || "?"}
-                            </div>
+                            {getAvatarSrc() ? (
+                                <img
+                                    src={getAvatarSrc()}
+                                    alt="Profile"
+                                    className="avatar-img"
+                                    style={{
+                                        width: "32px",
+                                        height: "32px",
+                                        borderRadius: "50%",
+                                        objectFit: "cover"
+                                    }}
+                                />
+                            ) : (
+                                <div className="avatar-placeholder">
+                                    {user?.first_name?.[0]?.toUpperCase() || "?"}
+                                </div>
+                            )}
                         </button>
 
                         {showProfile && user && (
                             <div className="profile-dropdown">
                                 <div className="profile-header-box">
-                                    <div className="avatar-large">
-                                        {user?.first_name?.[0]?.toUpperCase() || "?"}
-                                    </div>
+                                    {getAvatarSrc() ? (
+                                        <img
+                                            src={getAvatarSrc()}
+                                            alt="Profile"
+                                            className="avatar-large-img"
+                                            style={{
+                                                width: "80px",
+                                                height: "80px",
+                                                borderRadius: "50%",
+                                                objectFit: "cover"
+                                            }}
+                                        />
+                                    ) : (
+                                        <div className="avatar-large">
+                                            {user?.first_name?.[0]?.toUpperCase() || "?"}
+                                        </div>
+                                    )}
                                     <p className="user-name">{user.first_name} {user.last_name}</p>
                                     <p className="user-email">{user.email}</p>
                                 </div>

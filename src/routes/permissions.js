@@ -3,7 +3,7 @@ const router = express.Router();
 // Auth middleware
 const isLoggedIn = require('../middleware/auth');   
 const {
-  createPermission,
+  createPermissionByUsername,
   getPermissionsByFile,
   updatePermission,
   deletePermission,
@@ -12,7 +12,7 @@ const {
 } = require('../controllers/permissions');
 
 // Define routes for managing permissions
-router.post('/:id/permissions', isLoggedIn, createPermission);
+router.post('/:id/permissions', isLoggedIn, createPermissionByUsername);
 router.get('/:id/permissions', isLoggedIn, getPermissionsByFile);
 router.patch('/:id/permissions/:pId', isLoggedIn, updatePermission);
 router.delete('/:id/permissions/:pId', isLoggedIn, deletePermission);
