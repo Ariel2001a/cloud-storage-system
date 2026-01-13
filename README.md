@@ -85,9 +85,21 @@ Dependencies
 
 ![second user homepage dark mode + english](images/task4_readme/second_eng_dark.png) 
 
+##                                           top bar features
+
+![top bar ](images/task4_readme/top_bar.png) 
+
+- language button switching from hebrew to english
+
+- light mode dark mode switch
+
+- user profile picture preview - clicking it will open menu with more user infoand logout button
+
+- search bar
+
 ##                                           create item form
 
- ![Item creation](images/task4_readme/create_file_Form.png) 
+ ![Item creation](images/task4_readme/create_item_Form.png) 
 
  - here you can create file/folder/picture
 
@@ -112,7 +124,7 @@ Dependencies
 
  ![Item creation](images/task4_readme/search.png) 
 
- - here you can search among your files
+ - here you can search among your files (searching inside every folder, searching by file name and also file content)
 
 ##                                           trash bin page
 
