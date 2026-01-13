@@ -112,6 +112,12 @@ Dependencies
 
  - here you can see you profile picture email address and you can logout. 
 
+  ##                                           searching
+
+ ![search](images/task4_readme/search.png) 
+
+ - here you can search among your files (searching inside every folder, searching by file name and also file content)
+
 ##                                           create item form
 
  ![Item creation](images/task4_readme/create_item_form.png) 
@@ -140,25 +146,20 @@ Dependencies
 
  ##                                           recent files
 
- ![Item creation](images/task4_readme/latest.png) 
+ ![latest](images/task4_readme/latest.png) 
 
  - here you can see the files you have created in the past week
 
- ##                                           searching
-
- ![Item creation](images/task4_readme/search.png) 
-
- - here you can search among your files (searching inside every folder, searching by file name and also file content)
 
 ##                                           trash bin page
 
- ![Item creation](images/task4_readme/trash.png) 
+ ![trash](images/task4_readme/trash.png) 
 
  - here you can see the files you moved to trash bin but havent deleted yet.
 
  ##                                           right click intrash bin page
 
- ![Item creation](images/task4_readme/tbrc.png) 
+ ![trash bin](images/task4_readme/tbrc.png) 
 
  - you can either restore file or delete it forever.
 
