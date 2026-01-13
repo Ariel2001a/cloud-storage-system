@@ -92,7 +92,7 @@ Dependencies
 
 ![top bar ](images/task4_readme/top_bar.png) 
 
-- language button switching from hebrew to english
+- language button switching between hebrew and english
 
 - light mode dark mode switch
 
