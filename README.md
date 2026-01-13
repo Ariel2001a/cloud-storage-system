@@ -75,7 +75,7 @@ Dependencies
 
 ![login second user in english ](images/task4_readme/second_log_eng.png) 
 
-- logged in with ful mail - (username@ead.com)
+- logged in with full mail - (username@ead.com)
 
 ##                                           first user in light mode + hebrew 
 
@@ -87,9 +87,39 @@ Dependencies
 
 ##                                           create item form
 
- ![Item creation](images/task4_readme/Item_creation.png) 
+ ![Item creation](images/task4_readme/create_file_Form.png) 
 
  - here you can create file/folder/picture
+
+ ##                                           share item form
+
+ ![share item](images/task4_readme/share_file_form.png) 
+
+ - here you can share file/folder/picture
+ - you can choose what type of permission to give
+
+ ##                                           starred file
+
+ ![starred file](images/task4_readme/starred.png) 
+
+ ##                                           recent files
+
+ ![Item creation](images/task4_readme/latest.png) 
+
+ - here you can see the files you have created in the past week
+
+ ##                                           searching
+
+ ![Item creation](images/task4_readme/search.png) 
+
+ - here you can search among your files
+
+##                                           trash bin page
+
+ ![Item creation](images/task4_readme/trash.png) 
+
+ - here you can see the files you deleted.
+
 
 ##                                           upload picture
 
@@ -107,9 +137,7 @@ Dependencies
 
  ![user details on homepage](images/task4_readme/user_details.png) 
 
-##                                           starred file
 
- ![starred file](images/task4_readme/starred.png) 
 
 
 
