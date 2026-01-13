@@ -51,31 +51,41 @@ const getStarredFiles = (userId) => {
     return files.filter(item => item.starred === true);
 };
 
-// Returns a file/folder by its ID for a given user
 const getFileById = (user_id, id) => {
-  const files = getUserFiles(user_id);
-  if (!files) {
+    // 1. Check Active Files
+    const activeFiles = getUserFiles(user_id);
+    let file = activeFiles.find(f => f.id === id);
+    if (file) return file;
+
+    // 2. Check Deleted Files (Trash)
+    const deletedFiles = getUserDeletedFiles(user_id);
+    file = deletedFiles.find(f => f.id === id);
+    if (file) return file;
+
+    // 3. Check Shared Files
+    const sharedFilesList = getUserSharedFiles(user_id);
+    file = sharedFilesList.find(f => f.id === id);
+    if (file) return file;
+
     return null;
-  }
-  return files.find(f => f.id === id) || null;
 };
 
 
 const getFileByIdFromDeleted = (user_id, id) => {
-  const files = deletedUserFiles[user_id];
-  if (!files) {
-    return null;
-  }
-  return files.find(f => f.id === id) || null;
+    const files = deletedUserFiles[user_id];
+    if (!files) {
+        return null;
+    }
+    return files.find(f => f.id === id) || null;
 };
 
 
 const getFileByIdFromShared = (user_id, id) => {
-  const files = getUserSharedFiles(user_id);
-  if (!files) {
-    return null;
-  }
-  return files.find(f => f.id === id) || null;
+    const files = getUserSharedFiles(user_id);
+    if (!files) {
+        return null;
+    }
+    return files.find(f => f.id === id) || null;
 };
 
 // Deletes a file/folder by its ID for a given user
@@ -137,7 +147,7 @@ const getFolderFiles = (userId, folderParent) => {
     return filesInFolder;
 };
 
-const sharedWithUsers = (userId, fileId,userToShareId) => {
+const sharedWithUsers = (userId, fileId, userToShareId) => {
     const files = getUserFiles(userId);
     const file = files.find(f => f.id === fileId);
     if (file) {
@@ -181,5 +191,7 @@ module.exports = {
     doFilePublic,
     deleteFileByIdFromSharedFiles
 };
+
+
 
 

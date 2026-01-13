@@ -61,7 +61,7 @@ export default function Home({ searchTerm, user }) {
             load();
         }, 300);
 
-      return () => clearTimeout(delayDebounceFn);
+        return () => clearTimeout(delayDebounceFn);
     }, [searchTerm, userId]);
 
 
@@ -102,6 +102,7 @@ export default function Home({ searchTerm, user }) {
                 <FileView
                     fileId={selectedFile.id}
                     fileName={selectedFile.name}
+                    fileType={selectedFile.type}
                     lang={lang}
                     onClose={() => setSelectedFile(null)}
                 />

@@ -1,11 +1,12 @@
 // In-memory storage for permissions, organized by fileId
-const permissionsByFile = {}; 
+const permissionsByFile = {};
 
 // Allowed permission types for files and folders
 const PERMISSION_TYPES = {
     file: ["read", "write", "owner"],
-    folder: ["read", "write", "share", "owner"]
-}; 
+    folder: ["read", "write", "share", "owner"],
+    image: ["read", "write", "owner"]
+};
 
 
 /**
@@ -13,9 +14,9 @@ const PERMISSION_TYPES = {
  * @param {Object} param0 - Contains userId, fileId, permission, type (file/folder)
  * @returns {Object|null} - Returns the added permission object or null if invalid/exists
  */
-function addPermission({ userId, fileId, permission,type }) {
+function addPermission({ userId, fileId, permission, type }) {
 
-     // Validate permission type
+    // Validate permission type
     if (!PERMISSION_TYPES[type].includes(permission)) {
         return null;
     }
