@@ -41,7 +41,7 @@ This is the fourth task out of a full google drive clone project.
 3. 
      * run the servers and react - docker compose up --build
 
-     *  go to http://localhost:3000/home
+     *  go to http://localhost:3000
 
 
 
