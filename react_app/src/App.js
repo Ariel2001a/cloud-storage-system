@@ -31,7 +31,7 @@ function App() {
           <Route element={<Layout currentFolderId={currentFolderId} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}>
 
             <Route
-              path="/"
+              path="/home"
               element={<Home searchTerm={searchTerm} setSearchTerm={setSearchTerm} onFolderEnter={() => setCurrentFolderId(null)} />}
             />
 
