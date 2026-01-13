@@ -81,11 +81,12 @@ exports.checkUser = (req, res) => {
 
     if (user.password !== password) return res.status(404).json({ error: 'Password incorrect' });
 
+    const username = email.split('@')[0];
     // 3️⃣ Login successful → create JWT
     const token = jwt.sign(
         { id: user.id, username },  // include username in payload
         SECRET_KEY,
-        { expiresIn: '5h' }
+        { expiresIn: '1h' }
     );
 
   res.json({ token, username });

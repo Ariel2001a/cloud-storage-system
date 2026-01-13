@@ -27,8 +27,6 @@ const getUserByUsername = (email) =>  users.find(u => u.email===email)
 
 
 // Checks if a name contains only valid letters
-const checkUserByUsername = (email) =>  users.find(u => u.email===email)
-
 const checkUserByUsername = (email) => users.find(u => u.email === email);
 
 module.exports = {
