@@ -80,6 +80,12 @@ Dependencies
 
 - logged in with full mail - (username@ead.com)
 
+##                                           JWT 
+
+![JWT ](images/task4_readme/jwt.png) 
+
+- Unique JWT created for the user after log in 
+
 ##                                           first user homepage light mode + hebrew 
 
 ![first user in light mode + hebrew ](images/task4_readme/first_light_he_home.png) 
