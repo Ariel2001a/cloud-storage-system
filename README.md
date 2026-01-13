@@ -96,15 +96,26 @@ Dependencies
 
 - light mode dark mode switch
 
-- user profile picture preview - clicking it will open menu with more user info and logout button
+- user profile picture preview - see next image
 
 - search bar
+
+##                                           logout menu
+
+ ![logout](images/task4_readme/logout.png) 
+
+ - here you can see you profile picture email address and you can logout. 
 
 ##                                           create item form
 
  ![Item creation](images/task4_readme/create_item_form.png) 
 
  - here you can create file/folder/picture
+
+ ##                                           item right click menu
+
+ ![right click menu](images/task4_readme/right_click_menu.png) 
+
 
  ##                                           share item form
 
