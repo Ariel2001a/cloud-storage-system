@@ -1,7 +1,7 @@
-# Project-exercise3 
-# AdvancedProgrammingProject-exercise-3 📝
+# Project-exercise4 
+# AdvancedProgrammingProject-exercise-4 📝
 
-This is the third task out of a full google drive clone project.
+This is the fourth task out of a full google drive clone project.
 
 ## Key functionalities 📂
 
@@ -15,16 +15,22 @@ This is the third task out of a full google drive clone project.
 
 - Search System: find what you're looking for by searching for a query. It checks both the names of the files and the text inside them.
 
-- Dual-Server Setup: Uses a C++ server for file operations and a Node.js web server to handle API requests, all running together via Docker.
+- The site suppports 2 languages - Hebrew and English
+
+- The site supports dark and light modes
+
+- The site supports image uploading and storing 
+
 
 
 ## Setup 🛠️
 
-1. Clone the repository - https://github.com/Ariel2001a/Project-exercise1/tree/EX3
+1. Clone the repository - https://github.com/Ariel2001a/Project-exercise1/tree/Ex4
 
       - each task has its own branch - EX1, EX2, EX3...
 
 2. Make sure u have c++17 compiler
+
 3. 
     * run the cpp server 
        
@@ -41,126 +47,6 @@ This is the third task out of a full google drive clone project.
 
 
 
-- Create new user
-
-// NOTE : when creating new user you can use the default image from folder "uploads" named "default.png"
-     - image must be uploaded before building the docker
-     - make sure the image is in format png and drag it inside the "uploads" folder
-     - when sending the command, make sure you send the name of the image and add .png (eg. file name hello, insert hello.png)
-
-curl -i -X POST http://localhost:8080/api/users \
--H "Content-Type: application/json" \
--d '{"first_name":"first","last_name":"user","email":"first@gmail.com","password":"first"}'
-
-curl -i -X POST http://localhost:8080/api/users \
--H "Content-Type: application/json" \
--d '{"first_name":"second","last_name":"user","email":"second@gmail.com","password":"second"}'
-
----------------------------------------------------------------------------------------------------------------------------
-
-- Get user's details
-
-curl -i -X GET http://localhost:8080/api/users/1
-
----------------------------------------------------------------------------------------------------------------------------
-
-- Verifies user exists
-
-curl -i -X POST http://localhost:8080/api/users/tokens \
--H "Content-Type: application/json" \
--d '{"email":"first@gmail.com","password":"first"}'
-
----------------------------------------------------------------------------------------------------------------------------
-
-- Get all top-leveL files for user 
-
-curl -i -X GET http://localhost:8080/api/files/deleted \
--H "user-id: 1"
-
----------------------------------------------------------------------------------------------------------------------------
-
-- Create new file/folder
-
-curl -i -X POST http://localhost:8080/api/files \
--H "Content-Type: application/json" \
--H "user-id: 1" \
--d '{
-  "name": "notes.txt",
-  "type": "file",
-  "content": "hello world",
-  "parentId": null
-}'
-
----------------------------------------------------------------------------------------------------------------------------
-
-- gives the details of the file/folder whose identifier is id.
-
-curl -i -X GET http://localhost:8080/api/files/1  \
-  -H "user-id: 1"
-
-curl -i -X POST http://localhost:8080/api/files/1  \
-  -H "user-id: 1"
-
----------------------------------------------------------------------------------------------------------------------------
-
-- Edits file or folder 
-
-curl -i -X PATCH http://localhost:8080/api/files/2 \
--H "Content-Type: application/json" \
--H "user-id: 1" \
--d '{
-  "name": "notes.txt",
-  "content": "this content was updated via PATCH",
-   "parentId": null / "folder id"
-}'
-
----------------------------------------------------------------------------------------------------------------------------
-
-- Deletes file or folder
-
-curl -i -X DELETE http://localhost:8080/api/files/1 \
-  -H "user-id: 1"
-
----------------------------------------------------------------------------------------------------------------------------
-
-- Show all permissions for a file
-
-curl -i http://localhost:8080/api/files/1/permissions \
-  -H "user-id: 1"
-
----------------------------------------------------------------------------------------------------------------------------
-
-- Gives permission to a user
-
-curl -i -X POST http://localhost:8080/api/files/2/permissions \
-  -H "Content-Type: application/json" \
-  -H "user-id: 1" \
-  -d '{"userId":2,"permission":"read"}'
-
----------------------------------------------------------------------------------------------------------------------------
-
-- Update permission by PID
-
-    curl -i -X PATCH http://localhost:8080/api/files/1/permissions/1766845870132 \
-  -H "Content-Type: application/json" \
-  -H "user-id: 1" \
-  -d '{"permission":"write"}'
-
----------------------------------------------------------------------------------------------------------------------------
-
-- Deletes a permission from a file by PID
-
-   curl -i -X DELETE http://localhost:8080/api/files/1/permissions/1766866323404 \
- -H "user-id: 1"
-
----------------------------------------------------------------------------------------------------------------------------
-
-- get the files/folders containing the query in their name or content
-
-curl -i -X GET http://localhost:8080/api/search/PATCH \
-  -H "user-id: 1"
-
-
 Dependencies
 
 - c++17 standard library
@@ -169,101 +55,20 @@ Dependencies
 
 
 ##                                                     create first user
-```
-oject-exercise1 (EX3)
-$ curl -i -X POST http://localhost:8080/api/users \
--H "Content-Type: application/json" \
--d '{"first_name":"first","last_name":"user","email":"first@gmail.com","password":"first","image":"first.png"}'
-HTTP/1.1 201 Created
-```
 
-{"id":1}
 
 
 ##                                                     create second user
-```
-$ curl -i -X POST http://localhost:8080/api/users -H "Content-Type: application/json" -d '{"first_name":"second","last_name":"user","email":"second@gmail.com","password":"second","image":"second.png"}'
-HTTP/1.1 201 Created
-```
 
-{"id":2}
-
-##                                                    get first user's details
-
-
-```
-$ curl -i -X GET http://localhost:8080/api/users/1
-HTTP/1.1 200 OK
-```
-
-{"id":1,"first_name":"first","last_name":"user","email":"first@gmail.com","image":"first.png"}
-
-
-
-
-
-##                                                     verify first user exists
-
-
-```
-$ curl -i -X POST http://localhost:8080/api/users/tokens \
--H "Content-Type: application/json" \
--d '{"email":"first@gmail.com","password":"first"}'
-HTTP/1.1 200 OK
-```
-
-
-{"id":1}
 
 
 ##                                                     create folder for first user
 
 
-```
-$ curl -i -X POST http://localhost:8080/api/files \
--H "Content-Type: application/json" \
--H "user-id: 1" \
--d '{
-
-  "name": "documents",
-  "type": "folder",
-  "parentId": null
-}'
-HTTP/1.1 201 Created
-```
 
 
-{"id":1}
 
-
-##                                                     create file for first user
-
-```
-curl -i -X POST http://localhost:8080/api/files \
--H "Content-Type: application/json" \
--H "user-id: 1" \
--d '{
-  "name": "notes.txt",
-  "type": "file",
-  "content": "hello world",
-  "parentId": null
-}'
-HTTP/1.1 201 Created
-```
-
-
-{"id":2}
-
-##                                                    get the file's (id=2) details
-
-
-```
-$ curl -i -X GET http://localhost:8080/api/files/2  \
-  -H "user-id: 1"
-HTTP/1.1 200 OK
-```
-
-{"file":{"id":1,"name":"notes.txt","type":"file","date":1766860463612,"folderParent":null}}
+##                                                     create file for first user and get the file's details
 
 
 
@@ -271,125 +76,49 @@ HTTP/1.1 200 OK
 
 ##                                                     get first user's top level files
 
-```
-$ curl -i -X GET http://localhost:8080/api/files \
--H "user-id: 1"
-HTTP/1.1 200 OK
-```
 
-{"files":[{"id":1,"name":"documents","type":"folder","date":1766845753965,"folderParent":null},{"id":2,"name":"notes.txt","type":"file","date":1766845772519,"folderParent":null}]}
 
 
 ##                                                     give second user read permission for the first user's file(id=2)
 
-```
-$ curl -i -X POST http://localhost:8080/api/files/2/permissions \
-  -H "Content-Type: application/json" \
-  -H "user-id: 1" \
-  -d '{"userId":2,"permission":"read"}'
-HTTP/1.1 201 Created
-```
 
-{"id":1766845870132,"userId":2,"fileId":2,"permission":"read"}
 
 ##                                                     check file's permissions
 
-```
-$ curl -i http://localhost:8080/api/files/2/permissions \
-  -H "user-id: 1"
-HTTP/1.1 200 OK
-```
-
-[{"id":1766845772519,"userId":1,"fileId":2,"permission":"read"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"write"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"owner"},{"id":1766845870132,"userId":2,"fileId":2,"permission":"read"}]
 
 
 ##                                                     change second user permission from read to write
 
-```
-    curl -i -X PATCH http://localhost:8080/api/files/1/permissions/1766845870132 \
-  -H "Content-Type: application/json" \
-  -H "user-id: 1" \
-  -d '{"permission":"write"}'
-HTTP/1.1 200 OK
-```
 
-{"id":1766845870132,"userId":2,"fileId":2,"permission":"write"}
 
 
 ##                                                     check file's permissions
 
-```
-$ curl -i http://localhost:8080/api/files/2/permissions   -H "user-id: 1"
-HTTP/1.1 200 OK
-```
-
-[{"id":1766845772519,"userId":1,"fileId":2,"permission":"read"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"write"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"owner"},{"id":1766845870132,"userId":2,"fileId":2,"permission":"write"}]
-
 
 ##                                                     delete second user's permission
-
-```
-$   curl -i -X DELETE http://localhost:8080/api/files/2/permissions/1766845870132 \
- -H "user-id: 1"
-HTTP/1.1 204 No Content
-```
 
 
 
 
 ##                                                     check file permissions again
 
-```
-$ curl -i http://localhost:8080/api/files/2/permissions \
-  -H "user-id: 1"
-HTTP/1.1 200 OK
-```
-
-[{"id":1766845772519,"userId":1,"fileId":2,"permission":"read"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"write"},{"id":1766845772519,"userId":1,"fileId":2,"permission":"owner"}]
 
 
 ##                                                     change the content and name of the file
 
-```
-$ curl -i -X PATCH http://localhost:8080/api/files/2 \
--H "Content-Type: application/json" \
--H "user-id: 1" \
--d '{
-  "name": "notes.txt",
-  "content": "this content was updated via PATCH",
-  "parentId": null
-}'
-HTTP/1.1 204 No Content
-```
+
 
 ##                                                     delete the folder
 
-```
-$ curl -i -X DELETE http://localhost:8080/api/files/1 \
-  -H "user-id: 1"
-HTTP/1.1 204 No Content
-```
+
 
 ##                                                     search for 'PATCH' in first user's files
 
-```
-curl -i -X GET http://localhost:8080/api/search/PATCH \
-  -H "user-id: 1"
-HTTP/1.1 200 OK
-```
 
-{"filesList":[{"id":2,"name":"notes.txt","type":"file","date":1766845772519,"folderParent":null,"content":"this content was updated via PATCH"}]}
 
 
 ##                                                     get first user's top level files
 
-```
-$ curl -i -X GET http://localhost:8080/api/files \
--H "user-id: 1"
-HTTP/1.1 200 OK
-```
-
-{"files":[{"id":2,"name":"notes.txt","type":"file","date":1766845772519,"folderParent":null,"content":"this content was updated via PATCH"}]}
 
 
 
@@ -397,9 +126,182 @@ HTTP/1.1 200 OK
 
 ---------------------------------------------------------------------------------------------------------------------------
 
-## servers running 📡 📤
+## Project structure
 
--- ![Both servers running](images/both_servers_running.png) --
+Project
+├── data
+│   ├── 1768308462982
+│   └── 1768308462984
+├── images
+│   ├── Alogo.png
+│   ├── both_servers_running.png
+│   ├── diagram.png
+│   ├── multi_clients.jpg
+│   ├── Run_example.png
+│   └── tests_passed.png
+├── react_app
+│   ├── public
+│   │   ├── favicon.ico
+│   │   ├── favicon.png
+│   │   └── index.html
+│   ├── src
+│   │   ├── api
+│   │   │   └── files.js
+│   │   ├── components
+│   │   │   ├── login
+│   │   │   │   ├── login.css
+│   │   │   │   └── login.jsx
+│   │   │   ├── Register
+│   │   │   │   ├── Button.jsx
+│   │   │   │   ├── Register.css
+│   │   │   │   └── Register.jsx
+│   │   │   ├── CreateFileForm.css
+│   │   │   ├── CreateFileForm.jsx
+│   │   │   ├── emailPrompt.css
+│   │   │   ├── emailPrompt.jsx
+│   │   │   ├── fileItem.css
+│   │   │   ├── FileItem.jsx
+│   │   │   ├── FileRightClickMenu.jsx
+│   │   │   ├── FileTable.css
+│   │   │   ├── FileTable.jsx
+│   │   │   ├── LangButton.jsx
+│   │   │   ├── Layout.css
+│   │   │   ├── Layout.jsx
+│   │   │   ├── modalMoveToFolder.css
+│   │   │   ├── MoveFolderModal.jsx
+│   │   │   ├── ProfilePic.jsx
+│   │   │   ├── RequireAuth.jsx
+│   │   │   └── TextInput.jsx
+│   │   ├── context
+│   │   │   └── LangContext.jsx
+│   │   ├── images
+│   │   │   ├── Alogo.png
+│   │   │   └── default.png
+│   │   ├── logo image
+│   │   │   └── logo.png
+│   │   ├── pages
+│   │   │   ├── BinPage.jsx
+│   │   │   ├── EditFileForm.jsx
+│   │   │   ├── FileView.css
+│   │   │   ├── FileView.jsx
+│   │   │   ├── FolderView.css
+│   │   │   ├── FolderView.jsx
+│   │   │   ├── Home.css
+│   │   │   ├── Home.jsx
+│   │   │   ├── MyDrive.jsx
+│   │   │   ├── Recent.jsx
+│   │   │   ├── ShareWithMe.jsx
+│   │   │   └── StarredFiles.jsx
+│   │   ├── uploads
+│   │   │   ├── default.png
+│   │   │   └── logo.png
+│   │   ├── utils
+│   │   │   └── tokenUtils.js
+│   │   ├── App.css
+│   │   ├── App.js
+│   │   ├── index.css
+│   │   └── index.js
+│   ├── .gitignore
+│   ├── package-lock.json
+│   ├── package.json
+│   └── README.md
+├── src
+│   ├── ClientCpp
+│   │   ├── Dockerfile
+│   │   └── tcp_c.cpp
+│   ├── ClientPython
+│   │   ├── Dockerfile
+│   │   └── TCP_Client.py
+│   ├── controllers
+│   │   ├── files.js
+│   │   ├── permissions.js
+│   │   ├── search.js
+│   │   └── users.js
+│   ├── middleware
+│   │   └── auth.js
+│   ├── models
+│   │   ├── files.js
+│   │   ├── permissions.js
+│   │   └── users.js
+│   ├── react_project
+│   │   ├── public
+│   │   │   └── index.html
+│   │   ├── src
+│   │   │   ├── components
+│   │   │   │   ├── left_side_bar.jsx
+│   │   │   │   └── up_side_bar.jsx
+│   │   │   ├── pages_dvir
+│   │   │   │   └── Home.jsx
+│   │   │   ├── react_uploads
+│   │   │   │   ├── Alogo.png
+│   │   │   │   └── default.png
+│   │   │   ├── App.css
+│   │   │   ├── App.js
+│   │   │   ├── index.css
+│   │   │   └── index.js
+│   │   ├── node_server.js
+│   │   ├── package-lock.json
+│   │   └── package.json
+│   ├── reg_log
+│   │   ├── reg_log.css
+│   │   └── RegPage.html
+│   ├── routes
+│   │   ├── files.js
+│   │   ├── permissions.js
+│   │   ├── search.js
+│   │   └── users.js
+│   ├── ServerCpp
+│   │   ├── Dockerfile
+│   │   └── RealServer.cpp
+│   ├── uploads
+│   │   └── default.png
+│   ├── AddCommand.cpp
+│   ├── AddCommand.h
+│   ├── app.js
+│   ├── ClientTask.cpp
+│   ├── ClientTask.h
+│   ├── CommandFactory.cpp
+│   ├── CommandFactory.h
+│   ├── CommandManager.cpp
+│   ├── CommandManager.h
+│   ├── Compressor.cpp
+│   ├── Compressor.h
+│   ├── Config.h
+│   ├── ConsoleCommunication.cpp
+│   ├── ConsoleCommunication.h
+│   ├── deletecommand.cpp
+│   ├── deletecommand.h
+│   ├── Dockerfile
+│   ├── FileSocketClient.js
+│   ├── GetCommand.cpp
+│   ├── GetCommand.h
+│   ├── HandleClient.cpp
+│   ├── HandleClient.h
+│   ├── ICommand.cpp
+│   ├── ICommand.h
+│   ├── ICommunication.h
+│   ├── ITask.h
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── Parser.cpp
+│   ├── Parser.h
+│   ├── SearchCommand.cpp
+│   ├── SearchCommand.h
+│   ├── TCPServerCommunication.cpp
+│   ├── TCPServerCommunication.h
+│   ├── ThreadPool.cpp
+│   └── ThreadPool.h
+├── test
+│   ├── CMakeLists.txt
+│   ├── docker-compose.yml
+│   ├── Dockerfile
+│   └── test.cpp
+├── .gitignore
+├── details.txt
+├── docker-compose.yml
+├── package-lock.json
+├── package.json
+└── README.md
 
 
 
@@ -459,7 +361,7 @@ Controllers:
 
 - files.js – Handles creating, retrieving, updating, and deleting files/folders.
 
-- users.js – Handles user registration, login, and user info retrieval.
+- users.js – Handles user registration, login, and user info retrieval. when login, creates JWT for the user.
 
 - permissions.js – Handles creating, updating, deleting, and retrieving file/folder permissions.
 
@@ -486,8 +388,98 @@ Routes:
 - search.js - Search files by query
 
 
+
+
+
+##      React files
+
+
+React Components
+
+- login/login.jsx / login/login.css – Component for the login page; handles user input, validation, and sending login requests to the backend. Styles the login form.
+
+- Register/Register.jsx / Register/Register.css / Register/Button.jsx – Component for the registration page; handles user registration input, validation, and submission. Button.jsx is a reusable styled button used in the registration form.
+
+- CreateFileForm.jsx / CreateFileForm.css – Form component to create a new file or folder; handles input validation and form submission. CSS styles the form.
+
+- emailPrompt.jsx / emailPrompt.css – Modal component that prompts the user to enter an email (e.g., for sharing files); CSS styles the modal.
+
+- FileItem.jsx / fileItem.css – Component for displaying a single file or folder item in a list or table; handles events like click, double-click, and right-click. CSS styles the item.
+
+- FileRightClickMenu.jsx – Context menu that appears when right-clicking a file item; allows actions like rename, delete, share.
+
+- FileTable.jsx / FileTable.css – Table component that displays a list of files and folders using FileItem components; handles sorting and selection. CSS styles the table.
+
+- LangButton.jsx – Button component to switch language in the UI; interacts with LangContext.
+
+- Layout.jsx / Layout.css – Main layout component for pages; includes header, sidebar, and main content area. CSS styles the overall layout.
+
+- modalMoveToFolder.css / MoveFolderModal.jsx – Modal component to move a file/folder to another folder; CSS styles the modal.
+
+- ProfilePic.jsx – Component to display and manage the user’s profile picture; may include upload functionality.
+
+- RequireAuth.jsx – Wrapper component to protect routes; checks if user is authenticated and redirects if not.
+
+- TextInput.jsx – Reusable input component with custom styling and optional validation.
+
+## Context
+
+- LangContext.jsx – React context that manages the current language for the app and provides functions to switch languages across components.
+
+## Pages
+
+- BinPage.jsx – Page displaying deleted files (Recycle Bin); allows restore or permanent deletion.
+
+- EditFileForm.jsx – Page/modal to edit file or folder properties (like name); handles input validation and submission.
+
+- FileView.jsx / FileView.css – Page displaying a single file’s content; may allow editing or preview. CSS styles the view.
+
+- FolderView.jsx / FolderView.css – Page displaying folder contents as a grid or list; allows navigation into subfolders. CSS styles the view.
+
+- Home.jsx / Home.css – Main dashboard page showing user files and folders; may include recent files, starred files, etc. CSS styles the dashboard.
+
+- MyDrive.jsx – Page representing the user’s personal drive; shows all owned files and folders.
+
+- Recent.jsx – Page listing recently accessed or modified files.
+
+- ShareWithMe.jsx – Page showing files/folders shared with the user.
+
+- StarredFiles.jsx – Page showing files/folders marked as starred/favorites.
+
+API / Utilities
+
+- api/files.js – Contains functions to call backend endpoints for file operations (CRUD, share, move).
+
+- utils/tokenUtils.js – Utility functions for handling JWTs (e.g., get user ID, check if logged in).
+
+- Images / Uploads
+
+- images/ – Static images used in the app (e.g., logos, icons).
+
+- uploads/ – Default uploaded files for the user or placeholder images.
+
+- Secondary React Project (react_project)
+
+- components/left_side_bar.jsx – Sidebar component with navigation links or actions.
+
+- components/up_side_bar.jsx – Top bar component with actions like logout, search, or language switch.
+
+- react_uploads/ – Folder storing images uploaded through this secondary React project.
+
+- App.js / App.css / index.js / index.css – Main app entry points; setup routing, providers, global styles, and renders the root component.
+
+- node_server.js – Node server for serving this React app (if applicable).
+
+- package.json / package-lock.json – Defines dependencies (like jwt-decode), scripts, and project metadata.
+
+
+
+
+
+
 ## Authors ✍️
 
+- Dvir Tabib
 - Eylon Hakak
 - Ariel Golod
-- Dvir Tabib
+
