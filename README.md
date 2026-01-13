@@ -50,26 +50,47 @@ Dependencies
 
 
                                               
-                                                
+##                                           create first user
+
 -- ![create first user](images/task4_readme/first_register.png) --
+
+##                                           create second user
+
                                               
--- ![create second user](images/task4_readme/second_register.png) --                         
 
--- ![login first user in hebrew](images/task4_readme/first_log_he.png) --
+![create second user](images/task4_readme/second_register.png)         
 
--- ![login second user in english ](images/task4_readme/second_log_eng.png) --
+##                                           login first user in hebrew
 
--- ![first user in light mode + hebrew ](images/task4_readme/first_light_he_homepage.png) --
+![login first user in hebrew](images/task4_readme/first_log_he.png) 
 
--- ![second user homepage dark mode + english](images/task4_readme/second_eng_dark.png) --
+##                                           login second user in english
 
--- ![upload picture](images/task4_readme/pic_upload.png) --
+![login second user in english ](images/task4_readme/second_log_eng.png) 
 
--- ![edit file](images/task4_readme/edit_file.png) --
+##                                           first user in light mode + hebrew 
 
--- ![user details on homepage](images/task4_readme/user_details.png) --
+![first user in light mode + hebrew ](images/task4_readme/first_light_he_homepage.png) 
 
--- ![starred file](images/task4_readme/starred.png) --
+##                                           second user homepage dark mode + english
+
+![second user homepage dark mode + english](images/task4_readme/second_eng_dark.png) 
+
+##                                           upload picture
+
+![upload picture](images/task4_readme/pic_upload.png) 
+
+##                                           edit file
+
+![edit file](images/task4_readme/edit_file.png) 
+
+##                                           user details on homepage
+
+ ![user details on homepage](images/task4_readme/user_details.png) 
+
+##                                           starred file
+
+ ![starred file](images/task4_readme/starred.png) 
 
 
 
