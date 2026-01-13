@@ -113,6 +113,7 @@ export default function FolderView({ user, onFolderEnter, searchTerm }) {
                 isRtl={isRtl}
                 user={user}
                 openItem={openItem}
+                setItems={setItems}
             />
 
             <FileRightClickMenu menu={menu} setMenu={setMenu} items={items} setItems={setItems} lang={lang} />
