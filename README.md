@@ -157,7 +157,7 @@ Dependencies
 
  - here you can see the files you moved to trash bin but havent deleted yet.
 
- ##                                           right click intrash bin page
+ ##                                           right click in trash bin page
 
  ![trash bin](images/task4_readme/tbrc.png) 
 
@@ -175,11 +175,6 @@ Dependencies
 - for file - allows editing the content
 
 - for image - allows uploading different image
-
-##                                           user details on homepage
-
- ![user details on homepage](images/task4_readme/user_details.png) 
-
 
 
 
