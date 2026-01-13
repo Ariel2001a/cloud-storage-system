@@ -23,6 +23,9 @@ This is the fourth task out of a full google drive clone project.
 
 - The site support "starred" feature to mark files 
 
+- login and actions in the site are protected by JWT.
+
+
 
 
 
