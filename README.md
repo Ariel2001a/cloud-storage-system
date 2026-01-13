@@ -52,21 +52,30 @@ Dependencies
                                               
 ##                                           create first user
 
--- ![create first user](images/task4_readme/first_register.png) --
+ ![create first user](images/task4_readme/first_register.png) 
+
+ password must contain at least 8 characters including english letters and numbers
+
+ username must be only letters and numbers (no @ , . /)
+
+ first and last names must be in english
 
 ##                                           create second user
 
-                                              
-
+                                            
 ![create second user](images/task4_readme/second_register.png)         
 
 ##                                           login first user in hebrew
 
 ![login first user in hebrew](images/task4_readme/first_log_he.png) 
 
+- logged in with only username
+
 ##                                           login second user in english
 
 ![login second user in english ](images/task4_readme/second_log_eng.png) 
+
+- logged in with ful mail - (username@ead.com)
 
 ##                                           first user in light mode + hebrew 
 
@@ -76,6 +85,12 @@ Dependencies
 
 ![second user homepage dark mode + english](images/task4_readme/second_eng_dark.png) 
 
+##                                           create item form
+
+ ![Item creation](images/task4_readme/Item_creation.png) 
+
+ - here you can create file/folder/picture
+
 ##                                           upload picture
 
 ![upload picture](images/task4_readme/pic_upload.png) 
@@ -83,6 +98,10 @@ Dependencies
 ##                                           edit file
 
 ![edit file](images/task4_readme/edit_file.png) 
+
+- for file - allows editing the content
+
+- for image - allows uploading different image
 
 ##                                           user details on homepage
 
@@ -103,186 +122,6 @@ Dependencies
 
 
 ---------------------------------------------------------------------------------------------------------------------------
-
-## Project structure
-
-Project
-├── data
-│   ├── 1768308462982
-│   └── 1768308462984
-├── images
-│   ├── Alogo.png
-│   ├── both_servers_running.png
-│   ├── diagram.png
-│   ├── multi_clients.jpg
-│   ├── Run_example.png
-│   └── tests_passed.png
-├── react_app
-│   ├── public
-│   │   ├── favicon.ico
-│   │   ├── favicon.png
-│   │   └── index.html
-│   ├── src
-│   │   ├── api
-│   │   │   └── files.js
-│   │   ├── components
-│   │   │   ├── login
-│   │   │   │   ├── login.css
-│   │   │   │   └── login.jsx
-│   │   │   ├── Register
-│   │   │   │   ├── Button.jsx
-│   │   │   │   ├── Register.css
-│   │   │   │   └── Register.jsx
-│   │   │   ├── CreateFileForm.css
-│   │   │   ├── CreateFileForm.jsx
-│   │   │   ├── emailPrompt.css
-│   │   │   ├── emailPrompt.jsx
-│   │   │   ├── fileItem.css
-│   │   │   ├── FileItem.jsx
-│   │   │   ├── FileRightClickMenu.jsx
-│   │   │   ├── FileTable.css
-│   │   │   ├── FileTable.jsx
-│   │   │   ├── LangButton.jsx
-│   │   │   ├── Layout.css
-│   │   │   ├── Layout.jsx
-│   │   │   ├── modalMoveToFolder.css
-│   │   │   ├── MoveFolderModal.jsx
-│   │   │   ├── ProfilePic.jsx
-│   │   │   ├── RequireAuth.jsx
-│   │   │   └── TextInput.jsx
-│   │   ├── context
-│   │   │   └── LangContext.jsx
-│   │   ├── images
-│   │   │   ├── Alogo.png
-│   │   │   └── default.png
-│   │   ├── logo image
-│   │   │   └── logo.png
-│   │   ├── pages
-│   │   │   ├── BinPage.jsx
-│   │   │   ├── EditFileForm.jsx
-│   │   │   ├── FileView.css
-│   │   │   ├── FileView.jsx
-│   │   │   ├── FolderView.css
-│   │   │   ├── FolderView.jsx
-│   │   │   ├── Home.css
-│   │   │   ├── Home.jsx
-│   │   │   ├── MyDrive.jsx
-│   │   │   ├── Recent.jsx
-│   │   │   ├── ShareWithMe.jsx
-│   │   │   └── StarredFiles.jsx
-│   │   ├── uploads
-│   │   │   ├── default.png
-│   │   │   └── logo.png
-│   │   ├── utils
-│   │   │   └── tokenUtils.js
-│   │   ├── App.css
-│   │   ├── App.js
-│   │   ├── index.css
-│   │   └── index.js
-│   ├── .gitignore
-│   ├── package-lock.json
-│   ├── package.json
-│   └── README.md
-├── src
-│   ├── ClientCpp
-│   │   ├── Dockerfile
-│   │   └── tcp_c.cpp
-│   ├── ClientPython
-│   │   ├── Dockerfile
-│   │   └── TCP_Client.py
-│   ├── controllers
-│   │   ├── files.js
-│   │   ├── permissions.js
-│   │   ├── search.js
-│   │   └── users.js
-│   ├── middleware
-│   │   └── auth.js
-│   ├── models
-│   │   ├── files.js
-│   │   ├── permissions.js
-│   │   └── users.js
-│   ├── react_project
-│   │   ├── public
-│   │   │   └── index.html
-│   │   ├── src
-│   │   │   ├── components
-│   │   │   │   ├── left_side_bar.jsx
-│   │   │   │   └── up_side_bar.jsx
-│   │   │   ├── pages_dvir
-│   │   │   │   └── Home.jsx
-│   │   │   ├── react_uploads
-│   │   │   │   ├── Alogo.png
-│   │   │   │   └── default.png
-│   │   │   ├── App.css
-│   │   │   ├── App.js
-│   │   │   ├── index.css
-│   │   │   └── index.js
-│   │   ├── node_server.js
-│   │   ├── package-lock.json
-│   │   └── package.json
-│   ├── reg_log
-│   │   ├── reg_log.css
-│   │   └── RegPage.html
-│   ├── routes
-│   │   ├── files.js
-│   │   ├── permissions.js
-│   │   ├── search.js
-│   │   └── users.js
-│   ├── ServerCpp
-│   │   ├── Dockerfile
-│   │   └── RealServer.cpp
-│   ├── uploads
-│   │   └── default.png
-│   ├── AddCommand.cpp
-│   ├── AddCommand.h
-│   ├── app.js
-│   ├── ClientTask.cpp
-│   ├── ClientTask.h
-│   ├── CommandFactory.cpp
-│   ├── CommandFactory.h
-│   ├── CommandManager.cpp
-│   ├── CommandManager.h
-│   ├── Compressor.cpp
-│   ├── Compressor.h
-│   ├── Config.h
-│   ├── ConsoleCommunication.cpp
-│   ├── ConsoleCommunication.h
-│   ├── deletecommand.cpp
-│   ├── deletecommand.h
-│   ├── Dockerfile
-│   ├── FileSocketClient.js
-│   ├── GetCommand.cpp
-│   ├── GetCommand.h
-│   ├── HandleClient.cpp
-│   ├── HandleClient.h
-│   ├── ICommand.cpp
-│   ├── ICommand.h
-│   ├── ICommunication.h
-│   ├── ITask.h
-│   ├── package-lock.json
-│   ├── package.json
-│   ├── Parser.cpp
-│   ├── Parser.h
-│   ├── SearchCommand.cpp
-│   ├── SearchCommand.h
-│   ├── TCPServerCommunication.cpp
-│   ├── TCPServerCommunication.h
-│   ├── ThreadPool.cpp
-│   └── ThreadPool.h
-├── test
-│   ├── CMakeLists.txt
-│   ├── docker-compose.yml
-│   ├── Dockerfile
-│   └── test.cpp
-├── .gitignore
-├── details.txt
-├── docker-compose.yml
-├── package-lock.json
-├── package.json
-└── README.md
-
-
-
 
 ## File Structure 📁
 
