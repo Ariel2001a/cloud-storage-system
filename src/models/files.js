@@ -100,6 +100,15 @@ const deleteFileByIdFromUserFiles = (user_id, id) => {
     return false;
 };
 
+const deleteFileByIdFromSharedFiles = (user_id, id) => {
+    let file = getFileByIdFromShared(user_id, id);
+    if (file) {
+        sharedFiles[user_id] = sharedFiles[user_id].filter(a => a.id !== id);
+        return true;
+    }
+    return false;
+};
+
 const deleteFileByIdFromBin = (user_id, id) => {
     let file = getFileByIdFromDeleted(user_id, id);
 
@@ -152,6 +161,16 @@ const sharedWithUsers = (userId, fileId, userToShareId) => {
     return false;
 }
 
+const doFilePublic = (userId, fileId) => {
+    const file = getFileById(userId, fileId);
+    if (file) {
+        file.pub =true;
+        return true;
+    }
+    return false;
+};
+
+
 module.exports = {
     getUserFiles,
     addFileOrFolder,
@@ -168,7 +187,9 @@ module.exports = {
     getFileByIdFromShared,
     getStarredFiles,
     RestoreFileByIdFromBin,
-    getUserRecentFiles
+    getUserRecentFiles,
+    doFilePublic,
+    deleteFileByIdFromSharedFiles
 };
 
 
