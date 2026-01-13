@@ -58,6 +58,25 @@ services:
     stdin_open: true
     tty: true
 
+    #React app (npm start)
+  react_app:
+    build:
+      context: ./react_app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./react_app:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - local
+    depends_on:
+      - server_node
+
 # Custom network for all services
 networks:
   local:
