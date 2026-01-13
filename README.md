@@ -9,7 +9,7 @@ This is the fourth task out of a full google drive clone project.
 
 - File & Folder Management: Create files with content or folders to stay organized. 
 
-- Permissions Control: Share your files with other users. You can give "read" or "write" access, see who has permission, and change or delete those permissions whenever you want.
+- Permissions Control: Share your files with other users. You can give "read", "write" or owner access, see who has permission, and change or delete those permissions whenever you want.
 
 - File Operations: Full support for editing file content (PATCH) and deleting files or folders you don't need anymore.
 
@@ -20,6 +20,10 @@ This is the fourth task out of a full google drive clone project.
 - The site supports dark and light modes
 
 - The site supports image uploading and storing 
+
+- The site support "starred" feature to mark files 
+
+
 
 
 
@@ -32,18 +36,9 @@ This is the fourth task out of a full google drive clone project.
 2. Make sure u have c++17 compiler
 
 3. 
-    * run the cpp server 
-       
-       -  docker compose build
-       -  docker compose up server
+     * run the servers and react - docker compose up --build
 
-
-   * run web server (seperated terminal)
-       - docker compose up server_node
-       
-
-
-## Usage 💻 (Linux commands)
+     *  go to http://localhost:3000/home
 
 
 
@@ -54,70 +49,32 @@ Dependencies
 ## Run example 🏃‍♂️
 
 
-##                                                     create first user
+                                              
+                                                
+-- ![create first user](images/task4_readme/first_register.png) --
+                                              
+-- ![create second user](images/task4_readme/second_register.png) --                         
 
+-- ![login first user in hebrew](images/task4_readme/first_log_he.png) --
 
+-- ![login second user in english ](images/task4_readme/second_log_eng.png) --
 
-##                                                     create second user
+-- ![first user in light mode + hebrew ](images/task4_readme/first_light_he_homepage.png) --
 
+-- ![second user homepage dark mode + english](images/task4_readme/second_eng_dark.png) --
 
+-- ![upload picture](images/task4_readme/pic_upload.png) --
 
-##                                                     create folder for first user
+-- ![edit file](images/task4_readme/edit_file.png) --
 
+-- ![user details on homepage](images/task4_readme/user_details.png) --
 
-
-
-
-##                                                     create file for first user and get the file's details
-
-
-
-
-
-##                                                     get first user's top level files
-
-
-
-
-##                                                     give second user read permission for the first user's file(id=2)
-
-
-
-##                                                     check file's permissions
-
-
-
-##                                                     change second user permission from read to write
+-- ![starred file](images/task4_readme/starred.png) --
 
 
 
 
-##                                                     check file's permissions
 
-
-##                                                     delete second user's permission
-
-
-
-
-##                                                     check file permissions again
-
-
-
-##                                                     change the content and name of the file
-
-
-
-##                                                     delete the folder
-
-
-
-##                                                     search for 'PATCH' in first user's files
-
-
-
-
-##                                                     get first user's top level files
 
 
 
