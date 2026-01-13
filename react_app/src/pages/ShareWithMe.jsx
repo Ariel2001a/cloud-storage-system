@@ -112,6 +112,7 @@ export default function ShareWithMe({ searchTerm, user }) {
                 <FileView
                     fileId={selectedFile.id}
                     fileName={selectedFile.name}
+                    fileType={selectedFile.type}
                     lang={lang}
                     onClose={() => setSelectedFile(null)}
                 />

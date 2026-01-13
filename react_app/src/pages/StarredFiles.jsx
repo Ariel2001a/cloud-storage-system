@@ -110,6 +110,7 @@ export default function StarredFiles({ searchTerm, user }) {
                 <FileView
                     fileId={selectedFile.id}
                     fileName={selectedFile.name}
+                    fileType={selectedFile.type}
                     lang={lang}
                     onClose={() => setSelectedFile(null)}
                 />
