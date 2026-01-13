@@ -70,7 +70,7 @@ Dependencies
 
 ##                                           first user in light mode + hebrew 
 
-![first user in light mode + hebrew ](images/task4_readme/first_light_he_homepage.png) 
+![first user in light mode + hebrew ](images/task4_readme/first_light_he_home.png) 
 
 ##                                           second user homepage dark mode + english
 
