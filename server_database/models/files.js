@@ -11,6 +11,11 @@ const File = new Schema({
         default : () => idCounter++
     },
 
+    ownerId: {
+        type : Number,
+        required : true
+    },
+
     name : {
         type : String,
         required : true
@@ -46,6 +51,11 @@ const File = new Schema({
         default : false
     },
 
+    bin : {
+        type : Boolean,
+        default : false
+    },
+    
     path : {
         type : String,
         default : null
