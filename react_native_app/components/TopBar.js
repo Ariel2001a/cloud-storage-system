@@ -3,8 +3,9 @@ import { useState } from 'react';
 import { styles } from '../styles/TopBar.styles.js';
 import SearchBar from './SearchBar';
 import ThemeToggle from './ThemeToggle';
+import { TouchableOpacity } from 'react-native';
 
-export default function TopBar() {
+export default function TopBar({ onMenuPress }) {
     const [isDark, setIsDark] = useState(false);
 
     return (
@@ -15,6 +16,9 @@ export default function TopBar() {
             </View>
             <SearchBar isDark={isDark} />
             <ThemeToggle isDark={isDark} onToggle={() => setIsDark(!isDark)} />
+            <TouchableOpacity onPress={onMenuPress} style={styles.menuButton}>
+                <Text style={{ fontSize: 24 }}>☰</Text>
+            </TouchableOpacity>
         </View>
     );
 }

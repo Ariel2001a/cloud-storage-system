@@ -1,4 +1,6 @@
 import { StyleSheet } from 'react-native';
+import { Dimensions } from 'react-native';
+const { width, height } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
     // ===== Sidebar =====
@@ -32,5 +34,36 @@ export const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
 
+    // Sidebar container for overlay
+    sidebarContainer: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        width: 250,
+        backgroundColor: '#fff',
+        zIndex: 1000,
+        elevation: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 2, height: 0 },
+        shadowOpacity: 0.2,
+        shadowRadius: 10,
+    },
 
+    fullScreenOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: width,
+        height: height,
+        zIndex: 1000,
+    },
+    backdrop: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0,0,0,0.3)',
+    },
 });

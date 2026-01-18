@@ -4,14 +4,20 @@ import TopBar from '../../components/TopBar.js';
 import Sidebar from '../../components/Sidebar.js';
 import MainContent from '../../components/MainContent.js';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useState } from 'react';
+
+
 
 export default function TabsLayout() {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     return (
         <SafeAreaView style={styles.homeWrapper}>
-            <TopBar />
+            <TopBar onMenuPress={() => setIsMenuOpen(!isMenuOpen)} />
             <View style={styles.mainLayout}>
-                <Sidebar />
                 <MainContent />
+                <Sidebar
+                    isOpen={isMenuOpen}
+                    onClose={() => setIsMenuOpen(false)} />
             </View>
         </SafeAreaView>
     );
