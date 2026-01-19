@@ -1,15 +1,12 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from './Theme.js';
 
 export const styles = StyleSheet.create({
-    // ===== Main content =====
     mainContent: {
         flex: 1,
-        backgroundColor: '#fff',
-        margin: 8,
-        borderRadius: 16,
-        padding: 20,
+        backgroundColor: 'transparent',
+        margin: 0,
+        padding: 0,
+        alignItems: 'stretch',
     },
-
-
-
 });

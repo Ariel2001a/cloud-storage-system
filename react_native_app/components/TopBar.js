@@ -1,23 +1,47 @@
-import { View, Text, Image } from 'react-native';
-import { useState } from 'react';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { styles } from '../styles/TopBar.styles.js';
 import SearchBar from './SearchBar';
-import ThemeToggle from './ThemeToggle';
-import { TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function TopBar({ onMenuPress }) {
-    const [isDark, setIsDark] = useState(false);
+    const { theme } = useTheme();
+    const { locale } = useLanguage();
 
     return (
-        <View style={[styles.topBar, isDark && styles.dark_topBar]}>
-            <View style={styles.logoContainer}>
-                <Image source={require('../assets/logo.png')} style={styles.logoImg} />
-                <Text style={{ color: isDark ? '#e8eaed' : '#202124', fontSize: 20 }}></Text>
+        <View style={[
+            styles.topBar,
+            {
+                backgroundColor: theme.colors.background,
+                flexDirection: locale === 'he' ? 'row-reverse' : 'row'
+            }
+        ]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Image
+                    source={require('../assets/logo.png')}
+                    style={styles.logoImg}
+                />
+                <Text style={{
+                    color: theme.colors.textMain,
+                    fontSize: 18,
+                    fontWeight: '600',
+                    marginLeft: 8
+                }}>
+                    Drive
+                </Text>
             </View>
-            <SearchBar isDark={isDark} />
-            <ThemeToggle isDark={isDark} onToggle={() => setIsDark(!isDark)} />
+
+            <View style={styles.searchContainer}>
+                <SearchBar />
+            </View>
+
             <TouchableOpacity onPress={onMenuPress} style={styles.menuButton}>
-                <Text style={{ fontSize: 24 }}>☰</Text>
+                <Ionicons
+                    name="grid-outline"
+                    size={24}
+                    color={theme.colors.primary}
+                />
             </TouchableOpacity>
         </View>
     );

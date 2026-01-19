@@ -1,53 +1,46 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from './Theme.js';
 
 export const styles = StyleSheet.create({
-    // ===== Top Bar =====
     topBar: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 16,
-        height: 64,
-        backgroundColor: '#f8f9fa',
-    },
-    dark_topBar: {
-        backgroundColor: '#1e1e1e',
-    },
+        height: 70,
+        backgroundColor: COLORS.glass || 'rgba(15, 23, 42, 0.8)',
+        borderBottomWidth: 1,
+        borderBottomColor: COLORS.border || 'rgba(56, 189, 248, 0.2)',
 
+        shadowColor: COLORS.primary || "#38bdf8",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 10,
+        elevation: 5,
+    },
     logoContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 8,
     },
-
     logoImg: {
-        height: 40,
-        width: 40,
+        height: 35,
+        width: 35,
         resizeMode: 'contain',
     },
-    // ===== Search =====
-    searchInput: {
+    searchContainer: {
         flex: 1,
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        borderRadius: 24,
-        backgroundColor: '#eaf1fb',
-        fontSize: 16,
-        color: '#202124',
-        marginHorizontal: 16,
-    },
-    dark_searchInput: {
-        backgroundColor: '#2c2c2c',
-        color: '#e8eaed',
-    },
-
-
-    themeToggleBtn: {
-        width: 40,
-        height: 40,
+        marginHorizontal: 12,
+        backgroundColor: COLORS.glassLight || 'rgba(255, 255, 255, 0.05)',
         borderRadius: 20,
-        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: COLORS.border || 'rgba(56, 189, 248, 0.3)',
+        height: 40,
         justifyContent: 'center',
+        paddingHorizontal: 15,
     },
-
+    menuButton: {
+        padding: 8,
+        borderRadius: 12,
+        backgroundColor: COLORS.primary ? `${COLORS.primary}20` : 'rgba(56, 189, 248, 0.1)',
+    }
 });

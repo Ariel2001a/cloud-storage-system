@@ -4,26 +4,23 @@ import { COLORS } from './Theme.js';
 export const styles = StyleSheet.create({
     homeWrapper: {
         flex: 1,
-        backgroundColor: '#f8f9fa',
+        backgroundColor: COLORS.background || '#020617',
     },
-
-    // ===== Layout =====
     mainLayout: {
         flex: 1,
         flexDirection: 'row',
+        backgroundColor: 'transparent',
     },
-
     headerContainer: {
-        backgroundColor: COLORS.accent,
+        backgroundColor: COLORS.glass || 'rgba(15, 23, 42, 0.8)',
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.border,
+        borderBottomColor: COLORS.border || 'rgba(255, 255, 255, 0.1)',
     },
-    // ===== Avatar / Profile =====
     profileBtn: {
         width: 32,
         height: 32,
         borderRadius: 16,
-        backgroundColor: '#1a73e8',
+        backgroundColor: COLORS.primary || '#38bdf8',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -31,7 +28,7 @@ export const styles = StyleSheet.create({
         width: 80,
         height: 80,
         borderRadius: 40,
-        backgroundColor: '#1a73e8',
+        backgroundColor: COLORS.primary || '#38bdf8',
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 12,
@@ -39,17 +36,15 @@ export const styles = StyleSheet.create({
     userName: {
         fontSize: 18,
         fontWeight: '500',
-        color: '#202124',
+        color: COLORS.textMain || '#f1f5f9',
         textAlign: 'center',
     },
     userEmail: {
         fontSize: 14,
-        color: '#5f6368',
+        color: COLORS.textSub || '#94a3b8',
         textAlign: 'center',
         marginBottom: 20,
     },
-
-    // ===== Profile dropdown =====
     profileDropdown: {
         position: 'absolute',
         top: 52,
@@ -57,11 +52,9 @@ export const styles = StyleSheet.create({
         width: 280,
         padding: 20,
         borderRadius: 20,
-        backgroundColor: '#fff',
+        backgroundColor: COLORS.glass || 'rgba(15, 23, 42, 0.95)',
+        borderWidth: 1,
+        borderColor: COLORS.border || 'rgba(255, 255, 255, 0.1)',
         zIndex: 1000,
-    },
-    dark_profileDropdown: {
-        backgroundColor: '#1e1e1e',
-        color: '#e8eaed',
-    },
+    }
 });
