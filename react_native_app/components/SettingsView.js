@@ -1,12 +1,25 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 import { styles } from '../styles/Siebar.styles.js';
 
 export default function SettingsView({ onBack }) {
     const { theme, toggleTheme } = useTheme();
     const { t, locale, switchLanguage } = useLanguage();
+    const router = useRouter();
+
+    const handleSignOut = async () => {
+        try {
+            await AsyncStorage.removeItem('token'); // remove JWT
+            router.replace('login'); // navigate to login
+        } catch (err) {
+            console.log(err);
+            Alert.alert('Error', 'Could not sign out. Please try again.');
+        }
+    };
 
     return (
         <View>
@@ -39,6 +52,18 @@ export default function SettingsView({ onBack }) {
                 />
                 <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>
                     {theme.isDark ? t('lightMode') : t('darkMode')}
+                </Text>
+            </TouchableOpacity>
+
+            {/* ===== SIGN OUT BUTTON ===== */}
+            <TouchableOpacity
+                style={styles.sidebarButton}
+                onPress={handleSignOut}
+            >
+                <Ionicons name="log-out-outline" size={20} color={theme.colors.primary} />
+                <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>
+                    {t('signOut')}
+                   
                 </Text>
             </TouchableOpacity>
         </View>

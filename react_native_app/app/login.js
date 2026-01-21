@@ -1,22 +1,34 @@
-// app/login.js
 import React, { useState } from 'react';
 import { 
   View, Text, TextInput, TouchableOpacity, Image, 
-  StyleSheet, Alert, ScrollView, KeyboardAvoidingView, Platform 
+  Alert, ScrollView, KeyboardAvoidingView, Platform 
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import CardLogo from '../assets/logo.png'; // Use same logo as RegisterScreen
+import CardLogo from '../assets/logo.png'; // Your logo
 import styles from '../styles/Login.styles';
+import { useLanguage } from '../context/LanguageContext';
+
+
+// ===== SERVER URL CONFIG =====
+// Change this to switch between LAN, ngrok, or production
+// Current placeholder: localhost
+// Your PC LAN IP: 192.168.1.225
+
+//const SERVER_URL = 'http://10.0.2.2:8080';  // Android emulator localhost
+const SERVER_URL = 'http://192.168.1.225:8080';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { t, locale, switchLanguage } = useLanguage();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   // ===== Sign-in Handler =====
   const handleSignIn = async () => {
     if (!username || !password) {
-      Alert.alert('Missing Fields', 'Please fill all fields');
+      Alert.alert(t('missingInfo'), t('fillAllFields'));
       return;
     }
 
@@ -28,7 +40,7 @@ export default function LoginScreen() {
     const data = { email, password };
 
     try {
-      const res = await fetch('http://YOUR_SERVER_IP:8080/api/users/tokens', {
+      const res = await fetch(`${SERVER_URL}/api/users/tokens`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -36,28 +48,25 @@ export default function LoginScreen() {
 
       if (!res.ok) {
         const errText = await res.text();
-        Alert.alert('Sign In Failed', errText);
+        Alert.alert(t('signInFailed'), errText);
         return;
       }
 
       const { token } = await res.json();
-      // Store token using AsyncStorage or your state management
-      // Example:
-      // import AsyncStorage from '@react-native-async-storage/async-storage';
-      // await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('token', token);
 
-      Alert.alert('Success', 'Signed in successfully!', [
-        { text: 'OK', onPress: () => router.replace('home') } // Replace with main app screen
+      Alert.alert(t('success'), t('signedInSuccessfully'), [
+        { text: 'OK', onPress: () => router.replace('(tabs)') }
       ]);
+
     } catch (err) {
-      Alert.alert('Error', 'Could not connect to the server.');
+      Alert.alert(t('error'), t('couldNotConnect'));
       console.log(err);
     }
   };
 
-  // ===== Navigate to Register =====
   const handleSignUp = () => {
-    router.push('register'); // Using expo-router
+    router.push('register'); 
   };
 
   return (
@@ -66,14 +75,22 @@ export default function LoginScreen() {
       style={{ flex: 1 }}
     >
       <ScrollView contentContainerStyle={styles.container}>
+
+        {/* ===== Language Toggle ===== */}
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 10 }}>
+          <TouchableOpacity onPress={() => switchLanguage(locale === 'en' ? 'he' : 'en')} style={{ padding: 5 }}>
+            <Text>{locale === 'en' ? 'עברית' : 'English'}</Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.header}>
           <Image source={CardLogo} style={styles.logo} />
-          <Text style={styles.mainHeadline}>Sign in to your account</Text>
+          <Text style={styles.mainHeadline}>{t('signInToAccount')}</Text>
 
           <View style={styles.signUpRow}>
-            <Text style={styles.secondaryHeadline}>Don’t have an account?</Text>
+            <Text style={styles.secondaryHeadline}>{t('dontHaveAccount')}</Text>
             <TouchableOpacity onPress={handleSignUp}>
-              <Text style={[styles.secondaryHeadline, { color: '#1a73e8', marginLeft: 5 }]}>Sign up</Text>
+              <Text style={[styles.secondaryHeadline, { color: '#1a73e8', marginLeft: 5 }]}>{t('signUp')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -81,25 +98,24 @@ export default function LoginScreen() {
         <View style={styles.form}>
           <TextInput
             style={styles.input}
-            placeholder="Username or Email"
+            placeholder={t('usernameOrEmail')}
             value={username}
             autoCapitalize="none"
             onChangeText={setUsername}
           />
           <TextInput
             style={styles.input}
-            placeholder="Password"
+            placeholder={t('password')}
             value={password}
             secureTextEntry
             onChangeText={setPassword}
           />
 
           <TouchableOpacity style={styles.signInBtn} onPress={handleSignIn}>
-            <Text style={styles.signInBtnText}>Sign in</Text>
+            <Text style={styles.signInBtnText}>{t('signIn')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
-
