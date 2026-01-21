@@ -6,6 +6,7 @@ import MainContent from '../../components/MainContent.js';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { ThemeProvider, useTheme } from '../../context/ThemeContext';
+import RequireAuth from '../../components/RequireAuth'; // ✅ import auth wrapper
 
 function TabsContent({ isMenuOpen, setIsMenuOpen }) {
     const { theme } = useTheme();
@@ -29,7 +30,10 @@ export default function TabsLayout() {
 
     return (
         <ThemeProvider>
-            <TabsContent isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+            <RequireAuth>
+                <TabsContent isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+            </RequireAuth>
         </ThemeProvider>
     );
 }
+
