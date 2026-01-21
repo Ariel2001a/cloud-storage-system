@@ -12,8 +12,43 @@ export const translations = {
         language: "Language",
         lightMode: "Light Mode",
         darkMode: "Dark Mode",
-        back: "Back"
-    },
+        back: "Back",
+        signOut: "Sign Out",
+
+        //register page
+    createAccount: "Create a new account",
+    alreadyHaveAccount: "Already have an account? Sign in",
+    firstName: "First name",
+    lastName: "Last name",
+    username: "Username",
+    password: "Password",
+    confirmPassword: "Confirm password",
+    uploadPicture: "Upload Picture",
+    register: "Register",
+    missingInfo: "Missing Info",
+    fillAllFields: "Please fill all fields",
+    error: "Error",
+    permissionDenied: "We need camera roll permissions to make this work!",
+    usernameAlphanumeric: "Username must contain only English letters and numbers!",
+    invalidPassword: "Invalid Password",
+    passwordRules: "Password must be at least 8 characters and include at least 1 letter and 1 number",
+    passwordsDoNotMatch: "Passwords do not match",
+    success: "Success",
+    registeredSuccessfully: "Registered successfully!",
+    registrationFailed: "Registration Failed",
+    couldNotConnect: "Could not connect to the server",
+
+
+ //login page
+
+   signInToAccount: "Sign in to your account",
+  dontHaveAccount: "Don't have an account?",
+  signUp: "Sign up",
+  usernameOrEmail: "Username or Email",
+  signIn: "Sign in",
+  signInFailed: "Sign In Failed",
+  signedInSuccessfully: "Signed in successfully!"
+  },
     he: {
         home: "בית",
         recent: "אחרונים",
@@ -27,6 +62,41 @@ export const translations = {
         language: "שפה",
         lightMode: "מצב בהיר",
         darkMode: "מצב כהה",
-        back: "חזור"
+        back: "חזור",
+        signOut: "התנתק",
+
+          // Register page
+    createAccount: "צור חשבון חדש",
+    alreadyHaveAccount: "כבר יש לך חשבון? היכנס",
+    firstName: "שם פרטי",
+    lastName: "שם משפחה",
+    username: "שם משתמש",
+    password: "סיסמה",
+    confirmPassword: "אשר סיסמה",
+    uploadPicture: "העלה תמונה ",
+    register: "הרשם",
+    missingInfo: "חסר מידע",
+    fillAllFields: "אנא מלא את כל השדות",
+    error: "שגיאה",
+    permissionDenied: "אנחנו צריכים הרשאות למצלמה/גלריה כדי שזה יעבוד!",
+    usernameAlphanumeric: "שם המשתמש חייב להכיל אותיות ומספרים בלבד!",
+    invalidPassword: "סיסמה לא חוקית",
+    passwordRules: "הסיסמה חייבת להיות לפחות 8 תווים ולכלול לפחות אות אחת ומספר אחד",
+    passwordsDoNotMatch: "הסיסמאות לא תואמות",
+    success: "הצלחה",
+    registeredSuccessfully: "נרשמת בהצלחה!",
+    registrationFailed: "הרשמה נכשלה",
+    couldNotConnect: "לא ניתן להתחבר לשרת",
+
+    // Login page
+      signInToAccount: "התחבר לחשבונך",
+  dontHaveAccount: "אין לך חשבון?",
+  signUp: "הרשם",
+  usernameOrEmail: "שם משתמש או אימייל",
+  signIn: "התחבר",
+  signInFailed: "התחברות נכשלה",
+  signedInSuccessfully: "התחברת בהצלחה!"
     }
+
+    
 };

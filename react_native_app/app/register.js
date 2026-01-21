@@ -2,19 +2,27 @@
 import React, { useState } from 'react';
 import { 
   View, Text, TextInput, TouchableOpacity, Image, 
-  StyleSheet, Alert, ScrollView, KeyboardAvoidingView, Platform 
+  Alert, ScrollView, KeyboardAvoidingView, Platform 
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import styles from '../styles/Register.styles';
+import { useLanguage } from '../context/LanguageContext'; // <-- import hook
 
 
 
+// ===== SERVER URL CONFIG =====
+// Change this to switch between LAN, ngrok, or production
+// Current placeholder: localhost
+// Your PC LAN IP: 192.168.1.225
+
+//const SERVER_URL = 'http://10.0.2.2:8080';  // Android emulator localhost
+const SERVER_URL = 'http://192.168.1.225:8080';
 
 const RegisterScreen = () => {
-  const router = useRouter(); // Expo Router navigation
+  const router = useRouter();
+  const { t, locale, switchLanguage } = useLanguage(); // ✅ hook
 
-  // ===== Form state =====
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [username, setUsername] = useState('');
@@ -22,11 +30,10 @@ const RegisterScreen = () => {
   const [confirm, setConfirm] = useState('');
   const [profileImage, setProfileImage] = useState(null);
 
-  // ===== Handlers =====
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permission Denied', 'We need camera roll permissions to make this work!');
+      Alert.alert(t('error'), t('permissionDenied'));
       return;
     }
 
@@ -43,56 +50,51 @@ const RegisterScreen = () => {
   };
 
   const handleRegister = async () => {
-    // 1. Mandatory Field Check
     if (!firstname || !lastname || !username || !password || !confirm) {
-      Alert.alert('Missing Info', 'Please fill all fields');
+      Alert.alert(t('missingInfo'), t('fillAllFields'));
       return;
     }
 
-    // 2. Username Regex
     if (!/^[a-zA-Z0-9]+$/.test(username)) {
-      Alert.alert('Error', 'Username must contain only English letters and numbers!');
+      Alert.alert(t('error'), t('usernameAlphanumeric'));
       return;
     }
 
-    // 3. Strict Password Validation
     if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
-      Alert.alert('Invalid Password', 'Password must be at least 8 characters and include at least 1 letter and 1 number');
+      Alert.alert(t('invalidPassword'), t('passwordRules'));
       return;
     }
 
-    // 4. Password Match Check
     if (password !== confirm) {
-      Alert.alert('Error', 'Passwords do not match');
+      Alert.alert(t('error'), t('passwordsDoNotMatch'));
       return;
     }
 
-    // 5. Prepare Data for backend
     const data = {
       first_name: firstname,
       last_name: lastname,
       email: `${username}@ead.com`,
       password,
-      image: profileImage || null, // optional
+      image: profileImage || null,
     };
 
     try {
-      const res = await fetch('http://YOUR_SERVER_IP:8080/api/users', {
+      const res = await fetch(`${SERVER_URL}/api/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
 
       if (res.ok) {
-        Alert.alert('Success', 'Registered successfully!', [
+        Alert.alert(t('success'), t('registeredSuccessfully'), [
           { text: 'OK', onPress: () => router.push('login') }
         ]);
       } else {
         const errText = await res.text();
-        Alert.alert('Registration Failed', errText);
+        Alert.alert(t('registrationFailed'), errText);
       }
     } catch (err) {
-      Alert.alert('Error', 'Could not connect to the server.');
+      Alert.alert(t('error'), t('couldNotConnect'));
       console.log(err);
     }
   };
@@ -103,35 +105,42 @@ const RegisterScreen = () => {
       style={{ flex: 1 }}
     >
       <ScrollView contentContainerStyle={styles.container}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Image source={require('../assets/logo.png')} style={styles.logo} />
-          <Text style={styles.mainHeadline}>Create a new account</Text>
-          <TouchableOpacity onPress={() => router.push('login')}>
-            <Text style={styles.secondaryHeadline}>Already have an account? Sign in</Text>
+        {/* ===== Language Button ===== */}
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 10 }}>
+          <TouchableOpacity
+            onPress={() => switchLanguage(locale === 'en' ? 'he' : 'en')}
+            style={{ padding: 5 }}
+          >
+            <Text>{locale === 'en' ? 'English' : 'עברית'}</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Form */}
+        <View style={styles.header}>
+          <Image source={require('../assets/logo.png')} style={styles.logo} />
+          <Text style={styles.mainHeadline}>{t('createAccount')}</Text>
+          <TouchableOpacity onPress={() => router.push('login')}>
+            <Text style={styles.secondaryHeadline}>{t('alreadyHaveAccount')}</Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.form}>
-          <TextInput style={styles.input} placeholder="First name" value={firstname} onChangeText={setFirstname} />
-          <TextInput style={styles.input} placeholder="Last name" value={lastname} onChangeText={setLastname} />
-          <TextInput style={styles.input} placeholder="Username" value={username} onChangeText={setUsername} autoCapitalize="none" />
-          <TextInput style={styles.input} placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry />
-          <TextInput style={styles.input} placeholder="Confirm password" value={confirm} onChangeText={setConfirm} secureTextEntry />
+          <TextInput style={styles.input} placeholder={t('firstName')} value={firstname} onChangeText={setFirstname} />
+          <TextInput style={styles.input} placeholder={t('lastName')} value={lastname} onChangeText={setLastname} />
+          <TextInput style={styles.input} placeholder={t('username')} value={username} onChangeText={setUsername} autoCapitalize="none" />
+          <TextInput style={styles.input} placeholder={t('password')} value={password} onChangeText={setPassword} secureTextEntry />
+          <TextInput style={styles.input} placeholder={t('confirmPassword')} value={confirm} onChangeText={setConfirm} secureTextEntry />
 
           <View style={styles.buttonRow}>
             <TouchableOpacity style={[styles.btn, styles.uploadBtn]} onPress={pickImage}>
-              <Text style={styles.btnText}>Upload Picture (Optional)</Text>
+              <Text style={styles.btnText}>{t('uploadPicture')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={[styles.btn, styles.registerBtn]} onPress={handleRegister}>
-              <Text style={[styles.btnText, { color: '#fff' }]}>Register</Text>
+              <Text style={[styles.btnText, { color: '#fff' }]}>{t('register')}</Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Image Preview */}
         {profileImage && (
           <View style={styles.imagePreviewContainer}>
             <Image source={{ uri: profileImage }} style={styles.previewImage} />
@@ -142,9 +151,4 @@ const RegisterScreen = () => {
   );
 };
 
-
-
 export default RegisterScreen;
-
-
-
