@@ -17,7 +17,10 @@ exports.createUser = (req, res) => {
 
     let profileImage = "default.png"; // default image
 
-    if (image && image.trim() !== "") {
+
+
+    //update for ariel
+    if (image && typeof image === "string" && image.startsWith("data:")) {
         try {
             const matches = image.match(/^data:(.+);base64,(.+)$/);
             if (!matches) throw new Error("Invalid image format");
@@ -89,5 +92,5 @@ exports.checkUser = (req, res) => {
         { expiresIn: '1h' }
     );
 
-  res.json({ token, username });
+    res.json({ token, username });
 };
