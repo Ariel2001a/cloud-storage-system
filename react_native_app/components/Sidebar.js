@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import SettingsView from './SettingsView';
+import NewStorageButton from './SideBar/NewStorageButton';
 
 export default function Sidebar({ isOpen, onClose }) {
     const { theme } = useTheme();
@@ -13,20 +14,11 @@ export default function Sidebar({ isOpen, onClose }) {
 
     if (!isOpen) return null;
 
-    const menuItems = [
-        { label: t('recent'), icon: 'time-outline' },
-        { label: t('trash'), icon: 'trash-outline' },
-    ];
-
     return (
         <View style={styles.fullScreenOverlay}>
             <TouchableOpacity
                 style={styles.backdrop}
-                activeOpacity={1}
-                onPress={() => {
-                    setIsSettingsMode(false);
-                    onClose();
-                }}
+                onPress={() => { setIsSettingsMode(false); onClose(); }}
             />
 
             <View style={[styles.sidebarContainer, { backgroundColor: theme.colors.surface }]}>
@@ -35,28 +27,21 @@ export default function Sidebar({ isOpen, onClose }) {
                         <SettingsView onBack={() => setIsSettingsMode(false)} />
                     ) : (
                         <>
-                            <TouchableOpacity style={[styles.newButton, { backgroundColor: theme.colors.primary }]}>
-                                <Ionicons name="add" size={24} color="#fff" />
-                                <Text style={styles.newButtonText}>{t('newStorage')}</Text>
+                            <NewStorageButton onCreated={onClose} />
+
+                            <TouchableOpacity style={styles.sidebarButton}>
+                                <Ionicons name="time-outline" size={20} color={theme.colors.primary} />
+                                <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>{t('recent')}</Text>
                             </TouchableOpacity>
 
-                            {menuItems.map((item, index) => (
-                                <TouchableOpacity key={index} style={styles.sidebarButton}>
-                                    <Ionicons name={item.icon} size={20} color={theme.colors.primary} />
-                                    <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>
-                                        {item.label}
-                                    </Text>
-                                </TouchableOpacity>
-                            ))}
+                            <TouchableOpacity style={styles.sidebarButton}>
+                                <Ionicons name="trash-outline" size={20} color={theme.colors.primary} />
+                                <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>{t('trash')}</Text>
+                            </TouchableOpacity>
 
-                            <TouchableOpacity
-                                style={styles.sidebarButton}
-                                onPress={() => setIsSettingsMode(true)}
-                            >
+                            <TouchableOpacity style={styles.sidebarButton} onPress={() => setIsSettingsMode(true)}>
                                 <Ionicons name="settings-outline" size={20} color={theme.colors.primary} />
-                                <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>
-                                    {t('settings')}
-                                </Text>
+                                <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>{t('settings')}</Text>
                             </TouchableOpacity>
                         </>
                     )}
