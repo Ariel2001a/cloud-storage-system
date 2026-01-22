@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const cors = require('cors');
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 // Import the TCP file socket client
 const { fileSocket } = require('./FileSocketClient.js');
@@ -14,9 +15,9 @@ const searchRouter = require('./routes/search.js');
 const permissionRoutes = require('./routes/permissions.js');
 
 // ====== Connect to MongoDB ======
-const mongoHost = process.env.MONGO_HOST || 'localhost'; // אם אתה בתוך Docker תשתמש בשם ה-service
-const mongoPort = process.env.MONGO_PORT || 27017;
-const mongoDB = process.env.MONGO_DB || 'project-exercise1';
+const mongoHost = process.env.MONGO_HOST;
+const mongoPort = process.env.MONGO_PORT;
+const mongoDB = process.env.MONGO_DB;
 
 async function connectWithRetry() {
   try {
