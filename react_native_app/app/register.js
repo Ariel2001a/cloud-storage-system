@@ -1,8 +1,8 @@
 // app/register.js
 import React, { useState } from 'react';
-import { 
-  View, Text, TextInput, TouchableOpacity, Image, 
-  Alert, ScrollView, KeyboardAvoidingView, Platform 
+import {
+  View, Text, TextInput, TouchableOpacity, Image,
+  Alert, ScrollView, KeyboardAvoidingView, Platform
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
@@ -17,7 +17,7 @@ import { useLanguage } from '../context/LanguageContext'; // <-- import hook
 // Your PC LAN IP: 192.168.1.225
 
 //const SERVER_URL = 'http://10.0.2.2:8080';  // Android emulator localhost
-const SERVER_URL = 'http://192.168.1.225:8080';
+const SERVER_URL = 'http://10.0.2.2:8080';
 
 const RegisterScreen = () => {
   const router = useRouter();
@@ -100,8 +100,8 @@ const RegisterScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
     >
       <ScrollView contentContainerStyle={styles.container}>
