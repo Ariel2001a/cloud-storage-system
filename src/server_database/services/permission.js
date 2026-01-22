@@ -12,17 +12,20 @@ const getUserPermissionsByFilterPermission = async (userId, fileId, permission) 
 };
 
 
-const addPermission = async ( userId, fileId, permission, type ) => {
+const addPermission = async ( {userId, fileId, permission, type} ) => {
 
     // Validate permission type
     if (!PERMISSION_TYPES.includes(permission)) {
         return null;
     }
 
-    let permissions = getUserPermissionsByFilterPermission(userId, fileId, permission);
+    let permissions = await getUserPermissionsByFilterPermission(userId, fileId, permission);
+
+    console.log ("per:" ,permissions);
 
     // Initialize array for file if not exists
-    if (!permissions || permissions.length === 0) {
+    if (permissions.length > 0) {
+        console.log("2");
         return null;
     }
 
@@ -73,7 +76,7 @@ const deletePermissionById = async(pId) => {
         return false;
     }
 
-    await permission.remove();
+    await Permission.deleteOne({ id : pId });
     return true;
 };
 
@@ -83,6 +86,7 @@ module.exports = {
     getPermissionsByFileId,
     updatePermissionById,
     deletePermissionById,
+    getUserPermissionsByFilterPermission,
     PERMISSION_TYPES
 };
 

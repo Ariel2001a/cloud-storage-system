@@ -19,8 +19,8 @@ const isValidName = (name) => {
     return true;
 };
 
-const getUserById = async (id) =>{ return await User.findById(id)};
+const getUserById = async (id) =>{ return await User.findOne({id : id})};
 
-const getUserByUsername = async(email) => { return await User.find({email : email})};
+const getUserByUsername = async(email) => { return await User.findOne({email : email})};
 
 module.exports = {createUser,isValidName,getUserById,getUserByUsername}

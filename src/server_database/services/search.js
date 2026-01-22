@@ -1,6 +1,5 @@
-    const File = require ('../services/files');
-    const User = require('../services/users');
-    const { fileSocket } = require('../../src/FileSocketClient');
+    const File = require ('../models/files');
+    const { fileSocket } = require('../FileSocketClient');
 
 
 const getFilesByQuery = async (userId, query) => { 
@@ -29,3 +28,5 @@ const getFilesByQuery = async (userId, query) => {
 
     return combinedFiles;
 };
+
+module.exports = {getFilesByQuery};

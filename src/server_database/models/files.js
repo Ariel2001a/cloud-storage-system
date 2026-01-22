@@ -1,5 +1,3 @@
-let idCounter = 1;
-
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
@@ -8,7 +6,8 @@ const File = new Schema({
     
     id : {
         type : Number,
-        default : () => idCounter++
+        required : true,
+        unique : true,
     },
 
     ownerId: {

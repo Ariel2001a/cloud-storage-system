@@ -19,16 +19,23 @@ services:
   # Node.js server
   server_node:
     build:
-      context: ./src
+      context: ./src/server_database
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
     volumes:
-      - ./src:/usr/src/app         
+      - ./src/server_database:/usr/src/app
       - ./uploads:/usr/src/app/uploads
-      - /usr/src/app/node_modules
+    environment:
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+      - MONGO_DB=project-exercise1
     networks:
       - local
+    depends_on:
+      - server
+      - mongo
+
 
   # Python client connecting to C++ server
   client_python:
@@ -76,6 +83,24 @@ services:
       - local
     depends_on:
       - server_node
+
+  mongo:
+    image: mongo:latest
+    command:
+      - mongod
+      - --quiet
+      - --logpath
+      - /dev/null
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - local
+
+volumes:
+  mongo_data:
 
 # Custom network for all services
 networks:

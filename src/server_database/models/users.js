@@ -1,4 +1,4 @@
-let idCounter = 1;
+const Counter = require('./counterUsers');
 
 const mongoose = require('mongoose');
 
@@ -8,7 +8,7 @@ const User = new Schema({
     
     id : {
         type : Number,
-        default : () => idCounter++
+        unique : true
     },
 
     first_name : {
@@ -23,7 +23,8 @@ const User = new Schema({
 
     email : {
         type : String,
-        required : true
+        required : true,
+        unique : true
     },
     
     password : {
@@ -37,6 +38,17 @@ const User = new Schema({
         default : "default"
     } 
 
+});
+
+User.pre('save', async function(next) {
+  if (this.isNew) {
+    const counter = await Counter.findByIdAndUpdate(
+      { _id: 'userId' },
+      { $inc: { seq: 1 } },
+      { new: true, upsert: true }
+    );
+    this.id = counter.seq;
+  }
 });
 
 module.exports = mongoose.model ('User', User);

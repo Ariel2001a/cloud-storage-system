@@ -1,9 +1,9 @@
 const File = require ('../models/files');
-const Permissions = require ('../models/permission')
+const Permission = require ('../models/permission')
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 const getUserFilesByFilter = async (userId, filter = {}) => {
-  return await File.find({ ownerId: userId, ...filter }) || [];
+    return await File.findOne({ ownerId: userId, ...filter });
 };
 
 // Get all files/folders for a user
@@ -21,13 +21,26 @@ const getUserRecentFiles = async (userId) => {
     return await getUserFilesByFilter( userId , { date: { $gte: oneWeekAgo } });
 };
 
+const getUserSharedFiles = async (userId) => {
+    const permissions = await Permission.find({ userId : userId });
+
+    const fileIds = permissions.map(p => p.fileId);
+
+    const files = await File.find({
+        id: { $in: fileIds },
+        ownerId: { $ne: userId }
+    });
+
+    return files;
+};
+
 // Get all files/folders for a user
 const getTopLevelFiles = async(userId) => {
     return await getUserFilesByFilter(userId, {folderParent : null});
 };
 
 const getFolderFiles = async (userId, folderParent) => {
-    return await getUserFilesByFilter(userId, {folderParent : folderParent});
+    return await File.find({ownerId : userId , folderParent : folderParent});
 };
 
 // Get all files/folders for a user
@@ -36,7 +49,7 @@ const getStarredFiles = async(userId) => {
 };
 
 const getFilesSharedWithUser = async (userId) => {
-  const userPermissions = await Permissions.find({
+  const userPermissions = await Permission.find({
     userId,
     permission: { $ne: 'owner' }
   });
@@ -49,8 +62,11 @@ const getFilesSharedWithUser = async (userId) => {
   });
 };
 
+
+
 const addFileOrFolder = async (userId, fileData) => {
   const newFile = new File({
+    id: fileData.id,
     ownerId: userId,
     name: fileData.name,
     type: fileData.type,
@@ -67,19 +83,21 @@ const addFileOrFolder = async (userId, fileData) => {
 
 const getFileById = async (userId, fileId) => {
     const files = await getUserFilesByFilter(userId, { id: fileId});
-    return files[0] || null;
+    return files || null;
 };
 
 
 const getFileByIdFromDeleted = async (userId, fileId) => {
     const files = await getUserFilesByFilter(userId, { id: fileId, bin: true });
-    return files[0] || null;
+    return files || null;
 };
 
 
 const getFileByIdFromShared = async (userId, fileId) => {
     const files = await getFilesSharedWithUser(userId);
+    console.log("services:", files);
     if (!files || files.length === 0 ) {
+        console.log("services: null");
         return null;
     }
     return files.find(f => f.id === fileId) || null;
@@ -109,10 +127,16 @@ const RestoreFileByIdFromBin = async (userId, fileId) => {
 const deleteFileByIdFromBin = async(userId, fileId) => {
     let file = await getFileByIdFromDeleted(userId, fileId);
     if (!file) {
+        console.log("not deleted");
         return false;
     }
+    const result = await File.deleteOne({ 
+        id: fileId,
+        ownerId: userId, 
+        bin: true 
+    });
 
-    await file.remove();
+    console.log("deleted");
     return true;
 };
 
@@ -153,5 +177,6 @@ module.exports = {
     getStarredFiles,
     RestoreFileByIdFromBin,
     getUserRecentFiles,
-    doFilePublic
+    doFilePublic,
+    getUserSharedFiles
 };

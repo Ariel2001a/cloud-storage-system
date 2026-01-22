@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const Permission = new Schema({
     
     id : {
-        type : Date,
+        type : Number,
         default : Date.now
     },
 
@@ -15,7 +15,7 @@ const Permission = new Schema({
     },
 
     fileId : {
-        type : Date,
+        type : Number,
         required : true
     },
 
