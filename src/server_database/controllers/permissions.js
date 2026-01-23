@@ -65,7 +65,8 @@ async function createPermission(req, res) {
 async function createPermissionByUsername(req, res) {
     const fileId = parseInt(req.params.id, 10);
     const { username, permission } = req.body;
-    const ownerId = req.headers['user-id']; 
+    const ownerId = req.userId;
+; 
 
    // Check if the request is from a logged-in user
     if (!ownerId) {
@@ -115,7 +116,8 @@ async function createPermissionByUsername(req, res) {
  * Get all permissions for a file or folder
  */
 const getPermissionsByFile = async (req, res) => {
-    const ownerId = req.headers['user-id']; 
+    const ownerId = req.userId;
+; 
     if (!ownerId) {
         return res.status(401).json({ error: 'User not logged in' });
     }
@@ -133,7 +135,7 @@ const getPermissionsByFile = async (req, res) => {
 };
 
 const getPermissionsBySharedFile = async(req, res) => {
-    const ownerId = req.headers['user-id'];
+    const ownerId = req.userId;
     if (!ownerId) {
         return res.status(401).json({ error: 'User not logged in' });
     }
@@ -157,7 +159,7 @@ const getPermissionsBySharedFile = async(req, res) => {
 };
 
 const getPermissionsByDeletedFile = async (req, res) => {
-    const ownerId = req.headers['user-id']; 
+    const ownerId = req.userId;
     if (!ownerId) {
         return res.status(401).json({ error: 'User not logged in' });
     }
@@ -181,7 +183,7 @@ const getPermissionsByDeletedFile = async (req, res) => {
  * Update an existing permission
  */
 async function updatePermission(req, res) {
-    const ownerId = req.headers['user-id']; 
+    const ownerId = req.userId;
     const fileId = parseInt(req.params.id, 10);
     const pId = parseInt(req.params.pId, 10);
     const { permission } = req.body;
@@ -222,7 +224,7 @@ if (duplicate) {
  * Delete a permission by its ID
  */
 async function deletePermission(req, res) {
-    const ownerId = req.headers['user-id']; 
+    const ownerId = req.userId;
     const fileId = parseInt(req.params.id, 10);
     const pId = parseInt(req.params.pId, 10);
 
@@ -259,7 +261,7 @@ async function deletePermission(req, res) {
 }
 
 const getPermissionsByDetails = async (req, res) => {
-    const ownerId = req.headers['user-id']; 
+    const ownerId = req.userId;
     const {username} = req.query; 
     const fileId = req.params.id;
     const { permission } = req.query;

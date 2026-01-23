@@ -2,7 +2,7 @@ const searchServices = require ('../services/search');
 const User = require ('../services/user');
 
 exports.getFilesByQuery = async (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
 
     if (!userId) return res.status(401).json({ error: 'User not logged in' });
 

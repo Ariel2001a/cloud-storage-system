@@ -3,7 +3,7 @@ const Permission = require ('../models/permission')
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 const getUserFilesByFilter = async (userId, filter = {}) => {
-    return await File.findOne({ ownerId: userId, ...filter });
+    return await File.find({ ownerId: userId, ...filter });
 };
 
 // Get all files/folders for a user

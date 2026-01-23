@@ -36,11 +36,12 @@ async function getAuthHeaders() {
 export async function getFiles() {
     try {
         const res = await fetch(`${API_BASE}/files`, {
-            headers: getAuthHeaders()
+            headers: await getAuthHeaders()
         });
 
         if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();
+        console.log(data);
         return data.files || [];
     } catch (err) {
         console.error(err);

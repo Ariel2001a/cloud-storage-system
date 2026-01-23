@@ -9,7 +9,7 @@ let filesCounter = Date.now();
 
 // ===== CREATE FILE OR FOLDER =====
 exports.createFileOrFolder = async (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
     if (!userId) return res.status(401).json({ error: 'User not logged in' });
 
     const { name, type, content, parentId } = req.body;
@@ -109,7 +109,7 @@ exports.createFileOrFolder = async (req, res) => {
 
 // ===== GET TOP-LEVEL FILES =====
 exports.getFiles = async (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
 
     if (!userId) return res.status(401).json({ error: 'User not logged in' });
 
@@ -121,7 +121,7 @@ exports.getFiles = async (req, res) => {
 };
 
 exports.getDeletedFiles = async (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
     if (!userId) return res.status(401).json({ error: 'User not logged in' });
 
     const user = await User.getUserById(parseInt(userId));
@@ -133,7 +133,7 @@ exports.getDeletedFiles = async (req, res) => {
 
 
 exports.getFolderChildren = async (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
     if (!userId) return res.status(401).json({ error: 'User not logged in' });
 
     const folderId = req.params.id;
@@ -143,7 +143,7 @@ exports.getFolderChildren = async (req, res) => {
 };
 
 exports.getRecentFiles = async(req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
     if (!userId) {
         return res.status(401).json({ error: 'User not logged in' });
     }
@@ -158,7 +158,7 @@ exports.getRecentFiles = async(req, res) => {
 };
 
 exports.getSharedFiles = async(req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
     if (!userId) {
         return res.status(401).json({ error: 'User not logged in' });
     }
@@ -173,7 +173,7 @@ exports.getSharedFiles = async(req, res) => {
 };
 
 exports.getStarredFiles = async (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
     if (!userId) {
         return res.status(401).json({ error: 'User not logged in' });
     }
@@ -188,7 +188,7 @@ exports.getStarredFiles = async (req, res) => {
 };
 
 exports.getFileById = async (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
     if (!userId) return res.status(401).json({ error: 'User not logged in' });
 
     const user = User.getUserById(parseInt(userId));
@@ -232,7 +232,7 @@ exports.getFileById = async (req, res) => {
 
 // Updates file or folder fields
 exports.patchFileById = async (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
     if (!userId) return res.status(401).json({ error: 'User not logged in' });
 
     const user = User.getUserById(userId);
@@ -332,7 +332,7 @@ exports.patchFileById = async (req, res) => {
 
 // ===== DELETE FILE/FOLDER =====
 exports.deleteFileById = async (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
     if (!userId) return res.status(401).json({ error: 'User not logged in' });
 
     const user = await User.getUserById(userId);
@@ -410,7 +410,7 @@ exports.deleteFileById = async (req, res) => {
 
 
 exports.starOrUnstarFile = async (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
     const { request } = req.body;
     let success = false;
 
@@ -438,7 +438,7 @@ exports.starOrUnstarFile = async (req, res) => {
 
 
 exports.restoreFileFromBin = async (req, res) => {
-    const userId = req.headers['user-id'];
+    const userId = req.userId;
     if (!userId) {
         return res.status(401).json({ error: 'User not logged in' });
     }

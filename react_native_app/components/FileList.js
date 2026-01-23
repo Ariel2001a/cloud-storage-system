@@ -80,7 +80,7 @@ export default function FileList() {
         setLoading(true);
         try {
             const data = await getFiles();
-            setFiles(data);
+            setFiles(data || []);
         } catch (error) {
             console.error("Error fetching files:", error);
         } finally {

@@ -54,6 +54,7 @@ export default function LoginScreen() {
 
       const { token } = await res.json();
       await AsyncStorage.setItem('token', token);
+      console.log(token);
 
       Alert.alert(t('success'), t('signedInSuccessfully'), [
         { text: 'OK', onPress: () => router.replace('(tabs)') }
