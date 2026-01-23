@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 const filesController = require('../controllers/files'); // files controller
-const isLoggedIn = require('../middleware/auth');       // JWT  middleware
+const isLoggedIn = require('../middleware/auth');       // JWT middleware
 
 
-// Routes for top-level files/folders
+// Routes for top-level files/folders/imagess
 router.route('/')
     .post(isLoggedIn, filesController.createFileOrFolder) // Create a new file or folder
     .get(isLoggedIn, filesController.getFiles);           // Get all top-level files/folders
