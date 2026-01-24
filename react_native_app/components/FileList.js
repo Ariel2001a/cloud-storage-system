@@ -65,6 +65,7 @@ export default function FileList() {
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import MenuOptions from './MenuOptions';
 import { styles } from '../styles/FileCard.styles.js';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -74,6 +75,7 @@ export default function FileList() {
     const { theme } = useTheme();
     const { locale } = useLanguage();
     const [files, setFiles] = useState([]);
+    const [menuVisible, setMenuVisible] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const fetchFiles = async () => {
@@ -139,7 +141,7 @@ export default function FileList() {
                             {item.type === 'file' ? `${item.size || '0'} KB` : 'Folder'}
                         </Text>
                     </View>
-                    <Ionicons name="ellipsis-vertical" size={20} color={theme.colors.textSub} />
+                     <MenuOptions item={item} />
                 </TouchableOpacity>
             )}
             ListEmptyComponent={
