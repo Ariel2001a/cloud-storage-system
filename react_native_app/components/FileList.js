@@ -71,17 +71,25 @@ import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { getFiles } from '../api/files';
 
-export default function FileList() {
+export default function FileList({fetchData,isTrash,isStarPage}) {
     const { theme } = useTheme();
     const { locale } = useLanguage();
     const [files, setFiles] = useState([]);
     const [menuVisible, setMenuVisible] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const handleRename = (id, newName) => {
+        setFiles(prevFiles =>
+            prevFiles.map(file =>
+                file.id === id ? { ...file, name: newName } : file
+            )
+        );
+    };
+
     const fetchFiles = async () => {
         setLoading(true);
         try {
-            const data = await getFiles();
+            const data = await fetchData();
             setFiles(data || []);
         } catch (error) {
             console.error("Error fetching files:", error);
@@ -141,7 +149,7 @@ export default function FileList() {
                             {item.type === 'file' ? `${item.size || '0'} KB` : 'Folder'}
                         </Text>
                     </View>
-                     <MenuOptions item={item} />
+                     <MenuOptions item={item} onRename={handleRename} locale = {locale} isTrash = {isTrash} isStarPage={isStarPage}/>
                 </TouchableOpacity>
             )}
             ListEmptyComponent={

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { ScrollView, TouchableOpacity, Text, View } from 'react-native';
 import { styles } from '../styles/Siebar.styles.js';
 import { Ionicons } from '@expo/vector-icons';
@@ -29,12 +30,12 @@ export default function Sidebar({ isOpen, onClose }) {
                         <>
                             <NewStorageButton onCreated={onClose} />
 
-                            <TouchableOpacity style={styles.sidebarButton}>
+                            <TouchableOpacity style={styles.sidebarButton} onPress={() => router.push('/Recent')}>
                                 <Ionicons name="time-outline" size={20} color={theme.colors.primary} />
-                                <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>{t('recent')}</Text>
+                                <Text style={[styles.buttonText, { color: theme.colors.textMain }]} >{t('recent')}</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.sidebarButton}>
+                            <TouchableOpacity style={styles.sidebarButton} onPress={() => router.push('/BinPage')} >
                                 <Ionicons name="trash-outline" size={20} color={theme.colors.primary} />
                                 <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>{t('trash')}</Text>
                             </TouchableOpacity>

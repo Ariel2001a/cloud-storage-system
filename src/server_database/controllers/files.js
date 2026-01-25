@@ -242,6 +242,8 @@ exports.patchFileById = async (req, res) => {
     if (!file) return res.status(404).json({ error: 'File not found' });
 
     const { name, content, parentId } = req.body;
+    console.log("controller:" , parentId);
+
     let updateContent = false, updateName = false, updateParentId = false;
 
     if (content !== undefined) {
@@ -262,7 +264,8 @@ exports.patchFileById = async (req, res) => {
         }
 
         else {
-            const parent = filesModel.getFileById(userId, parentId);
+            const parent = await filesModel.getFileById(userId, parentId);
+            console.log("controller parent: " , parent);
             if (!parent || parent.type !== 'folder') {
                 return res.status(400).json({ error: 'Folder Parent does not exist' });
             }
@@ -315,7 +318,6 @@ exports.patchFileById = async (req, res) => {
 
                 file.content = finalContentForCpp;
                 file.size = newSize;
-                await file.save();
 
             } catch (err) {
                 console.error("Socket Error:", err);
@@ -323,7 +325,7 @@ exports.patchFileById = async (req, res) => {
             }
         }
 
-
+        await file.save();
         return res.status(200).json(file);
     }
 

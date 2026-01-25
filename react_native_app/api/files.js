@@ -53,7 +53,7 @@ export async function getFiles() {
 export async function getFolderChildren(folderId) {
     try {
         const res = await fetch(`${API_BASE}/files/${folderId}/children`, {
-            headers: getAuthHeaders()
+            headers: await getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch folder');
         const data = await res.json();
@@ -68,7 +68,7 @@ export async function getFolderChildren(folderId) {
 export async function getFileContent(fileId) {
     try {
         const res = await fetch(`${API_BASE}/files/${fileId}`, {
-            headers: getAuthHeaders()
+            headers: await getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch file');
         const data = await res.json();
@@ -109,7 +109,7 @@ export async function searchFiles(query) {
     try {
         const res = await fetch(`${API_BASE}/search/${encodeURIComponent(query)}`, {
             method: 'GET',
-            headers: getAuthHeaders(),
+            headers: await getAuthHeaders(),
         });
 
         if (!res.ok) {
@@ -133,7 +133,7 @@ export async function getUserDetails(userId) {
     try {
         const res = await fetch(`${API_BASE}/users/${userId}`, {
             method: 'GET',
-            headers: getAuthHeaders()
+            headers: await getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch user');
         return await res.json();
@@ -147,7 +147,7 @@ export async function getUserDetails(userId) {
 export async function deleteFileOrFolder(fileId) {
     const res = await fetch(`${API_BASE}/files/${fileId}`, {
         method: "DELETE",
-        headers: getAuthHeaders()
+        headers: await getAuthHeaders()
     });
     if (!res.ok) {
         const errText = await res.text();
@@ -161,7 +161,7 @@ export async function deleteFileOrFolder(fileId) {
 export async function restoreFileOrFolder(fileId) {
     const res = await fetch(`${API_BASE}/files/deleted/${fileId}`, {
         method: "POST",
-        headers: getAuthHeaders()
+        headers: await getAuthHeaders()
     });
     if (!res.ok) {
         const errText = await res.text();
@@ -174,7 +174,7 @@ export async function restoreFileOrFolder(fileId) {
 export async function renameFileOrFolder(fileId, newName) {
     const res = await fetch(`${API_BASE}/files/${fileId}`, {
         method: "PATCH",
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify({ name: newName })
     });
 
@@ -184,13 +184,15 @@ export async function renameFileOrFolder(fileId, newName) {
     }
 
     const text = await res.text();
+    console.log(text);
     return text;
 }
 
 export async function moveFolder(fileId, folderId) {
+    console.log("folderId:", folderId);
     const res = await fetch(`${API_BASE}/files/${fileId}`, {
         method: "PATCH",
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify({ parentId: folderId })
     });
 
@@ -206,7 +208,7 @@ export async function moveFolder(fileId, folderId) {
 export const patchFileById = async (id, body) => {
     const res = await fetch(`http://localhost:8080/api/files/${id}`, {
         method: "PATCH",
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify(body),
     });
 
@@ -222,7 +224,7 @@ export const patchFileById = async (id, body) => {
 export async function starOrUnstarFileOrPublic(fileId, request) {
     const res = await fetch(`${API_BASE}/files/${fileId}`, {
         method: "POST",
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify({ request: request })
     });
     if (!res.ok) {
@@ -240,7 +242,7 @@ export async function shareFileOrFolder(fileId, sharedWithUsername, permission) 
     console.log(fileId, sharedWithUsername, permission);
     const res = await fetch(`${API_BASE}/files/${fileId}/permissions`, {
         method: "POST",
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
         body: JSON.stringify({ username: sharedWithUsername, permission: permission })
 
     });
@@ -259,7 +261,7 @@ export async function checkPermission(username, fileId, permission) {
     console.log(fileId, permission);
     const res = await fetch(`${API_BASE}/files/${fileId}/permission?username=${username}&permission=${permission}`, {
         method: "GET",
-        headers: getAuthHeaders(),
+        headers: await getAuthHeaders(),
 
     });
 
@@ -277,7 +279,7 @@ export async function getDeletedFiles() {
     try {
         const res = await fetch(`${API_BASE}/files/deleted`, {
             method: "GET",
-            headers: getAuthHeaders()
+            headers: await getAuthHeaders()
         });
 
         if (!res.ok) throw new Error('Failed to fetch files');
@@ -295,7 +297,7 @@ export async function getRecentFiles() {
     try {
         const res = await fetch(`${API_BASE}/files/recent`, {
             method: "GET",
-            headers: getAuthHeaders()
+            headers: await getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();
@@ -310,7 +312,7 @@ export async function getSharedFiles() {
     try {
         const res = await fetch(`${API_BASE}/files/shared`, {
             method: "GET",
-            headers: getAuthHeaders()
+            headers: await getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();
@@ -325,7 +327,7 @@ export async function getStarredFiles() {
     try {
         const res = await fetch(`${API_BASE}/files/starred`, {
             method: "GET",
-            headers: getAuthHeaders()
+            headers: await getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();

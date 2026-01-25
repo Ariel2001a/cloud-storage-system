@@ -1,12 +1,12 @@
 import { View } from 'react-native';
-import { styles } from '../../styles/index.styles.js';
-import FileList from '../../components/FileList';
-import { useTheme } from '../../context/ThemeContext';
+import { styles } from '../styles/index.styles.js';
+import FileList from '../components/FileList.js';
+import { useTheme } from '../context/ThemeContext.js';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { getFiles } from '../../api/files.js';
+import { getFiles } from '../api/files.js';
 
 
-export default function NewsFeed() {
+export default function MyDrive() {
     const { theme } = useTheme();
     return (
         <PaperProvider>
