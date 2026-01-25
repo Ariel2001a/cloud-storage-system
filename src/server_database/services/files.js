@@ -83,7 +83,7 @@ const addFileOrFolder = async (userId, fileData) => {
 
 const getFileById = async (userId, fileId) => {
     const files = await getUserFilesByFilter(userId, { id: fileId});
-    return files || null;
+    return files[0] || null;
 };
 
 

@@ -67,10 +67,13 @@ export async function getFolderChildren(folderId) {
 // 3️⃣ Get file content
 export async function getFileContent(fileId) {
     try {
+        console.log(fileId);
         const res = await fetch(`${API_BASE}/files/${fileId}`, {
             headers: await getAuthHeaders()
         });
-        if (!res.ok) throw new Error('Failed to fetch file');
+        if (!res.ok){
+                throw new Error('Failed to fetch file');
+            }        
         const data = await res.json();
         return data.content || '';
 
