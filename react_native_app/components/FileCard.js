@@ -23,7 +23,7 @@ export default function FileCard({ item, onPress }) {
         >
             <View style={styles.iconContainer}>
                 <Ionicons
-                    name={item.type === 'folder' ? "folder-outline" : "document-text-outline"}
+                    name={item.type === 'folder' ? "folder-outline" : item.type === 'image' ? "image-outline" : "document-text-outline"}
                     size={24}
                     color={theme.colors.primary}
                 />
@@ -43,7 +43,7 @@ export default function FileCard({ item, onPress }) {
                     {item.name}
                 </Text>
                 <Text style={[styles.fileDetails, { color: theme.colors.textSub, textAlign: locale === 'he' ? 'right' : 'left' }]}>
-                    {item.type === 'file' ? `${item.size || '0'} KB` : 'Folder'}
+                    {item.type === 'file' || 'image' ? `${item.size || '0'} KB` : 'Folder'}
                 </Text>
             </View>
 

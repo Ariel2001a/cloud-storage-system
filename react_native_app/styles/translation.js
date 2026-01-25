@@ -36,6 +36,7 @@ export const translations = {
     failedToCreate: "We couldn't create the item. Please try again later",
     nameRequired: "Name is required to create the item",
     signOut: "Sign Out",
+    noFilesFound: "No files found",
 
     //register page
     createAccount: "Create a new account",
@@ -110,6 +111,7 @@ export const translations = {
     failedToCreate: "לא הצלחנו ליצור את הפריט. אנא נסה מאוחר יותר",
     nameRequired: "חובה להזין שם עבור הפריט",
     signOut: "התנתק",
+    noFilesFound: "אין קבצים להצגה",
 
     // Register page
     createAccount: "צור חשבון חדש",

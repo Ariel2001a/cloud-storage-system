@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const DEV_IP = Platform.OS === 'android' ? '10.0.2.2' : 'localhost';
+const DEV_IP = Platform.OS === 'android' ? '192.168.1.75' : 'localhost';
 export const API_BASE = `http://${DEV_IP}:8080/api`;
 
 // helper to get headers with token
@@ -36,7 +36,7 @@ async function getAuthHeaders() {
 export async function getFiles() {
     try {
         const res = await fetch(`${API_BASE}/files`, {
-            headers: getAuthHeaders()
+            headers: await getAuthHeaders()
         });
 
         if (!res.ok) throw new Error('Failed to fetch files');
@@ -52,7 +52,7 @@ export async function getFiles() {
 export async function getFolderChildren(folderId) {
     try {
         const res = await fetch(`${API_BASE}/files/${folderId}/children`, {
-            headers: getAuthHeaders()
+            headers: await getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch folder');
         const data = await res.json();
@@ -67,7 +67,7 @@ export async function getFolderChildren(folderId) {
 export async function getFileContent(fileId) {
     try {
         const res = await fetch(`${API_BASE}/files/${fileId}`, {
-            headers: getAuthHeaders()
+            headers: await getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch file');
         const data = await res.json();

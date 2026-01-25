@@ -4,6 +4,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { getFormStyles } from '../../styles/FormStyles';
 import { createFileOrFolder } from '../../api/files';
+import { DeviceEventEmitter } from 'react-native'
 
 export default function TextForm({ visible, onClose, onCreated, parentId }) {
     const { theme } = useTheme();
@@ -24,6 +25,8 @@ export default function TextForm({ visible, onClose, onCreated, parentId }) {
                 content: content,
                 parentId: parentId || null
             });
+
+            DeviceEventEmitter.emit("REFRESH_FILES");
 
             setName('');
             setContent('');

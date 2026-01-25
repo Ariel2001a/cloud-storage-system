@@ -17,7 +17,7 @@ import { useLanguage } from '../context/LanguageContext'; // <-- import hook
 // Your PC LAN IP: 192.168.1.225
 
 //const SERVER_URL = 'http://10.0.2.2:8080';  // Android emulator localhost
-const SERVER_URL = 'http://10.0.2.2:8080';
+const SERVER_URL = 'http://192.168.1.75:8080';
 
 const RegisterScreen = () => {
   const router = useRouter();
