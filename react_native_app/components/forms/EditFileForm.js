@@ -42,7 +42,7 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
 
     if (!visible || !file) return null;
 
-    // Theme styles
+    // Theme styles```
     const colors = theme.isDark
         ? { background: '#121212', text: '#eee', border: '#555', inputBg: '#1e1e1e', btnPrimary: '#2196F3', btnText: '#fff' }
         : { background: '#fff', text: '#000', border: '#ccc', inputBg: '#fff', btnPrimary: '#2196F3', btnText: '#fff' };

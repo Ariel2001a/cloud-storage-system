@@ -93,7 +93,7 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) { /
             <EditFileForm
                 visible={editVisible} /////////
                 file={file} /////////
-                onCancel={() => setEditVisible(false)} /////////
+                onCancel={() => setEditVisible(false)} /////////????
                 onSave={handleSave} /////////
                 lang={locale} /////////
             /> /////////

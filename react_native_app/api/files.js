@@ -11,7 +11,7 @@ export const API_BASE = `http://${DEV_IP}:8080/api`;
     return {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
-    };
+    };```
 }*/
 
 
