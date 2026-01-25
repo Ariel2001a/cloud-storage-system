@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const DEV_IP = Platform.OS === 'android' ? '192.168.1.75' : 'localhost';
+const DEV_IP = Platform.OS === 'android' ? '10.0.2.2' : 'localhost';
 export const API_BASE = `http://${DEV_IP}:8080/api`;
 
 // helper to get headers with token
@@ -144,9 +144,11 @@ export async function getUserDetails(userId) {
 
 
 export async function deleteFileOrFolder(fileId) {
+
+     const headers = await getAuthHeaders();
     const res = await fetch(`${API_BASE}/files/${fileId}`, {
         method: "DELETE",
-        headers: getAuthHeaders()
+        headers
     });
     if (!res.ok) {
         const errText = await res.text();
@@ -203,9 +205,11 @@ export async function moveFolder(fileId, folderId) {
 }
 
 export const patchFileById = async (id, body) => {
-    const res = await fetch(`http://localhost:8080/api/files/${id}`, {
+
+     const headers = await getAuthHeaders();
+    const res = await fetch(`${API_BASE}/files/${id}`, {
         method: "PATCH",
-        headers: getAuthHeaders(),
+             headers, 
         body: JSON.stringify(body),
     });
 
