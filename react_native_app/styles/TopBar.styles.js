@@ -38,6 +38,12 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingHorizontal: 15,
     },
+
+    searchInput: {
+        flex: 1,
+        fontSize: 16,
+        paddingVertical: 0,
+    },
     menuButton: {
         padding: 8,
         borderRadius: 12,
