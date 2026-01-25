@@ -11,7 +11,7 @@ export const API_BASE = `http://${DEV_IP}:8080/api`;
     return {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
-    };
+    };```
 }*/
 
 
@@ -53,7 +53,7 @@ export async function getFiles() {
 export async function getFolderChildren(folderId) {
     try {
         const res = await fetch(`${API_BASE}/files/${folderId}/children`, {
-            headers: getAuthHeaders()
+            headers: await getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch folder');
         const data = await res.json();
@@ -68,7 +68,7 @@ export async function getFolderChildren(folderId) {
 export async function getFileContent(fileId) {
     try {
         const res = await fetch(`${API_BASE}/files/${fileId}`, {
-            headers: getAuthHeaders()
+            headers: await getAuthHeaders()
         });
         if (!res.ok) throw new Error('Failed to fetch file');
         const data = await res.json();
@@ -145,9 +145,11 @@ export async function getUserDetails(userId) {
 
 
 export async function deleteFileOrFolder(fileId) {
+
+     const headers = await getAuthHeaders();
     const res = await fetch(`${API_BASE}/files/${fileId}`, {
         method: "DELETE",
-        headers: getAuthHeaders()
+        headers
     });
     if (!res.ok) {
         const errText = await res.text();
@@ -204,9 +206,11 @@ export async function moveFolder(fileId, folderId) {
 }
 
 export const patchFileById = async (id, body) => {
-    const res = await fetch(`http://localhost:8080/api/files/${id}`, {
+
+     const headers = await getAuthHeaders();
+    const res = await fetch(`${API_BASE}/files/${id}`, {
         method: "PATCH",
-        headers: getAuthHeaders(),
+             headers, 
         body: JSON.stringify(body),
     });
 

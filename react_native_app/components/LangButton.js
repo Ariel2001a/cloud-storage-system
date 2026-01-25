@@ -1,17 +1,22 @@
-// react_native_app/components/LangButton.js
-import React from 'react';
 import { TouchableOpacity, Text } from 'react-native';
 import { useLanguage } from '../context/LanguageContext';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../context/ThemeContext';
+import { styles } from '../styles/Siebar.styles.js';
 
 export default function LangButton() {
   const { locale, switchLanguage } = useLanguage();
+  const { theme } = useTheme();
 
   return (
     <TouchableOpacity
       onPress={() => switchLanguage(locale === 'en' ? 'he' : 'en')}
-      style={{ padding: 8, backgroundColor: '#eee', borderRadius: 6, marginLeft: 10 }}
+      style={styles.sidebarButton}
     >
-      <Text>{locale === 'en' ? 'עברית' : 'EN'}</Text>
+      <Ionicons name="language-outline" size={20} color={theme.colors.primary} />
+      <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>
+        {locale === 'en' ? 'עברית' : 'English'}
+      </Text>
     </TouchableOpacity>
   );
 }

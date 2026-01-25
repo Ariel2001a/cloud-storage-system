@@ -12,11 +12,11 @@ import { useLanguage } from '../context/LanguageContext';
 
 // ===== SERVER URL CONFIG =====
 // Change this to switch between LAN, ngrok, or production
-// Current placeholder: localhost
+// Current placeholder: localhost```
 // Your PC LAN IP: 192.168.1.225
 
-//const SERVER_URL = 'http://10.0.2.2:8080';  // Android emulator localhost
-const SERVER_URL = 'http://10.0.2.2:8080';
+const SERVER_URL = 'http://10.0.2.2:8080';  // Android emulator localhost
+//const SERVER_URL = 'http://192.168.1.75:8080';
 
 export default function LoginScreen() {
   const router = useRouter();

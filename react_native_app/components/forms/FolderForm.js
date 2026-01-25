@@ -4,6 +4,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { getFormStyles } from '../../styles/FormStyles.js';
 import { createFileOrFolder } from '../../api/files';
+import { DeviceEventEmitter } from 'react-native'
 
 export default function FolderForm({ visible, onClose, onCreated, parentId }) {
     const { theme } = useTheme();
@@ -25,6 +26,8 @@ export default function FolderForm({ visible, onClose, onCreated, parentId }) {
                 type: 'folder',
                 parentId: parentId || null
             });
+
+            DeviceEventEmitter.emit("REFRESH_FILES");
 
             setName('');
             if (onCreated) onCreated();
