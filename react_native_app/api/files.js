@@ -108,7 +108,7 @@ export async function searchFiles(query) {
     try {
         const res = await fetch(`${API_BASE}/search/${encodeURIComponent(query)}`, {
             method: 'GET',
-            headers: getAuthHeaders(),
+            headers: await getAuthHeaders(),
         });
 
         if (!res.ok) {

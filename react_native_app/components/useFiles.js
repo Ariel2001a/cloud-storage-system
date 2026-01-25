@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { DeviceEventEmitter } from 'react-native';
-import { getFiles, getFolderChildren, getFileContent } from '../api/files';
+import { getFiles, getFolderChildren, getFileContent, searchFiles } from '../api/files';
 
 export function useFiles() {
     const [files, setFiles] = useState([]);
@@ -13,6 +13,22 @@ export function useFiles() {
     const currentFolderRef = useRef(currentFolder);
     useEffect(() => { currentFolderRef.current = currentFolder; }, [currentFolder]);
 
+    const handleSearch = async (query) => {
+        if (!query.trim()) {
+            fetchFiles();
+            return;
+        }
+        setLoading(true);
+        try {
+            const results = await searchFiles(query);
+            setFiles(results);
+        } catch (error) {
+            console.error("Search error:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const fetchFiles = async (folder = currentFolderRef.current) => {
         setLoading(true);
         try {
@@ -23,7 +39,11 @@ export function useFiles() {
 
     useEffect(() => {
         const sub = DeviceEventEmitter.addListener("REFRESH_FILES", fetchFiles);
-        return () => sub.remove();
+        const searchSub = DeviceEventEmitter.addListener("SEARCH_FILES", handleSearch);
+        return () => {
+            sub.remove();
+            searchSub.remove();
+        };
     }, []);
 
     useEffect(() => {

@@ -4,7 +4,7 @@ import { COLORS, getLightColors } from '../styles/Theme.js';
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-    const [isDark, setIsDark] = useState(true);
+    const [isDark, setIsDark] = useState(false);
 
     const theme = {
         isDark,
