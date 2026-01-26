@@ -11,32 +11,37 @@ import {
 
 import EmailPromptModal from './EmailPromptModal';
 import MoveFolderDialog from './MoveFolderDialog';
+import { useLanguage } from '../context/LanguageContext';
 
-export default function MenuOptions({ item, isTrash, isStarPage, locale }) {
+
+export default function MenuOptions({ item, isTrash }) {
     const [visible, setVisible] = useState(false);
     const [renameVisible, setRenameVisible] = useState(false);
     const [shareVisible, setShareVisible] = useState(false);
     const [newName, setNewName] = useState(item.name);
     const [moveVisible, setMoveVisible] = useState(false);
+    const { locale, t } = useLanguage();
+
 
     const openMenu = () => setVisible(true);
     const closeMenu = () => setVisible(false);
 
-    const trash = 'Move to bin';
-    const starPage = isStarPage ? 'remove from Starred' : 'Add to Starred'
+    const trash = t('Movetobin');
+    const starPage = item.starred ? t('RemovefromStarred') : t('AddtoStarred')
+
     const fixedDomain = '@ead.com';
 
     const actions = [
-        { label: 'Rename', onPress: () => { closeMenu(); setNewName(item.name); setRenameVisible(true); console.log('Rename', item.name); } },
+        { label: t('Rename'), onPress: () => { closeMenu(); setNewName(item.name); setRenameVisible(true); console.log('Rename', item.name); } },
         { label: starPage, onPress: () => { starOrUnstarFileOrPublic(item.id,"star"); closeMenu(); console.log('star/unstar', item.name); } },
-        { label: 'Share', onPress: () => { closeMenu(); setShareUsername(fixedDomain); setShareVisible(true); console.log('Share', item.name); } },
-        { label: 'Move Folder', onPress: () => { closeMenu(); setMoveVisible(true); console.log('move', item.name); } },
+        { label: t('Share'), onPress: () => { closeMenu(); setShareUsername(fixedDomain); setShareVisible(true); console.log('Share', item.name); } },
+        { label: t('MoveFolder'), onPress: () => { closeMenu(); setMoveVisible(true); console.log('move', item.name); } },
         { label: trash, onPress: () => { closeMenu(); deleteFileOrFolder(item.id); console.log('delete', item.name); } }
     ];
 
     const actionsTrash = [
-        { label: 'Restore', onPress: () => { closeMenu(); restoreFileOrFolder(item.id); console.log('move', item.name); } },
-        { label: 'Delete forever', onPress: () => { closeMenu(); deleteFileOrFolder(item.id); console.log('delete', item.name); } }
+        { label: t('Restore'), onPress: () => { closeMenu(); restoreFileOrFolder(item.id); console.log('move', item.name); } },
+        { label: t('DeleteForever'), onPress: () => { closeMenu(); deleteFileOrFolder(item.id); console.log('delete', item.name); } }
     ];
 
     return (
@@ -74,25 +79,25 @@ export default function MenuOptions({ item, isTrash, isStarPage, locale }) {
                     visible={renameVisible}
                     onDismiss={() => setRenameVisible(false)}
                 >
-                    <Dialog.Title>Rename</Dialog.Title>
+                    <Dialog.Title>{t('Rename')}</Dialog.Title>
 
                     <Dialog.Content>
                         <TextInput
                             value={newName}
                             onChangeText={setNewName}
                             autoFocus
-                            placeholder="New name"
+                            placeholder = {t('newName')}
                         />
                     </Dialog.Content>
 
                     <Dialog.Actions>
-                        <Button onPress={() => setRenameVisible(false)}>Cancel</Button>
+                        <Button onPress={() => setRenameVisible(false)}>{t('Cancel')}</Button>
                         <Button onPress={async () => {
                                     await renameFileOrFolder(item.id, newName);
                                     setRenameVisible(false);
                                 }}
                         >
-                            OK
+                            {t('OK')}
                         </Button>
                     </Dialog.Actions>
                 </Dialog>
@@ -101,7 +106,6 @@ export default function MenuOptions({ item, isTrash, isStarPage, locale }) {
             <EmailPromptModal
                 visible={shareVisible}
                 file={item}
-                isRtl={locale === "he"}
                 onCancel={() => setShareVisible(false)}
                 onSubmit={(email, permission) =>
                     shareFileOrFolder(item.id, email, permission)
@@ -111,7 +115,6 @@ export default function MenuOptions({ item, isTrash, isStarPage, locale }) {
             <MoveFolderDialog
                 visible={moveVisible}
                 file={item}
-                isRtl={locale === "he"}
                 onClose={() => setMoveVisible(false)}
                 onMoveConfirm={(folderId) => moveFolder(item.id, folderId)}
             />     
