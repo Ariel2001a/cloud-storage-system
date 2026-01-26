@@ -2,14 +2,18 @@ import { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity, Alert } from "react-native";
 import { Dialog, Portal, Button, IconButton } from "react-native-paper";
 import { getFiles, getFolderChildren } from "../api/files";
+import { useLanguage } from '../context/LanguageContext';
 
-export default function MoveFolderDialog({visible, onClose, onMoveConfirm, file, isRtl}) {
+
+export default function MoveFolderDialog({visible, onClose, onMoveConfirm, file}) {
   const idMyDrive = 0;
 
   const [currentFolderId, setCurrentFolderId] = useState(null);
   const [items, setItems] = useState([]);
   const [folderStack, setFolderStack] = useState([null]);
   const [selectedFolderId, setSelectedFolderId] = useState(null);
+  const { locale } = useLanguage();
+
 
   useEffect(() => {
     if (!visible) return;
@@ -20,7 +24,7 @@ export default function MoveFolderDialog({visible, onClose, onMoveConfirm, file,
           setItems([
             {
               id: idMyDrive,
-              name: isRtl ? "האחסון שלי" : "My Drive",
+              name: t("MyDrive"),
               type: "folder",
               isRoot: true
             }
@@ -66,8 +70,8 @@ export default function MoveFolderDialog({visible, onClose, onMoveConfirm, file,
       (selectedFolderId === idMyDrive && file.folderParent == null)
     ) {
       Alert.alert(
-        isRtl ? "שגיאה" : "Error",
-        isRtl ? "לא נבחרה תיקייה חוקית" : "No valid folder selected"
+        t("error"),
+        t("Novalidfolderselected")
       );
       return;
     }
@@ -121,8 +125,8 @@ export default function MoveFolderDialog({visible, onClose, onMoveConfirm, file,
             <IconButton icon="arrow-left" onPress={goBack} />
             <Text>
               {currentFolderId === null
-                ? isRtl ? "תיקייה ראשית" : "Root"
-                : isRtl ? "תיקייה" : "Folder"}
+                ? t("Root")
+                : t("folder")}
             </Text>
           </View>
         </Dialog.Title>
@@ -136,17 +140,17 @@ export default function MoveFolderDialog({visible, onClose, onMoveConfirm, file,
             />
           ) : (
             <Text style={{ textAlign: "center", marginTop: 10 }}>
-              {isRtl ? "התיקייה ריקה" : "Folder is empty"}
+              {t("Folderisempty")}
             </Text>
           )}
         </Dialog.Content>
 
         <Dialog.Actions>
           <Button onPress={onClose}>
-            {isRtl ? "ביטול" : "Cancel"}
+            {t("Cancel")}
           </Button>
           <Button onPress={confirmMove}>
-            {isRtl ? "אשר העברה" : "Confirm Move"}
+            {t("Confirm Move")}
           </Button>
         </Dialog.Actions>
       </Dialog>

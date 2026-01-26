@@ -1,14 +1,28 @@
-
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from '../styles/FileCard.styles.js';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import MenuOptions from './MenuOptions.js'
+import {usePathname} from 'expo-router'
+import {getUserDetails} from '../api/files.js'
 
 export default function FileCard({ item, onPress,isTrash,isStarPage }) {
     const { theme } = useTheme();
-    const { locale } = useLanguage();
+    const { locale,t } = useLanguage();
+    const pathname = usePathname();
+
+    let isHome = pathname.includes('Home');
+    let isSharePage = pathname.includes('ShareFiles');
+  
+    const getOwnerEmail = async () =>{ 
+
+        let ownerName = await getUserDetails(item.ownerId);
+        return ownerName;
+
+    }
+
+    let ownerEmail = getOwnerEmail.email;
 
     return (
         <TouchableOpacity
@@ -43,9 +57,17 @@ export default function FileCard({ item, onPress,isTrash,isStarPage }) {
                 >
                     {item.name}
                 </Text>
-                <Text style={[styles.fileDetails, { color: theme.colors.textSub, textAlign: locale === 'he' ? 'right' : 'left' }]}>
+                {!isHome && !isSharePage && <Text style={[styles.fileDetails, { color: theme.colors.textSub, textAlign: locale === 'he' ? 'right' : 'left' }]}>
                     {item.type === 'file' || 'image' ? `${item.size || '0'} KB` : 'Folder'}
-                </Text>
+                </Text>}
+
+                {isHome && <Text style={[styles.fileDetails, { color: theme.colors.textSub, textAlign: locale === 'he' ? 'right' : 'left' }]}>
+                    {t("Lastopened") `${item.open}`}
+                </Text>}
+
+                {isSharePage && <Text style={[styles.fileDetails, { color: theme.colors.textSub, textAlign: locale === 'he' ? 'right' : 'left' }]}>
+                    {t("owner") `${ownerEmail}`}
+                </Text>}
             </View>
 
             <MenuOptions

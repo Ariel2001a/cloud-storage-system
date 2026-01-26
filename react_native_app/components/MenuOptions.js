@@ -15,13 +15,16 @@ import {
 
 import EmailPromptModal from './EmailPromptModal';
 import MoveFolderDialog from './MoveFolderDialog';
+import { useLanguage } from '../context/LanguageContext';
 
-export default function MenuOptions({ item, isTrash, isStarPage }) {
+export default function MenuOptions({ item, isTrash }) {
     const [visible, setVisible] = useState(false);
     const [renameVisible, setRenameVisible] = useState(false);
     const [shareVisible, setShareVisible] = useState(false);
     const [newName, setNewName] = useState(item.name);
     const [moveVisible, setMoveVisible] = useState(false);
+    const { locale, t } = useLanguage();
+
 
     const { theme } = useTheme();
     const { t, locale } = useLanguage();
@@ -85,10 +88,13 @@ export default function MenuOptions({ item, isTrash, isStarPage }) {
                             value={newName}
                             onChangeText={setNewName}
                             autoFocus
+                            placeholder = {t('newName')}
                             style={{ textAlign: locale === 'he' ? 'right' : 'left' }}
                         />
                     </Dialog.Content>
                     <Dialog.Actions>
+              </Button>
+
                         <Button onPress={() => setRenameVisible(false)}>{t('cancel')}</Button>
                         <Button onPress={() => {
                             executeAndRefresh(renameFileOrFolder, 'name_changed', item.id, newName);
@@ -101,7 +107,6 @@ export default function MenuOptions({ item, isTrash, isStarPage }) {
             <EmailPromptModal
                 visible={shareVisible}
                 file={item}
-                isRtl={locale === "he"}
                 onCancel={() => setShareVisible(false)}
                 onSubmit={(email, permission) => {
                     executeAndRefresh(shareFileOrFolder, 'shared_success', item.id, email, permission);
@@ -112,7 +117,6 @@ export default function MenuOptions({ item, isTrash, isStarPage }) {
             <MoveFolderDialog
                 visible={moveVisible}
                 file={item}
-                isRtl={locale === "he"}
                 onClose={() => setMoveVisible(false)}
                 onMoveConfirm={(folderId) => {
                     executeAndRefresh(moveFolder, 'moved_success', item.id, folderId);

@@ -37,6 +37,7 @@ export const translations = {
     nameRequired: "Name is required to create the item",
     signOut: "Sign Out",
     noFilesFound: "No files found",
+    Lastopened: "Last opened:",
 
     //register page
     createAccount: "Create a new account",
@@ -72,6 +73,38 @@ export const translations = {
     signInFailed: "Sign In Failed",
     signedInSuccessfully: "Signed in successfully!",
 
+  
+    //Menu options
+
+    RemovefromStarred: "Remove from Starred",
+    AddtoStarred : "Add to Starred",
+    Movetobin: "Move to bin",
+    Rename: "Rename",
+    Share: "Share",
+    MoveFolder: "Move Folder",
+    Restore: "Restore",
+    DeleteForever: "Delete forever",
+    newName: "new name",
+    Cancle : "Cancle",
+    OK : "OK",
+
+    //Share
+
+    Read: "Read",
+    Write: "Write",
+    Owner: "Owner",
+    Enterusername: "Enter username",
+    Permissionalreadyexists: "Permission already exists",
+    Permission: "Permission",
+    Makepublic: "Make public",
+
+    //Move Folder
+
+    MyDrive: "My Drive",
+    Novalidfolderselected: "No valid folder selected",
+    Root: "Root",
+    Folderisempty: "Folder is empty",
+    ConfirmMove: "Confirm Move"
     trash: "Trash",
     recent: "Recent",
     settings: "Settings",
@@ -134,6 +167,7 @@ export const translations = {
     nameRequired: "חובה להזין שם עבור הפריט",
     signOut: "התנתק",
     noFilesFound: "אין קבצים להצגה",
+    Lastopened: "נפתח לאחרונה:",
 
     trash: "סל מיחזור",
     recent: "אחרונים",
@@ -187,7 +221,40 @@ export const translations = {
     usernameOrEmail: "שם משתמש או אימייל",
     signIn: "התחבר",
     signInFailed: "התחברות נכשלה",
-    signedInSuccessfully: "התחברת בהצלחה!"
+    signedInSuccessfully: "התחברת בהצלחה!",
+
+    //Menu options
+
+    removefromStarred: "הורדה ממועדפים",
+    AddtoStarred : "הוספה למועדפים",
+    Movetobin: "העברה לאשפה",
+    Rename: "שינוי שם",
+    Share: "שיתוף",
+    MoveFolder: "העברת תיקייה",
+    Restore: "שחזור",
+    DeleteForever: "מחיקה לצמיתות",
+    newName: "שם חדש",
+    Cancle : "ביטול",
+    OK : "אישור",
+
+    //Share
+
+    Read: "קריאה",
+    Write: "כתיבה",
+    Owner: "בעלים",
+    Enterusername: "הכנס שם משתמש",
+    Permissionalreadyexists: "הרשאה זו כבר קיימת",
+    Permission: "הרשאה",
+    Makepublic: "הפיכה לקובץ ציבורי",
+
+    //Move Folder
+
+    MyDrive: "האחסון שלי",
+    Novalidfolderselected: "לא נבחרה תיקייה חוקית",
+    Root: "תיקייה ראשית",
+    Folderisempty: "תיקייה ריקה",
+    ConfirmMove: "אשר העברה"
+
   }
 
 

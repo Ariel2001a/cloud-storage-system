@@ -9,18 +9,22 @@ import {
   Text,
 } from "react-native-paper";
 import { checkPermission, starOrUnstarFileOrPublic } from "../api/files";
+import { useLanguage } from '../context/LanguageContext';
 
-export default function EmailPromptModal({ visible, file, onSubmit, onCancel, isRtl}) {
+
+export default function EmailPromptModal({ visible, file, onSubmit, onCancel}) {
 
     const [username, setUsername] = useState("");
     const [permission, setPermission] = useState("read");
     const [isPublic, setIsPublic] = useState(false);
+    const { locale,t } = useLanguage();
+
     let defaultDomain = "@ead.com";
 
     const labels = {
-        read:  isRtl ? "קריאה" : "Read",
-        write: isRtl ? "כתיבה" : "Write",
-        owner: isRtl ? "העברת בעלות" : "Transfer ownership",
+        read:  t("Read"),
+        write: t("Write"),
+        owner: t("Owner"),
     };
 
     useEffect(() => {
@@ -30,7 +34,7 @@ export default function EmailPromptModal({ visible, file, onSubmit, onCancel, is
 
     const handleSubmit = async () => {
         if (!username.trim()) {
-        alert(isRtl ? "הכנס שם משתמש" : "Enter username");
+        alert(t("Enterusername"));
         return;
         }
 
@@ -48,7 +52,7 @@ export default function EmailPromptModal({ visible, file, onSubmit, onCancel, is
         if (!hasPermission) {
             await onSubmit(fullEmail, permission);
         } else {
-            alert(isRtl ? "ההרשאה כבר קיימת" : "Permission already exists");
+            alert(t("Permissionalreadyexists"));
         }
 
         if (isPublic && !file.pub) {
@@ -71,7 +75,7 @@ export default function EmailPromptModal({ visible, file, onSubmit, onCancel, is
         <Portal>
         <Dialog visible={visible} onDismiss={onCancel}>
             <Dialog.Title>
-            {isRtl ? "שיתוף" : "Share"} "{file?.name}"
+            {t("Share")} "{file?.name}"
             </Dialog.Title>
 
             <Dialog.Content>
@@ -80,7 +84,7 @@ export default function EmailPromptModal({ visible, file, onSubmit, onCancel, is
                 <TextInput
                 value={username}
                 onChangeText={setUsername}
-                placeholder={isRtl ? "שם משתמש" : "Username"}
+                placeholder={t("username")}
                 style={styles.input}
                 />
                 <Text style={styles.domain}>{defaultDomain}</Text>
@@ -88,7 +92,7 @@ export default function EmailPromptModal({ visible, file, onSubmit, onCancel, is
 
             {/* Permission selector */}
             <Text style={styles.label}>
-                {isRtl ? "הרשאה" : "Permission"}
+                {t("Permission")}
             </Text>
 
             <View style={styles.permissionRow}>
@@ -107,7 +111,7 @@ export default function EmailPromptModal({ visible, file, onSubmit, onCancel, is
             {/* Public checkbox */}
             {!file?.pub && (
             <Checkbox.Item
-                label={isRtl ? "קובץ ציבורי" : "Make public"}
+                label={t("Makepublic")}
                 status={isPublic ? "checked" : "unchecked"}
                 onPress={() => setIsPublic(!isPublic)}
             />
@@ -117,10 +121,10 @@ export default function EmailPromptModal({ visible, file, onSubmit, onCancel, is
 
             <Dialog.Actions>
             <Button onPress={onCancel}>
-                {isRtl ? "ביטול" : "Cancel"}
+                {t("Cancel")}
             </Button>
             <Button onPress={handleSubmit}>
-                {isRtl ? "אישור" : "OK"}
+                {t("OK")}
             </Button>
             </Dialog.Actions>
         </Dialog>
