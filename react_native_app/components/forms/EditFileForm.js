@@ -5,35 +5,29 @@ import { useTheme } from '../../context/ThemeContext';
 
 export default function EditFileForm({ visible, file, onSave, onCancel, lang }) {
     const { theme } = useTheme();
-    const [name, setName] = useState("");
     const [content, setContent] = useState("");
     const [loading, setLoading] = useState(false);
 
     // Load file data when modal opens
     useEffect(() => {
         if (visible && file) {
-            setName(file.name || "");
             setContent(file.content || "");
         }
     }, [visible, file]);
 
     const handleSubmit = async () => {
-        if (!name.trim()) {
-            Alert.alert(lang === "he" ? "שגיאה" : "Error", lang === "he" ? "שם הקובץ אינו יכול להיות ריק" : "File name cannot be empty");
-            return;
-        }
-
         setLoading(true);
         try {
-            const updatedFile = await patchFileById(file.id, { name, content });
+            // 1. Send update to server
+            await patchFileById(file.id, { content });
 
-            onSave && onSave(file.id, { name: updatedFile.name, content: updatedFile.content });
-
-            file.name = updatedFile.name;
-            file.content = updatedFile.content;
+            // 2. Update UI immediately using the LOCAL state (what the user typed),
+            // instead of relying on the API response which might be empty or formatted differently.
+            onSave && onSave(content);
 
             onCancel();
-        } catch {
+        } catch (error) {
+            console.error(error);
             Alert.alert(lang === "he" ? "שגיאה" : "Error", lang === "he" ? "עדכון נכשל" : "Update failed");
         } finally {
             setLoading(false);
@@ -42,7 +36,7 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
 
     if (!visible || !file) return null;
 
-    // Theme styles```
+    // Theme styles
     const colors = theme.isDark
         ? { background: '#121212', text: '#eee', border: '#555', inputBg: '#1e1e1e', btnPrimary: '#2196F3', btnText: '#fff' }
         : { background: '#fff', text: '#000', border: '#ccc', inputBg: '#fff', btnPrimary: '#2196F3', btnText: '#fff' };
@@ -51,23 +45,22 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
         <Modal visible={visible} animationType="slide" onRequestClose={onCancel}>
             <ScrollView style={{ flex: 1, backgroundColor: colors.background, padding: 15 }}>
                 
-                {/* File Name */}
+                {/* File Name - Display Only */}
                 <View style={{ marginBottom: 15 }}>
-                    <Text style={{ marginBottom: 5, color: colors.text }}>
+                    <Text style={{ marginBottom: 5, color: colors.text, opacity: 0.7 }}>
                         {lang === "he" ? "שם קובץ" : "File Name"}:
                     </Text>
-                    <TextInput
-                        value={name}
-                        onChangeText={setName}
-                        style={{
-                            borderWidth: 1,
-                            borderColor: colors.border,
-                            padding: 10,
-                            borderRadius: 5,
-                            backgroundColor: colors.inputBg,
-                            color: colors.text,
-                        }}
-                    />
+                    <Text style={{ 
+                        fontSize: 16, 
+                        fontWeight: 'bold', 
+                        color: colors.text, 
+                        padding: 10,
+                        backgroundColor: colors.inputBg,
+                        borderRadius: 5,
+                        opacity: 0.5 
+                    }}>
+                        {file.name}
+                    </Text>
                 </View>
 
                 {/* File Content */}
