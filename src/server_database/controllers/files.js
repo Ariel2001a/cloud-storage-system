@@ -157,6 +157,21 @@ exports.getRecentFiles = async(req, res) => {
     res.json({ files });
 };
 
+exports.getLastOpenFiles = async(req, res) => {
+    const userId = req.userId;
+    if (!userId) {
+        return res.status(401).json({ error: 'User not logged in' });
+    }
+
+    const user = await User.getUserById(parseInt(userId));
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+
+    const files = await filesModel.getUserLastOpenedFiles(userId);
+    res.json({ files });
+};
+
 exports.getSharedFiles = async(req, res) => {
     const userId = req.userId;
     if (!userId) {
@@ -199,6 +214,8 @@ exports.getFileById = async (req, res) => {
 
     if (!file) return res.status(404).json({ error: 'File not found' });
 
+    file.open = Date.now;
+    file.save();
 
     let content = ""
 
@@ -224,7 +241,7 @@ exports.getFileById = async (req, res) => {
     }
 
     return res.json({
-        ...file.toObject(),
+        ...file,
         content: content
     });
 };

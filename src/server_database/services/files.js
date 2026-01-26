@@ -1,6 +1,7 @@
 const File = require ('../models/files');
 const Permission = require ('../models/permission')
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const Month_MS = WEEK_MS * 4;
 
 const getUserFilesByFilter = async (userId, filter = {}) => {
     return await File.find({ ownerId: userId, ...filter });
@@ -19,6 +20,11 @@ const getUserDeletedFiles = async(userId) => {
 const getUserRecentFiles = async (userId) => {
     const oneWeekAgo = new Date(Date.now() - WEEK_MS);
     return await getUserFilesByFilter( userId , { date: { $gte: oneWeekAgo } });
+};
+
+const getUserLastOpenedFiles = async (userId) => {
+    const oneMonthAgo = new Date(Date.now() - Month_MS);
+    return await getUserFilesByFilter( userId , { open: { $ne: null , $gte : oneMonthAgo } });
 };
 
 const getUserSharedFiles = async (userId) => {
@@ -179,5 +185,6 @@ module.exports = {
     RestoreFileByIdFromBin,
     getUserRecentFiles,
     doFilePublic,
-    getUserSharedFiles
+    getUserSharedFiles,
+    getUserLastOpenedFiles
 };

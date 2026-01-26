@@ -58,7 +58,12 @@ const File = new Schema({
     path : {
         type : String,
         default : null
-    }
+    },
+
+    open : {
+        type : Date,
+        default : null
+    } 
 
 });
 
