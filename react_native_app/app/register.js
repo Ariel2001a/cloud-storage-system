@@ -20,7 +20,7 @@ import styles from '../styles/Register.styles';
 import { useLanguage } from '../context/LanguageContext';
 
 // ===== SERVER URL =====
-const SERVER_URL = 'http://192.168.1.225:8080';
+const SERVER_URL = 'http://10.0.2.2:8080';
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -31,7 +31,7 @@ export default function RegisterScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
-  
+
   const [profileImageUri, setProfileImageUri] = useState(null);
   const [profileImageBase64, setProfileImageBase64] = useState(null);
 
@@ -150,7 +150,7 @@ export default function RegisterScreen() {
   // Helper for Picture Text
   const getPictureText = () => {
     if (profileImageUri) {
-        return locale === 'he' ? 'שנה תמונה' : 'Change Picture';
+      return locale === 'he' ? 'שנה תמונה' : 'Change Picture';
     }
     return locale === 'he' ? 'העלה תמונה' : 'Upload Picture';
   };
@@ -161,12 +161,12 @@ export default function RegisterScreen() {
       style={{ flex: 1 }}
     >
       <ScrollView contentContainerStyle={styles.container}>
-        
+
         {/* Language Toggle - Fixed Logic */}
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 10 }}>
           <TouchableOpacity onPress={() => switchLanguage(locale === 'en' ? 'he' : 'en')}>
             <Text style={{ fontSize: 16, fontWeight: '500', color: '#007AFF' }}>
-                {locale === 'en' ? '🇮🇱 עברית' : '🇺🇸 English'}
+              {locale === 'en' ? '🇮🇱 עברית' : '🇺🇸 English'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -190,19 +190,19 @@ export default function RegisterScreen() {
           <View style={{ alignItems: 'center', marginVertical: 20 }}>
             <TouchableOpacity onPress={showOptions} style={{ alignItems: 'center' }}>
               {profileImageUri ? (
-                <Image 
-                    source={{ uri: profileImageUri }} 
-                    style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 15 }} 
+                <Image
+                  source={{ uri: profileImageUri }}
+                  style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 15 }}
                 />
               ) : (
-                <View style={{ 
-                    width: 100, height: 100, borderRadius: 50, 
-                    backgroundColor: '#e0e0e0', justifyContent: 'center', alignItems: 'center', marginBottom: 15 
+                <View style={{
+                  width: 100, height: 100, borderRadius: 50,
+                  backgroundColor: '#e0e0e0', justifyContent: 'center', alignItems: 'center', marginBottom: 15
                 }}>
-                    <Text style={{ fontSize: 30, color: '#888' }}>📷</Text>
+                  <Text style={{ fontSize: 30, color: '#888' }}>📷</Text>
                 </View>
               )}
-              
+
               <Text style={{ color: '#007AFF', fontWeight: 'bold', marginTop: 5 }}>
                 {t('uploadPicture') || getPictureText()}
               </Text>

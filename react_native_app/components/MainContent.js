@@ -4,10 +4,16 @@ import { View } from 'react-native';
 import { styles } from '../styles/MainContent.styles.js';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
+import { usePathname } from 'expo-router';
+
 
 export default function MainContent() {
     const { theme } = useTheme();
     const { locale } = useLanguage();
+    const pathname = usePathname();
+    const isSpecialPage = pathname.includes('BinPage') || pathname.includes('Recent');
+
+
 
     return (
         <View style={[
@@ -18,7 +24,7 @@ export default function MainContent() {
             }
         ]}>
             <Tabs
-                tabBar={(props) => <BottomTabs {...props} />}
+                tabBar={(props) => !isSpecialPage ? <BottomTabs {...props} /> : null}
                 screenOptions={{
                     headerShown: false,
                     sceneContainerStyle: { backgroundColor: 'transparent' },
@@ -26,6 +32,8 @@ export default function MainContent() {
             >
                 <Tabs.Screen name="index" />
                 <Tabs.Screen name="files" />
+                <Tabs.Screen name="Recent" />
+                <Tabs.Screen name="BinPage" />
             </Tabs>
         </View>
     );

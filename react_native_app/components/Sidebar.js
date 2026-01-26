@@ -19,7 +19,7 @@ export default function Sidebar({ isOpen, onClose }) {
     const router = useRouter();
     const [isSettingsMode, setIsSettingsMode] = useState(false);
     const [currentFolderId, setCurrentFolderId] = useState(null);
-    
+
     // User Data States
     const [user, setUser] = useState({ email: '', username: '' });
     const [loadingUser, setLoadingUser] = useState(true);
@@ -35,9 +35,9 @@ export default function Sidebar({ isOpen, onClose }) {
             const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
             const jsonPayload = decodeURIComponent(
                 atob(base64)
-                .split('')
-                .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-                .join('')
+                    .split('')
+                    .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                    .join('')
             );
             return JSON.parse(jsonPayload);
         } catch (e) {
@@ -62,7 +62,7 @@ export default function Sidebar({ isOpen, onClose }) {
     useEffect(() => {
         const loadUser = async () => {
             if (!isOpen) return; // Only load when sidebar opens
-            
+
             setLoadingUser(true);
             setImageError(false); // Reset image error
 
@@ -79,10 +79,10 @@ export default function Sidebar({ isOpen, onClose }) {
 
                 // 3. Fetch Full Details from API
                 const userDetails = await getUserDetails(userId);
-                
+
                 if (userDetails) {
-                     const username = userDetails.username || userDetails.email?.split('@')[0];
-                     setUser({ ...userDetails, username });
+                    const username = userDetails.username || userDetails.email?.split('@')[0];
+                    setUser({ ...userDetails, username });
                 }
 
             } catch (error) {
@@ -109,7 +109,7 @@ export default function Sidebar({ isOpen, onClose }) {
     const getProfileImage = () => {
         // If we failed to load user or image previously, show default
         if (imageError || !user.username) {
-            return `${SERVER_ROOT}/uploads/default.png`; 
+            return `${SERVER_ROOT}/uploads/default.png`;
         }
         // Show specific user image
         return `${SERVER_ROOT}/uploads/${user.username}.jpeg?t=${Date.now()}`;
@@ -124,7 +124,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
             <View style={[styles.sidebarContainer, { backgroundColor: theme.colors.surface }]}>
                 <ScrollView style={styles.sidebar}>
-                    
+
                     {/* ===== PROFILE SECTION (Added Here) ===== */}
                     <View style={{ alignItems: 'center', paddingVertical: 30, borderBottomWidth: 1, borderBottomColor: theme.colors.border, marginBottom: 15 }}>
                         {loadingUser ? (
@@ -133,10 +133,10 @@ export default function Sidebar({ isOpen, onClose }) {
                             <>
                                 <Image
                                     source={{ uri: getProfileImage() }}
-                                    style={{ 
-                                        width: 90, 
-                                        height: 90, 
-                                        borderRadius: 45, 
+                                    style={{
+                                        width: 90,
+                                        height: 90,
+                                        borderRadius: 45,
                                         marginBottom: 12,
                                         backgroundColor: '#e1e1e1',
                                         borderWidth: 2,
@@ -151,7 +151,7 @@ export default function Sidebar({ isOpen, onClose }) {
                             </>
                         )}
                     </View>
-           
+
 
                     {isSettingsMode ? (
                         <SettingsView onBack={() => setIsSettingsMode(false)} />
@@ -162,12 +162,12 @@ export default function Sidebar({ isOpen, onClose }) {
                                 currentFolderId={currentFolderId}
                             />
 
-                            <TouchableOpacity style={styles.sidebarButton} onPress={() => router.push('/(tabs)/Recent')}>
+                            <TouchableOpacity style={styles.sidebarButton} onPress={() => { router.push('/(tabs)/Recent'); onClose(); }}>
                                 <Ionicons name="time-outline" size={20} color={theme.colors.primary} />
                                 <Text style={[styles.buttonText, { color: theme.colors.textMain }]} >{t('recent')}</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.sidebarButton} onPress={() => router.push('/(tabs)/BinPage')} >
+                            <TouchableOpacity style={styles.sidebarButton} onPress={() => { router.push('/(tabs)/BinPage'); onClose(); }} >
                                 <Ionicons name="trash-outline" size={20} color={theme.colors.primary} />
                                 <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>{t('trash')}</Text>
                             </TouchableOpacity>

@@ -63,6 +63,7 @@ export function useFiles() {
     const navigateBack = () => setFolderStack(prev => prev.slice(0, -1));
 
     const openFile = async (item) => {
+        DeviceEventEmitter.emit("REFRESH_FILES");
         setSelectedFile({ ...item, content: '' });
         setIsFileModalVisible(true);
         const content = await getFileContent(item.id);
@@ -71,6 +72,6 @@ export function useFiles() {
 
     return {
         files, loading, currentFolder, folderStack, selectedFile,
-        isFileModalVisible, setIsFileModalVisible, navigateInto, navigateBack, fetchFiles,setFetchData
+        isFileModalVisible, setIsFileModalVisible, navigateInto, navigateBack, fetchFiles, setFetchData
     };
 }
