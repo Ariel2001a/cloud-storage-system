@@ -24,7 +24,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./src/server_database:/usr/src/app
+      
       - ./uploads:/usr/src/app/uploads
     environment:
       - MONGO_HOST=mongo
