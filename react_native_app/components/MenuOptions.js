@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Menu, IconButton, Dialog, Portal, TextInput, Button} from 'react-native-paper';
+import { Menu, IconButton, Dialog, Portal, TextInput, Button } from 'react-native-paper';
 import {
-  renameFileOrFolder,
-  deleteFileOrFolder,
-  shareFileOrFolder,
-  moveFolder,
-  restoreFileOrFolder,
-  starOrUnstarFileOrPublic
+    renameFileOrFolder,
+    deleteFileOrFolder,
+    shareFileOrFolder,
+    moveFolder,
+    restoreFileOrFolder,
+    starOrUnstarFileOrPublic
 } from '../api/files';
 
 import EmailPromptModal from './EmailPromptModal';
@@ -23,12 +23,12 @@ export default function MenuOptions({ item, isTrash, isStarPage, locale }) {
     const closeMenu = () => setVisible(false);
 
     const trash = 'Move to bin';
-    const starPage = isStarPage ? 'remove from Starred' : 'Add to Starred'
+    const starPage = item.starred ? 'Remove from Starred' : 'Add to Starred'
     const fixedDomain = '@ead.com';
 
     const actions = [
         { label: 'Rename', onPress: () => { closeMenu(); setNewName(item.name); setRenameVisible(true); console.log('Rename', item.name); } },
-        { label: starPage, onPress: () => { starOrUnstarFileOrPublic(item.id,"star"); closeMenu(); console.log('star/unstar', item.name); } },
+        { label: starPage, onPress: () => { starOrUnstarFileOrPublic(item.id, "star"); closeMenu(); console.log('star/unstar', item.name); } },
         { label: 'Share', onPress: () => { closeMenu(); setShareUsername(fixedDomain); setShareVisible(true); console.log('Share', item.name); } },
         { label: 'Move Folder', onPress: () => { closeMenu(); setMoveVisible(true); console.log('move', item.name); } },
         { label: trash, onPress: () => { closeMenu(); deleteFileOrFolder(item.id); console.log('delete', item.name); } }
@@ -42,31 +42,31 @@ export default function MenuOptions({ item, isTrash, isStarPage, locale }) {
     return (
         <>
             <Menu
-            visible={visible}
-            onDismiss={closeMenu}
-            anchor={
-                <IconButton
-                icon="dots-vertical"
-                size={24}
-                onPressIn={openMenu}
-                />
-            }
+                visible={visible}
+                onDismiss={closeMenu}
+                anchor={
+                    <IconButton
+                        icon="dots-vertical"
+                        size={24}
+                        onPressIn={openMenu}
+                    />
+                }
             >
-            {isTrash && actionsTrash.map((action, idx) => (
-                <Menu.Item
-                    key={idx}
-                    onPress={action.onPress}
-                    title={action.label}
-                />
-            ))}
+                {isTrash && actionsTrash.map((action, idx) => (
+                    <Menu.Item
+                        key={idx}
+                        onPress={action.onPress}
+                        title={action.label}
+                    />
+                ))}
 
-            {!isTrash && actions.map((action, idx) => (
-                <Menu.Item
-                key={idx}
-                onPress={action.onPress}
-                title={action.label}
-                />
-            ))}
+                {!isTrash && actions.map((action, idx) => (
+                    <Menu.Item
+                        key={idx}
+                        onPress={action.onPress}
+                        title={action.label}
+                    />
+                ))}
             </Menu>
 
             <Portal>
@@ -88,9 +88,9 @@ export default function MenuOptions({ item, isTrash, isStarPage, locale }) {
                     <Dialog.Actions>
                         <Button onPress={() => setRenameVisible(false)}>Cancel</Button>
                         <Button onPress={async () => {
-                                    await renameFileOrFolder(item.id, newName);
-                                    setRenameVisible(false);
-                                }}
+                            await renameFileOrFolder(item.id, newName);
+                            setRenameVisible(false);
+                        }}
                         >
                             OK
                         </Button>
@@ -114,7 +114,7 @@ export default function MenuOptions({ item, isTrash, isStarPage, locale }) {
                 isRtl={locale === "he"}
                 onClose={() => setMoveVisible(false)}
                 onMoveConfirm={(folderId) => moveFolder(item.id, folderId)}
-            />     
+            />
         </>
     );
 }
