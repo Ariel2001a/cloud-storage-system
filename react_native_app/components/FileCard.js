@@ -4,8 +4,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { styles } from '../styles/FileCard.styles.js';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
+import MenuOptions from './MenuOptions.js'
 
-export default function FileCard({ item, onPress }) {
+export default function FileCard({ item, onPress,isTrash,isStarPage }) {
     const { theme } = useTheme();
     const { locale } = useLanguage();
 
@@ -47,9 +48,21 @@ export default function FileCard({ item, onPress }) {
                 </Text>
             </View>
 
-            <TouchableOpacity onPress={() => {/* open options- 3 dots*/ }}>
-                <Ionicons name="ellipsis-vertical" size={20} color={theme.colors.textSub} />
-            </TouchableOpacity>
+            <MenuOptions
+                item={item}
+                locale={locale}
+                isTrash={isTrash}
+                isStarPage={isStarPage}
+                anchor={
+                    <TouchableOpacity>
+                    <Ionicons
+                        name="ellipsis-vertical"
+                        size={20}
+                        color={theme.colors.textSub}
+                    />
+                    </TouchableOpacity>
+                }
+            />
         </TouchableOpacity>
     );
 }

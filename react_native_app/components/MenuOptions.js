@@ -12,15 +12,13 @@ import {
 import EmailPromptModal from './EmailPromptModal';
 import MoveFolderDialog from './MoveFolderDialog';
 
-export default function MenuOptions({ item, isTrash, isStarPage, onRename, locale }) {
+export default function MenuOptions({ item, isTrash, isStarPage, locale }) {
     const [visible, setVisible] = useState(false);
     const [renameVisible, setRenameVisible] = useState(false);
     const [shareVisible, setShareVisible] = useState(false);
-    const [username, setShareUsername] = useState(false);
     const [newName, setNewName] = useState(item.name);
     const [moveVisible, setMoveVisible] = useState(false);
 
-    
     const openMenu = () => setVisible(true);
     const closeMenu = () => setVisible(false);
 
@@ -50,7 +48,7 @@ export default function MenuOptions({ item, isTrash, isStarPage, onRename, local
                 <IconButton
                 icon="dots-vertical"
                 size={24}
-                onPress={openMenu}
+                onPressIn={openMenu}
                 />
             }
             >
@@ -90,8 +88,7 @@ export default function MenuOptions({ item, isTrash, isStarPage, onRename, local
                     <Dialog.Actions>
                         <Button onPress={() => setRenameVisible(false)}>Cancel</Button>
                         <Button onPress={async () => {
-                                    const success = await renameFileOrFolder(item.id, newName);
-                                    onRename(item.id, success.name);
+                                    await renameFileOrFolder(item.id, newName);
                                     setRenameVisible(false);
                                 }}
                         >
