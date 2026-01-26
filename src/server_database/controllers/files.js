@@ -224,7 +224,7 @@ exports.getFileById = async (req, res) => {
     }
 
     return res.json({
-        ...file.toObject(),
+        ...file,
         content: content
     });
 };

@@ -21,7 +21,7 @@ export default function MainContent() {
                 tabBar={(props) => <BottomTabs {...props} />}
                 screenOptions={{
                     headerShown: false,
-                    sceneContainerStyle: { backgroundColor: 'transparent' }
+                    sceneContainerStyle: { backgroundColor: 'transparent' },
                 }}
             >
                 <Tabs.Screen name="index" />

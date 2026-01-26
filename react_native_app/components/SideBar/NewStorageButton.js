@@ -9,7 +9,8 @@ import FolderForm from '../forms/FolderForm';
 import TextForm from '../forms/TextForm';
 import ImageForm from '../forms/ImageForm';
 
-export default function NewStorageButton({ onCreated }) {
+export default function NewStorageButton({ onCreated, currentFolderId }) {
+    console.log("DEBUG - Current Folder ID in Button:", currentFolderId);
     const { theme } = useTheme();
     const { t } = useLanguage();
     const [menuVisible, setMenuVisible] = useState(false);
@@ -46,16 +47,19 @@ export default function NewStorageButton({ onCreated }) {
             <FolderForm
                 visible={activeForm === 'folder'}
                 onClose={handleFormClose}
+                parentId={currentFolderId}
             />
 
             <TextForm
                 visible={activeForm === 'text'}
                 onClose={handleFormClose}
+                parentId={currentFolderId}
             />
 
             <ImageForm
                 visible={activeForm === 'image'}
                 onClose={handleFormClose}
+                parentId={currentFolderId}
             />
         </>
     );

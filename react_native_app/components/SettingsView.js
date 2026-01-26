@@ -5,10 +5,11 @@ import { useLanguage } from '../context/LanguageContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { styles } from '../styles/Siebar.styles.js';
+import LangButton from './LangButton.js';
 
 export default function SettingsView({ onBack }) {
     const { theme, toggleTheme } = useTheme();
-    const { t, locale, switchLanguage } = useLanguage();
+    const { t } = useLanguage();
     const router = useRouter();
 
     const handleSignOut = async () => {
@@ -34,15 +35,8 @@ export default function SettingsView({ onBack }) {
                 {t('settings')}
             </Text>
 
-            <TouchableOpacity
-                style={styles.sidebarButton}
-                onPress={() => switchLanguage(locale === 'en' ? 'he' : 'en')}
-            >
-                <Ionicons name="language-outline" size={20} color={theme.colors.primary} />
-                <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>
-                    {t('language')}: {locale === 'en' ? 'English' : 'עברית'}
-                </Text>
-            </TouchableOpacity>
+            <LangButton />
+
 
             <TouchableOpacity style={styles.sidebarButton} onPress={toggleTheme}>
                 <Ionicons
@@ -55,7 +49,6 @@ export default function SettingsView({ onBack }) {
                 </Text>
             </TouchableOpacity>
 
-            {/* ===== SIGN OUT BUTTON ===== */}
             <TouchableOpacity
                 style={styles.sidebarButton}
                 onPress={handleSignOut}
@@ -63,7 +56,7 @@ export default function SettingsView({ onBack }) {
                 <Ionicons name="log-out-outline" size={20} color={theme.colors.primary} />
                 <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>
                     {t('signOut')}
-                   
+
                 </Text>
             </TouchableOpacity>
         </View>

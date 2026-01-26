@@ -20,6 +20,7 @@ export const translations = {
     folderName: "Folder name",
     fileName: "File name",
     cancel: "Cancel",
+    close: "close",
     save: "Save",
     create: "Create",
     createNew: "Create new",
@@ -35,6 +36,7 @@ export const translations = {
     failedToCreate: "We couldn't create the item. Please try again later",
     nameRequired: "Name is required to create the item",
     signOut: "Sign Out",
+    noFilesFound: "No files found",
 
     //register page
     createAccount: "Create a new account",
@@ -93,12 +95,13 @@ export const translations = {
     folderName: "שם התיקייה",
     fileName: "שם הקובץ",
     cancel: "ביטול",
+    close: "סגור",
     save: "שמור",
     create: "צור",
     createNew: "צור",
     uploadImage: "העלה תמונה",
     selectImage: "בחר תמונה",
-    newTextNote: "קובץ טקטס חדש",
+    newTextNote: "קובץ טקסט חדש",
     writeSomething: "כתוב כאן",
     cameraPermissionDenied: "הרשאת המצלמה נדחתה",
     selectOption: "בחר אפשרות",
@@ -108,6 +111,7 @@ export const translations = {
     failedToCreate: "לא הצלחנו ליצור את הפריט. אנא נסה מאוחר יותר",
     nameRequired: "חובה להזין שם עבור הפריט",
     signOut: "התנתק",
+    noFilesFound: "אין קבצים להצגה",
 
     // Register page
     createAccount: "צור חשבון חדש",
