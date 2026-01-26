@@ -13,6 +13,9 @@ export function useFiles() {
     const currentFolderRef = useRef(currentFolder);
     useEffect(() => { currentFolderRef.current = currentFolder; }, [currentFolder]);
 
+    const fetchDataRef = useRef(null);
+    const setFetchData = (fn) => { fetchDataRef.current = fn; };
+
     const handleSearch = async (query) => {
         if (!query.trim()) {
             fetchFiles();
@@ -30,9 +33,10 @@ export function useFiles() {
     };
 
     const fetchFiles = async (folder = currentFolderRef.current) => {
+        if (!fetchDataRef.current) return;
         setLoading(true);
         try {
-            const data = folder ? await getFolderChildren(folder.id) : await getFiles();
+            const data = folder ? await getFolderChildren(folder.id) : await fetchDataRef.current();
             setFiles(data);
         } catch (error) { console.error(error); } finally { setLoading(false); }
     };
@@ -67,6 +71,6 @@ export function useFiles() {
 
     return {
         files, loading, currentFolder, folderStack, selectedFile,
-        isFileModalVisible, setIsFileModalVisible, navigateInto, navigateBack, fetchFiles
+        isFileModalVisible, setIsFileModalVisible, navigateInto, navigateBack, fetchFiles,setFetchData
     };
 }

@@ -8,8 +8,10 @@ const isLoggedIn = require('../middleware/auth');       // JWT middleware
 // Routes for top-level files/folders/imagess
 router.route('/')
     .post(isLoggedIn, filesController.createFileOrFolder) // Create a new file or folder
-    .get(isLoggedIn, filesController.getFiles);           // Get all top-level files/folders
+    .get(isLoggedIn, filesController.getLastOpenFiles)
 
+router.route('/myDrive')    
+    .get(isLoggedIn, filesController.getFiles);           // Get all top-level files/folders
 router.route('/deleted')
         .get(isLoggedIn, filesController.getDeletedFiles); // Get all deleted files/folders
 

@@ -1,6 +1,7 @@
 const File = require ('../models/files');
 const Permission = require ('../models/permission')
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const Month_MS = WEEK_MS * 4;
 
 const getUserFilesByFilter = async (userId, filter = {}) => {
     return await File.find({ ownerId: userId, ...filter });
@@ -21,6 +22,11 @@ const getUserRecentFiles = async (userId) => {
     return await getUserFilesByFilter( userId , { date: { $gte: oneWeekAgo } });
 };
 
+const getUserLastOpenedFiles = async (userId) => {
+    const oneMonthAgo = new Date(Date.now() - Month_MS);
+    return await getUserFilesByFilter( userId , { open: { $ne: null , $gte : oneMonthAgo } });
+};
+
 const getUserSharedFiles = async (userId) => {
     const permissions = await Permission.find({ userId : userId });
 
@@ -36,11 +42,11 @@ const getUserSharedFiles = async (userId) => {
 
 // Get all files/folders for a user
 const getTopLevelFiles = async(userId) => {
-    return await getUserFilesByFilter(userId, {folderParent : null});
+    return await getUserFilesByFilter(userId, {bin : false , folderParent : null});
 };
 
 const getFolderFiles = async (userId, folderParent) => {
-    return await File.find({ownerId : userId , folderParent : folderParent});
+    return await File.find({ownerId : userId ,bin : false , folderParent : folderParent});
 };
 
 // Get all files/folders for a user
@@ -89,7 +95,7 @@ const getFileById = async (userId, fileId) => {
 
 const getFileByIdFromDeleted = async (userId, fileId) => {
     const files = await getUserFilesByFilter(userId, { id: fileId, bin: true });
-    return files || null;
+    return files[0] || null;
 };
 
 
@@ -116,6 +122,7 @@ const deleteFileByIdFromUserFiles = async (userId, fileId) => {
 
 const RestoreFileByIdFromBin = async (userId, fileId) => {
     let file = await getFileByIdFromDeleted(userId, fileId);
+    console.log("services:", file);
     if (!file) {
         return false;
     }
@@ -178,5 +185,6 @@ module.exports = {
     RestoreFileByIdFromBin,
     getUserRecentFiles,
     doFilePublic,
-    getUserSharedFiles
+    getUserSharedFiles,
+    getUserLastOpenedFiles
 };

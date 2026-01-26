@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { ScrollView, TouchableOpacity, Text, View, Image, ActivityIndicator } from 'react-native';
 import { styles } from '../styles/Siebar.styles.js';
@@ -15,8 +16,7 @@ import { getUserDetails, API_BASE } from '../api/files';
 export default function Sidebar({ isOpen, onClose }) {
     const { theme } = useTheme();
     const { t } = useLanguage();
-    
-    // States
+    const router = useRouter();
     const [isSettingsMode, setIsSettingsMode] = useState(false);
     const [currentFolderId, setCurrentFolderId] = useState(null);
     
@@ -151,7 +151,7 @@ export default function Sidebar({ isOpen, onClose }) {
                             </>
                         )}
                     </View>
-                    {/* ======================================== */}
+           
 
                     {isSettingsMode ? (
                         <SettingsView onBack={() => setIsSettingsMode(false)} />
@@ -162,13 +162,13 @@ export default function Sidebar({ isOpen, onClose }) {
                                 currentFolderId={currentFolderId}
                             />
 
-                            <TouchableOpacity style={styles.sidebarButton}>
-                                <Ionicons name="time-outline" size={22} color={theme.colors.primary} />
-                                <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>{t('recent')}</Text>
+                            <TouchableOpacity style={styles.sidebarButton} onPress={() => router.push('/(tabs)/Recent')}>
+                                <Ionicons name="time-outline" size={20} color={theme.colors.primary} />
+                                <Text style={[styles.buttonText, { color: theme.colors.textMain }]} >{t('recent')}</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.sidebarButton}>
-                                <Ionicons name="trash-outline" size={22} color={theme.colors.primary} />
+                            <TouchableOpacity style={styles.sidebarButton} onPress={() => router.push('/(tabs)/BinPage')} >
+                                <Ionicons name="trash-outline" size={20} color={theme.colors.primary} />
                                 <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>{t('trash')}</Text>
                             </TouchableOpacity>
 

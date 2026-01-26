@@ -30,8 +30,9 @@ curl -i -X POST http://localhost:8080/api/files/ \
     "parentId": null
   }'
 
-curl -i -X GET http://localhost:8080/api/files/1769110190242 \
-  -H "user-id: 1"
+curl -i -X GET http://localhost:8080/api/files/1769171091769 \
+-H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhYSIsImlhdCI6MTc2OTM1ODAxMCwiZXhwIjoxNzY5MzYxNjEwfQ.LMr0PU8n985mACPVbd1HYFCzRF3bvH4A1B3WjeR9xdY"
+
 
 curl -i -X DELETE http://localhost:8080/api/files/1769121802855 \
   -H "user-id: 2"
@@ -44,9 +45,8 @@ curl -i -X PATCH http://localhost:8080/api/files/1769072211794 \
     "parentId": null
   }'
 
-curl -i http://localhost:8080/api/files/shared/1769122272899/permissions/1769122319496 \
--H "user-id: 1"
-
+curl -i http://localhost:8080/api/files/1769171091769/permissions \
+-H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhYSIsImlhdCI6MTc2OTM1ODAxMCwiZXhwIjoxNzY5MzYxNjEwfQ.LMr0PU8n985mACPVbd1HYFCzRF3bvH4A1B3WjeR9xdY"
 curl -i -X DELETE http://localhost:8080/api/files/1769073385692/permissions/2026-01-22T09:16:25.719Z
 -H "user-id: 1"
 
