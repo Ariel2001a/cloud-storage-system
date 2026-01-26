@@ -32,8 +32,13 @@ export default function FileList() {
                 )}
                 ListEmptyComponent={
                     <View style={{ marginTop: 50, alignItems: 'center' }}>
-                        {loading ? <ActivityIndicator color={theme.colors.primary} />
-                            : <Text style={{ color: theme.colors.textSub }}>{t('noFilesFound')}</Text>}
+                        {loading ? (
+                            <ActivityIndicator color={theme.colors.primary} />
+                        ) : (
+                            <Text style={{ color: theme.colors.textSub }}>
+                                {t('noFilesFound')}
+                            </Text>
+                        )}
                     </View>
                 }
             />
