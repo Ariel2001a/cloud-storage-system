@@ -1,43 +1,58 @@
 // app/register.js
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, Image,
-  Alert, ScrollView, KeyboardAvoidingView, Platform
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Alert,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
+
+import * as FileSystem from 'expo-file-system/legacy';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
+
 import styles from '../styles/Register.styles';
-import { useLanguage } from '../context/LanguageContext'; // <-- import hook
+import { useLanguage } from '../context/LanguageContext';
 
+// ===== SERVER URL =====
+const SERVER_URL = 'http://192.168.1.225:8080';
 
-
-// ===== SERVER URL CONFIG =====
-// Change this to switch between LAN, ngrok, or production
-// Current placeholder: localhost``
-// Your PC LAN IP: 192.168.1.225
-
-const SERVER_URL = 'http://10.0.2.2:8080';  // Android emulator localhost
-//const SERVER_URL = 'http://192.168.1.75:8080';
-
-const RegisterScreen = () => {
+export default function RegisterScreen() {
   const router = useRouter();
-  const { t, locale, switchLanguage } = useLanguage(); // ✅ hook
+  const { t, locale, switchLanguage } = useLanguage();
 
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
-  const [profileImage, setProfileImage] = useState(null);
+  
+  const [profileImageUri, setProfileImageUri] = useState(null);
+  const [profileImageBase64, setProfileImageBase64] = useState(null);
 
-  const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert(t('error'), t('permissionDenied'));
-      return;
+  // ===== HELPER: PROCESS IMAGE =====
+  const processImage = async (uri) => {
+    try {
+      setProfileImageUri(uri);
+      const base64 = await FileSystem.readAsStringAsync(uri, {
+        encoding: 'base64',
+      });
+      const fullBase64 = `data:image/jpeg;base64,${base64}`;
+      setProfileImageBase64(fullBase64);
+    } catch (error) {
+      console.error("Error processing image:", error);
+      Alert.alert(t('error'), t('imageProcessingFailed'));
     }
+  };
 
-    let result = await ImagePicker.launchImageLibraryAsync({
+  // ===== PICK IMAGE (Gallery) =====
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
@@ -45,10 +60,43 @@ const RegisterScreen = () => {
     });
 
     if (!result.canceled) {
-      setProfileImage(result.assets[0].uri);
+      await processImage(result.assets[0].uri);
     }
   };
 
+  // ===== TAKE PHOTO (Camera) =====
+  const takePhoto = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      Alert.alert(t('error'), t('cameraPermissionDenied'));
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.5,
+    });
+
+    if (!result.canceled) {
+      await processImage(result.assets[0].uri);
+    }
+  };
+
+  // ===== SHOW OPTIONS (Menu) =====
+  const showOptions = () => {
+    Alert.alert(
+      t('selectOption') || (locale === 'he' ? "בחר אפשרות" : "Select Option"),
+      t('chooseSource') || (locale === 'he' ? "בחר מקור לתמונה" : "Choose a source for your profile picture"),
+      [
+        { text: t('camera') || (locale === 'he' ? "מצלמה" : "Camera"), onPress: takePhoto },
+        { text: t('gallery') || (locale === 'he' ? "גלריה" : "Gallery"), onPress: pickImage },
+        { text: t('cancel') || (locale === 'he' ? "ביטול" : "Cancel"), style: 'cancel' }
+      ]
+    );
+  };
+
+  // ===== REGISTER =====
   const handleRegister = async () => {
     if (!firstname || !lastname || !username || !password || !confirm) {
       Alert.alert(t('missingInfo'), t('fillAllFields'));
@@ -70,33 +118,41 @@ const RegisterScreen = () => {
       return;
     }
 
-    const data = {
+    const payload = {
       first_name: firstname,
       last_name: lastname,
       email: `${username}@ead.com`,
       password,
-      image: profileImage || null,
+      image: profileImageBase64,
     };
 
     try {
       const res = await fetch(`${SERVER_URL}/api/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {
         Alert.alert(t('success'), t('registeredSuccessfully'), [
-          { text: 'OK', onPress: () => router.push('login') }
+          { text: 'OK', onPress: () => router.push('login') },
         ]);
       } else {
-        const errText = await res.text();
-        Alert.alert(t('registrationFailed'), errText);
+        const text = await res.text();
+        Alert.alert(t('registrationFailed'), text);
       }
     } catch (err) {
+      console.error(err);
       Alert.alert(t('error'), t('couldNotConnect'));
-      console.log(err);
     }
+  };
+
+  // Helper for Picture Text
+  const getPictureText = () => {
+    if (profileImageUri) {
+        return locale === 'he' ? 'שנה תמונה' : 'Change Picture';
+    }
+    return locale === 'he' ? 'העלה תמונה' : 'Upload Picture';
   };
 
   return (
@@ -105,13 +161,13 @@ const RegisterScreen = () => {
       style={{ flex: 1 }}
     >
       <ScrollView contentContainerStyle={styles.container}>
-        {/* ===== Language Button ===== */}
+        
+        {/* Language Toggle - Fixed Logic */}
         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 10 }}>
-          <TouchableOpacity
-            onPress={() => switchLanguage(locale === 'en' ? 'he' : 'en')}
-            style={{ padding: 5 }}
-          >
-            <Text>{locale === 'en' ? 'English' : 'עברית'}</Text>
+          <TouchableOpacity onPress={() => switchLanguage(locale === 'en' ? 'he' : 'en')}>
+            <Text style={{ fontSize: 16, fontWeight: '500', color: '#007AFF' }}>
+                {locale === 'en' ? '🇮🇱 עברית' : '🇺🇸 English'}
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -130,25 +186,37 @@ const RegisterScreen = () => {
           <TextInput style={styles.input} placeholder={t('password')} value={password} onChangeText={setPassword} secureTextEntry />
           <TextInput style={styles.input} placeholder={t('confirmPassword')} value={confirm} onChangeText={setConfirm} secureTextEntry />
 
-          <View style={styles.buttonRow}>
-            <TouchableOpacity style={[styles.btn, styles.uploadBtn]} onPress={pickImage}>
-              <Text style={styles.btnText}>{t('uploadPicture')}</Text>
+          {/* Image Selection Area */}
+          <View style={{ alignItems: 'center', marginVertical: 20 }}>
+            <TouchableOpacity onPress={showOptions} style={{ alignItems: 'center' }}>
+              {profileImageUri ? (
+                <Image 
+                    source={{ uri: profileImageUri }} 
+                    style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 15 }} 
+                />
+              ) : (
+                <View style={{ 
+                    width: 100, height: 100, borderRadius: 50, 
+                    backgroundColor: '#e0e0e0', justifyContent: 'center', alignItems: 'center', marginBottom: 15 
+                }}>
+                    <Text style={{ fontSize: 30, color: '#888' }}>📷</Text>
+                </View>
+              )}
+              
+              <Text style={{ color: '#007AFF', fontWeight: 'bold', marginTop: 5 }}>
+                {t('uploadPicture') || getPictureText()}
+              </Text>
             </TouchableOpacity>
+          </View>
 
-            <TouchableOpacity style={[styles.btn, styles.registerBtn]} onPress={handleRegister}>
-              <Text style={[styles.btnText, { color: '#fff' }]}>{t('register')}</Text>
+          {/* Button Row - Centralized */}
+          <View style={[styles.buttonRow, { justifyContent: 'center' }]}>
+            <TouchableOpacity style={[styles.btn, styles.registerBtn, { width: '80%' }]} onPress={handleRegister}>
+              <Text style={[styles.btnText, { color: '#fff', textAlign: 'center' }]}>{t('register')}</Text>
             </TouchableOpacity>
           </View>
         </View>
-
-        {profileImage && (
-          <View style={styles.imagePreviewContainer}>
-            <Image source={{ uri: profileImage }} style={styles.previewImage} />
-          </View>
-        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );
-};
-
-export default RegisterScreen;
+}
