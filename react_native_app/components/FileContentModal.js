@@ -11,13 +11,15 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) {
     const { locale } = useLanguage();
     const [editVisible, setEditVisible] = useState(false);
     
-    // Local state for immediate UI updates
+    // Local state for immediate UI updates (Content AND Name)
     const [displayedContent, setDisplayedContent] = useState("");
+    const [displayedName, setDisplayedName] = useState("");
 
     // Initialize state when file loads
     useEffect(() => {
         if (file) {
             setDisplayedContent(file.content || "");
+            setDisplayedName(file.name || "");
         }
     }, [file]);
 
@@ -33,12 +35,19 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) {
     // Use local displayedContent
     const contentString = String(displayedContent || "");
 
-    const handleSave = (newContent) => {
-        // Prevent setting blank/undefined if something goes wrong
-        if (newContent !== undefined && newContent !== null) {
-            setDisplayedContent(newContent);
-            onEdit && onEdit(file.id, { content: newContent });
+    const handleSave = (updatedData) => {
+        // updatedData is now an object: { name: "...", content: "..." }
+        
+        if (updatedData.content !== undefined) {
+            setDisplayedContent(updatedData.content);
         }
+        if (updatedData.name) {
+            setDisplayedName(updatedData.name);
+        }
+
+        // Propagate to parent list
+        onEdit && onEdit(file.id, updatedData);
+        
         setEditVisible(false);
     };
 
@@ -67,8 +76,9 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) {
                             />
                         </TouchableOpacity>
 
+                        {/* Display local Name state so it updates instantly */}
                         <Text style={[styles.headerTitle, { color: HEADER_TEXT }]} numberOfLines={1}>
-                            {file.name}
+                            {displayedName}
                         </Text>
 
                         <TouchableOpacity
@@ -108,8 +118,8 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) {
 
             <EditFileForm
                 visible={editVisible}
-                // Pass displayedContent so the edit form always opens with the latest unsaved local changes if needed
-                file={{ ...file, content: displayedContent }} 
+                // Pass current displayed values to the form
+                file={{ ...file, name: displayedName, content: displayedContent }} 
                 onCancel={() => setEditVisible(false)}
                 onSave={handleSave}
                 lang={locale}
