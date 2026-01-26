@@ -1,9 +1,9 @@
 import { View } from 'react-native';
-import { styles } from '../styles/index.styles.js';
-import FileList from '../components/FileList.js';
-import { useTheme } from '../context/ThemeContext.js';
+import { styles } from '../../styles/index.styles.js';
+import FileList from '../../components/FileList.js';
+import { useTheme } from '../../context/ThemeContext.js';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { getRecentFiles } from '../api/files.js';
+import { getRecentFiles } from '../../api/files.js';
 
 
 export default function Recent() {

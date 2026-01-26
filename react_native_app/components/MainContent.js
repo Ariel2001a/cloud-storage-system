@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import BottomTabs from './BottomTabs';
+import BottomTabs from '../app/BottomTabs.js';
 import { View } from 'react-native';
 import { styles } from '../styles/MainContent.styles.js';
 import { useTheme } from '../context/ThemeContext';

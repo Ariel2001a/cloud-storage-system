@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import styles from '../styles/BottomTabs.styles.js';
-import { useTheme } from '../context/ThemeContext';
-import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext.js';
+import { useLanguage } from '../context/LanguageContext.js';
 
 export default function BottomTabs() {
     const { theme } = useTheme();
@@ -20,10 +20,10 @@ export default function BottomTabs() {
     ];
 
     const tabScreens = {
-        home: 'Home',
-        starred: 'StarFilesPage',
-        shared: 'ShareFiles',
-        drive: 'MyDrive',
+        home: '(tabs)/Home',
+        starred: '(tabs)/StarFilesPage',
+        shared: '(tabs)/ShareFiles',
+        drive: '(tabs)/MyDrive',
     };
 
 

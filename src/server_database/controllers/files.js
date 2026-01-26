@@ -365,7 +365,7 @@ exports.deleteFileById = async (req, res) => {
 
     const permissionsShare = await Permission.getPermissionsByFileId(idToDelete);
     for (const perm of permissionsShare) {
-        await filesModel.deleteFileByIdFromSharedFiles(perm.userId, idToDelete);
+        await Permission.deletePermissionById(perm.id);
     }
 
     const deletePhysicalFile = (fileObj) => {
@@ -452,7 +452,7 @@ exports.restoreFileFromBin = async (req, res) => {
 
     const fileId = parseInt(req.params.id);
     const success = await filesModel.RestoreFileByIdFromBin(userId, fileId);
-    
+    console.log("controller:", success);
     if (!success) {
         return res.status(404).json({ error: 'File not found' });
     }
