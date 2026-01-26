@@ -3,7 +3,7 @@ import { styles } from '../../styles/index.styles.js';
 import FileList from '../../components/FileList';
 import { useTheme } from '../../context/ThemeContext';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { getFiles } from '../../api/files.js';
+import { getLastOpenFiles } from '../../api/files.js';
 
 
 export default function NewsFeed() {
@@ -11,7 +11,7 @@ export default function NewsFeed() {
     return (
         <PaperProvider>
             <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <FileList fetchData={getFiles} isTrash={false} isStarPage={false}/>
+                <FileList fetchData={getLastOpenFiles} isTrash={false} isStarPage={false}/>
             </View>
         </PaperProvider>
     );
