@@ -214,7 +214,7 @@ exports.getFileById = async (req, res) => {
 
     if (!file) return res.status(404).json({ error: 'File not found' });
 
-    file.open = Date.now;
+    file.open = Date.now();
     file.save();
 
     let content = ""
