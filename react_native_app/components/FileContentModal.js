@@ -1,15 +1,27 @@
-import React, { useState } from 'react'; /////////
+import React, { useState, useEffect } from 'react';
 import { Modal, View, Text, ScrollView, TouchableOpacity, SafeAreaView, StatusBar, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { getFileContentStyles } from '../styles/FileContentModal.styles';
-import EditFileForm from './forms/EditFileForm'; /////////
+import EditFileForm from './forms/EditFileForm';
 
-export default function FileContentModal({ visible, file, onClose, onEdit }) { /////////
+export default function FileContentModal({ visible, file, onClose, onEdit }) {
     const { theme } = useTheme();
     const { locale } = useLanguage();
-    const [editVisible, setEditVisible] = useState(false); /////////
+    const [editVisible, setEditVisible] = useState(false);
+    
+    // Local state for immediate UI updates (Content AND Name)
+    const [displayedContent, setDisplayedContent] = useState("");
+    const [displayedName, setDisplayedName] = useState("");
+
+    // Initialize state when file loads
+    useEffect(() => {
+        if (file) {
+            setDisplayedContent(file.content || "");
+            setDisplayedName(file.name || "");
+        }
+    }, [file]);
 
     if (!file) return null;
 
@@ -19,12 +31,25 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) { /
     const HEADER_TEXT = theme.colors.textMain || theme.colors.text;
     const ICON_COLOR = theme.colors.primary;
     const isThemeDark = theme.dark || theme.mode === 'dark';
-    const contentString = String(file.content || "");
+    
+    // Use local displayedContent
+    const contentString = String(displayedContent || "");
 
-    const handleSave = (newContent) => { /////////
-        onEdit && onEdit(file.id, { content: newContent }); /////////
-        setEditVisible(false); /////////
-    }; /////////
+    const handleSave = (updatedData) => {
+        // updatedData is now an object: { name: "...", content: "..." }
+        
+        if (updatedData.content !== undefined) {
+            setDisplayedContent(updatedData.content);
+        }
+        if (updatedData.name) {
+            setDisplayedName(updatedData.name);
+        }
+
+        // Propagate to parent list
+        onEdit && onEdit(file.id, updatedData);
+        
+        setEditVisible(false);
+    };
 
     return (
         <>
@@ -51,13 +76,14 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) { /
                             />
                         </TouchableOpacity>
 
+                        {/* Display local Name state so it updates instantly */}
                         <Text style={[styles.headerTitle, { color: HEADER_TEXT }]} numberOfLines={1}>
-                            {file.name}
+                            {displayedName}
                         </Text>
 
                         <TouchableOpacity
                             style={styles.iconButton}
-                            onPress={() => setEditVisible(true)} /////////
+                            onPress={() => setEditVisible(true)}
                         >
                             <Ionicons name="create-outline" size={24} color={ICON_COLOR} />
                         </TouchableOpacity>
@@ -69,7 +95,7 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) { /
                                 <Image
                                     source={{
                                         uri: contentString.startsWith('/uploads')
-                                            ? `http://10.0.2.2:8080${contentString}` /////////
+                                            ? `http://10.0.2.2:8080${contentString}`
                                             : contentString.startsWith('data:')
                                                 ? contentString
                                                 : `data:image/jpeg;base64,${contentString}`
@@ -91,12 +117,13 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) { /
             </Modal>
 
             <EditFileForm
-                visible={editVisible} /////////
-                file={file} /////////
-                onCancel={() => setEditVisible(false)} /////////????
-                onSave={handleSave} /////////
-                lang={locale} /////////
-            /> /////////
+                visible={editVisible}
+                // Pass current displayed values to the form
+                file={{ ...file, name: displayedName, content: displayedContent }} 
+                onCancel={() => setEditVisible(false)}
+                onSave={handleSave}
+                lang={locale}
+            />
         </>
     );
 }

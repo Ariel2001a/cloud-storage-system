@@ -1,18 +1,21 @@
 import { useState } from 'react';
-import { Menu, IconButton, Dialog, Portal, TextInput, Button} from 'react-native-paper';
+import { DeviceEventEmitter } from 'react-native';
+import { Menu, IconButton, Dialog, Portal, TextInput, Button } from 'react-native-paper';
+import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
+
 import {
-  renameFileOrFolder,
-  deleteFileOrFolder,
-  shareFileOrFolder,
-  moveFolder,
-  restoreFileOrFolder,
-  starOrUnstarFileOrPublic
+    renameFileOrFolder,
+    deleteFileOrFolder,
+    shareFileOrFolder,
+    moveFolder,
+    restoreFileOrFolder,
+    starOrUnstarFileOrPublic
 } from '../api/files';
 
 import EmailPromptModal from './EmailPromptModal';
 import MoveFolderDialog from './MoveFolderDialog';
 import { useLanguage } from '../context/LanguageContext';
-
 
 export default function MenuOptions({ item, isTrash }) {
     const [visible, setVisible] = useState(false);
@@ -23,82 +26,80 @@ export default function MenuOptions({ item, isTrash }) {
     const { locale, t } = useLanguage();
 
 
+    const { theme } = useTheme();
+    const { t, locale } = useLanguage();
+
     const openMenu = () => setVisible(true);
     const closeMenu = () => setVisible(false);
 
-    const trash = t('Movetobin');
-    const starPage = item.starred ? t('RemovefromStarred') : t('AddtoStarred')
+    const executeAndRefresh = async (actionFn, successMsgKey, ...args) => {
+        try {
+            await actionFn(...args);
+            DeviceEventEmitter.emit("REFRESH_FILES");
+            DeviceEventEmitter.emit("SHOW_SNACKBAR", t(successMsgKey));
 
-    const fixedDomain = '@ead.com';
+            closeMenu();
+        } catch (error) {
+            console.error("Action failed:", error);
+            DeviceEventEmitter.emit("SHOW_SNACKBAR", t('action_failed'));
+        }
+    };
+
+    const trashLabel = t('move_to_bin');
+    const starLabel = item.starred ? t('remove_star') : t('add_star');
 
     const actions = [
-        { label: t('Rename'), onPress: () => { closeMenu(); setNewName(item.name); setRenameVisible(true); console.log('Rename', item.name); } },
-        { label: starPage, onPress: () => { starOrUnstarFileOrPublic(item.id,"star"); closeMenu(); console.log('star/unstar', item.name); } },
-        { label: t('Share'), onPress: () => { closeMenu(); setShareUsername(fixedDomain); setShareVisible(true); console.log('Share', item.name); } },
-        { label: t('MoveFolder'), onPress: () => { closeMenu(); setMoveVisible(true); console.log('move', item.name); } },
-        { label: trash, onPress: () => { closeMenu(); deleteFileOrFolder(item.id); console.log('delete', item.name); } }
+        { label: t('rename'), onPress: () => { closeMenu(); setRenameVisible(true); } },
+        { label: starLabel, onPress: () => executeAndRefresh(starOrUnstarFileOrPublic, 'status_updated', item.id, "star") },
+        { label: t('share'), onPress: () => { closeMenu(); setShareVisible(true); } },
+        { label: t('move_folder'), onPress: () => { closeMenu(); setMoveVisible(true); } },
+        { label: trashLabel, onPress: () => executeAndRefresh(deleteFileOrFolder, 'moved_to_bin', item.id) }
     ];
 
     const actionsTrash = [
-        { label: t('Restore'), onPress: () => { closeMenu(); restoreFileOrFolder(item.id); console.log('move', item.name); } },
-        { label: t('DeleteForever'), onPress: () => { closeMenu(); deleteFileOrFolder(item.id); console.log('delete', item.name); } }
+        { label: t('restore'), onPress: () => executeAndRefresh(restoreFileOrFolder, 'file_restored', item.id) },
+        { label: t('delete_forever'), onPress: () => executeAndRefresh(deleteFileOrFolder, 'deleted_permanently', item.id) }
     ];
 
     return (
         <>
             <Menu
-            visible={visible}
-            onDismiss={closeMenu}
-            anchor={
-                <IconButton
-                icon="dots-vertical"
-                size={24}
-                onPressIn={openMenu}
-                />
-            }
+                visible={visible}
+                onDismiss={closeMenu}
+                anchor={
+                    <IconButton
+                        icon="dots-vertical"
+                        size={24}
+                        onPress={openMenu}
+                    />
+                }
             >
-            {isTrash && actionsTrash.map((action, idx) => (
-                <Menu.Item
-                    key={idx}
-                    onPress={action.onPress}
-                    title={action.label}
-                />
-            ))}
-
-            {!isTrash && actions.map((action, idx) => (
-                <Menu.Item
-                key={idx}
-                onPress={action.onPress}
-                title={action.label}
-                />
-            ))}
+                {(isTrash ? actionsTrash : actions).map((action, idx) => (
+                    <Menu.Item key={idx} onPress={action.onPress} title={action.label} />
+                ))}
             </Menu>
 
             <Portal>
-                <Dialog
-                    visible={renameVisible}
-                    onDismiss={() => setRenameVisible(false)}
-                >
-                    <Dialog.Title>{t('Rename')}</Dialog.Title>
-
+                {/* Rename Dialog */}
+                <Dialog visible={renameVisible} onDismiss={() => setRenameVisible(false)}>
+                    <Dialog.Title>{t('rename')}</Dialog.Title>
                     <Dialog.Content>
                         <TextInput
                             value={newName}
                             onChangeText={setNewName}
                             autoFocus
                             placeholder = {t('newName')}
+                            style={{ textAlign: locale === 'he' ? 'right' : 'left' }}
                         />
                     </Dialog.Content>
-
                     <Dialog.Actions>
-                        <Button onPress={() => setRenameVisible(false)}>{t('Cancel')}</Button>
-                        <Button onPress={async () => {
-                                    await renameFileOrFolder(item.id, newName);
-                                    setRenameVisible(false);
-                                }}
-                        >
-                            {t('OK')}
-                        </Button>
+              </Button>
+
+                        <Button onPress={() => setRenameVisible(false)}>{t('cancel')}</Button>
+                        <Button onPress={() => {
+                            executeAndRefresh(renameFileOrFolder, 'name_changed', item.id, newName);
+                            setRenameVisible(false);
+                        }}>{t('ok')}</Button>
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
@@ -107,17 +108,21 @@ export default function MenuOptions({ item, isTrash }) {
                 visible={shareVisible}
                 file={item}
                 onCancel={() => setShareVisible(false)}
-                onSubmit={(email, permission) =>
-                    shareFileOrFolder(item.id, email, permission)
-                }
+                onSubmit={(email, permission) => {
+                    executeAndRefresh(shareFileOrFolder, 'shared_success', item.id, email, permission);
+                    setShareVisible(false);
+                }}
             />
 
             <MoveFolderDialog
                 visible={moveVisible}
                 file={item}
                 onClose={() => setMoveVisible(false)}
-                onMoveConfirm={(folderId) => moveFolder(item.id, folderId)}
-            />     
+                onMoveConfirm={(folderId) => {
+                    executeAndRefresh(moveFolder, 'moved_success', item.id, folderId);
+                    setMoveVisible(false);
+                }}
+            />
         </>
     );
 }

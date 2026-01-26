@@ -30,29 +30,33 @@ exports.createUser = async (req, res) => {
         if (existsUser) {
             return res.status(400).json({ error: 'username exists in the system' });
         }
+let profileImage = null;
 
-        let profileImage = null;
+if (image && image.trim() !== "") {
+    try {
+        const matches = image.match(/^data:(.+);base64,(.+)$/);
+        if (!matches) throw new Error("Invalid image format");
 
-        if (image && image.trim() !== "") {
-            try {
-                const matches = image.match(/^data:(.+);base64,(.+)$/);
-                if (!matches) throw new Error("Invalid image format");
+        const ext = matches[1].split("/")[1]; // e.g., 'jpeg' or 'png'
+        const data = matches[2];
+        const buffer = Buffer.from(data, "base64");
 
-                const ext = matches[1].split("/")[1]; // png, jpeg
-                const data = matches[2];
-                const buffer = Buffer.from(data, "base64");
-
-                // Ensure /uploads exists
-                const uploadDir = path.join(__dirname, '../uploads');
-                if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
-
-                profileImage = `${Date.now()}.${ext}`;
-                fs.writeFileSync(path.join(uploadDir, profileImage), buffer);
-            } catch (err) {
-                console.error("Error saving image:", err);
-                return res.status(400).json({ error: 'Invalid image data' });
-            }
+        // Ensure /uploads exists
+        const uploadDir = path.join(__dirname, '../uploads');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir);
         }
+
+        const usernamePrefix = email.split('@')[0]; 
+        profileImage = `${usernamePrefix}.${ext}`;
+
+        fs.writeFileSync(path.join(uploadDir, profileImage), buffer);
+
+    } catch (err) {
+        console.error("Error saving image:", err);
+        return res.status(400).json({ error: 'Invalid image data' });
+    }
+}
 
         const newUser = await User.createUser(first_name, last_name, email, password, profileImage);
         res.status(201).location(`/api/users/${newUser.id}`).json({ id: newUser.id });
