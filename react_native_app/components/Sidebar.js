@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { ScrollView, TouchableOpacity, Text, View } from 'react-native';
 import { styles } from '../styles/Siebar.styles.js';
@@ -11,6 +12,7 @@ import { DeviceEventEmitter } from 'react-native';
 export default function Sidebar({ isOpen, onClose }) {
     const { theme } = useTheme();
     const { t } = useLanguage();
+    const router = useRouter();
     const [isSettingsMode, setIsSettingsMode] = useState(false);
     const [currentFolderId, setCurrentFolderId] = useState(null);
 
@@ -41,12 +43,12 @@ export default function Sidebar({ isOpen, onClose }) {
                                 currentFolderId={currentFolderId}
                             />
 
-                            <TouchableOpacity style={styles.sidebarButton}>
+                            <TouchableOpacity style={styles.sidebarButton} onPress={() => router.push('/(tabs)/Recent')}>
                                 <Ionicons name="time-outline" size={20} color={theme.colors.primary} />
-                                <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>{t('recent')}</Text>
+                                <Text style={[styles.buttonText, { color: theme.colors.textMain }]} >{t('recent')}</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.sidebarButton}>
+                            <TouchableOpacity style={styles.sidebarButton} onPress={() => router.push('/(tabs)/BinPage')} >
                                 <Ionicons name="trash-outline" size={20} color={theme.colors.primary} />
                                 <Text style={[styles.buttonText, { color: theme.colors.textMain }]}>{t('trash')}</Text>
                             </TouchableOpacity>

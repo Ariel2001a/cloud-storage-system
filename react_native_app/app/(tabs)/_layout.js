@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { ThemeProvider, useTheme } from '../../context/ThemeContext';
 import RequireAuth from '../../components/RequireAuth'; // ✅ import auth wrapper
-
+import { Slot } from 'expo-router';
 function TabsContent({ isMenuOpen, setIsMenuOpen }) {
     const { theme } = useTheme();
 

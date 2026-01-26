@@ -36,11 +36,11 @@ const getUserSharedFiles = async (userId) => {
 
 // Get all files/folders for a user
 const getTopLevelFiles = async(userId) => {
-    return await getUserFilesByFilter(userId, {folderParent : null});
+    return await getUserFilesByFilter(userId, {bin : false , folderParent : null});
 };
 
 const getFolderFiles = async (userId, folderParent) => {
-    return await File.find({ownerId : userId , folderParent : folderParent});
+    return await File.find({ownerId : userId ,bin : false , folderParent : folderParent});
 };
 
 // Get all files/folders for a user
@@ -89,7 +89,7 @@ const getFileById = async (userId, fileId) => {
 
 const getFileByIdFromDeleted = async (userId, fileId) => {
     const files = await getUserFilesByFilter(userId, { id: fileId, bin: true });
-    return files || null;
+    return files[0] || null;
 };
 
 
@@ -116,6 +116,7 @@ const deleteFileByIdFromUserFiles = async (userId, fileId) => {
 
 const RestoreFileByIdFromBin = async (userId, fileId) => {
     let file = await getFileByIdFromDeleted(userId, fileId);
+    console.log("services:", file);
     if (!file) {
         return false;
     }
