@@ -23,7 +23,7 @@
 
 ## Edit Picture Form
 
-![Edit Picture Form](task5_readme/edit_picture_form.png)  
+![Edit Picture Form](task5_readme/file_menu_in_starred.png)  
 **Edit Picture Form** – Allows replacing the image or deleting it .
 
 
