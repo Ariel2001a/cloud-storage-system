@@ -22,7 +22,7 @@
 
 ## Move Folder Form
 
-![Move Folder Form](task5_readme/move_folder_form.jpg)  
+![Move Folder Form](task5_readme/move_file_form.jpg)  
 **Move Folder Form** – Lets the user select a destination folder to move the file or folder into.
 
 ## Share File Form
