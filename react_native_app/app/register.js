@@ -20,7 +20,9 @@ import styles from '../styles/Register.styles';
 import { useLanguage } from '../context/LanguageContext';
 
 // ===== SERVER URL =====
-const SERVER_URL = 'http://10.0.2.2:8080';
+
+const DEV_IP = process.env.EXPO_PUBLIC_API_URL;
+const SERVER_URL = `http://${DEV_IP}:8080`; // Android emulator localhost
 
 export default function RegisterScreen() {
   const router = useRouter();

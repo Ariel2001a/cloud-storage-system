@@ -10,6 +10,7 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
     const [name, setName] = useState("");
     const [content, setContent] = useState("");
     const [loading, setLoading] = useState(false);
+    const DEV_IP = process.env.EXPO_PUBLIC_API_URL;
 
     // Determine if the file is an image based on name or type
     const isImage = file?.name?.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/) || file?.type === 'image';
@@ -56,10 +57,10 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
         try {
             // Update both name and content on server
             await patchFileById(file.id, { name, content });
-            
+
             // Update parent immediately with local state object
             onSave && onSave({ name, content });
-            
+
             onCancel();
         } catch (error) {
             console.error(error);
@@ -79,14 +80,14 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
     const getImageSource = () => {
         if (!content) return null;
         if (content.startsWith('data:')) return { uri: content };
-        if (content.startsWith('/uploads')) return { uri: `http://10.0.2.2:8080${content}` };
+        if (content.startsWith('/uploads')) return { uri: `http://${DEV_IP}:8080${content}` };
         return { uri: `data:image/jpeg;base64,${content}` };
     };
 
     return (
         <Modal visible={visible} animationType="slide" onRequestClose={onCancel}>
             <ScrollView style={{ flex: 1, backgroundColor: colors.background, padding: 15 }}>
-                
+
                 {/* File Name - Editable */}
                 <View style={{ marginBottom: 15 }}>
                     <Text style={{ marginBottom: 5, color: colors.text }}>
@@ -116,9 +117,9 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
                         // IMAGE UI
                         <View style={{ alignItems: 'center', borderWidth: 1, borderColor: colors.border, borderRadius: 5, padding: 10, backgroundColor: colors.inputBg }}>
                             {content ? (
-                                <Image 
-                                    source={getImageSource()} 
-                                    style={{ width: '100%', height: 250, resizeMode: 'contain', marginBottom: 15 }} 
+                                <Image
+                                    source={getImageSource()}
+                                    style={{ width: '100%', height: 250, resizeMode: 'contain', marginBottom: 15 }}
                                 />
                             ) : (
                                 <View style={{ height: 150, justifyContent: 'center', alignItems: 'center' }}>
@@ -127,10 +128,10 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
                                     </Text>
                                 </View>
                             )}
-                            
+
                             <View style={{ flexDirection: 'row', gap: 10 }}>
-                                <TouchableOpacity 
-                                    onPress={pickImage} 
+                                <TouchableOpacity
+                                    onPress={pickImage}
                                     style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: colors.btnPrimary, padding: 10, borderRadius: 5 }}
                                 >
                                     <Ionicons name="image-outline" size={20} color={colors.btnText} style={{ marginRight: 5 }} />
@@ -140,8 +141,8 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
                                 </TouchableOpacity>
 
                                 {content ? (
-                                    <TouchableOpacity 
-                                        onPress={removeImage} 
+                                    <TouchableOpacity
+                                        onPress={removeImage}
                                         style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: colors.danger, padding: 10, borderRadius: 5 }}
                                     >
                                         <Ionicons name="trash-outline" size={20} color={colors.btnText} style={{ marginRight: 5 }} />

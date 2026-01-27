@@ -17,10 +17,9 @@ export default function FileCard({ item, onPress, isTrash, isStarPage }) {
     let isHome = pathname === '/' || pathname === '/(tabs)' || pathname === '/(tabs)/' || pathname.includes('Home');
     let isSharePage = pathname.includes('ShareFiles');
 
-    const [ownerEmail, setOwnerEmail] = useState(''); // 2. סטייט לאימייל
+    const [ownerEmail, setOwnerEmail] = useState('');
 
     useEffect(() => {
-        // 3. פונקציה פנימית לשליפת הנתונים
         const fetchEmail = async () => {
             if (isSharePage && item.ownerId) {
                 try {
@@ -35,7 +34,7 @@ export default function FileCard({ item, onPress, isTrash, isStarPage }) {
         };
 
         fetchEmail();
-    }, [item.ownerId, isSharePage]); // ירוץ רק כשה-ID משתנה
+    }, [item.ownerId, isSharePage]);
 
     return (
         <TouchableOpacity

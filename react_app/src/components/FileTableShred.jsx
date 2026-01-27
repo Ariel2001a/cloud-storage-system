@@ -27,20 +27,20 @@ const OwnerInfo = ({ ownerId, isRtl }) => {
             <div className="owner-avatar-mini">
                 {owner?.first_name ? owner.first_name[0].toUpperCase() : "U"}
             </div>
-            <span>{(isRtl ? "אני" : "Me")}</span>
+            <span>{owner?.email || (isRtl ? "טוען..." : "Loading...")}</span>
         </div>
     );
 };
 
 
-
-export default function FileTable({ items, setItems, isLoading, isRtl, user, openItem }) {
+export default function FileTableShred({ items, setItems, isLoading, isRtl, user, openItem }) {
     const [menu, setMenu] = useState({
         visible: false,
         x: 0,
         y: 0,
         file: null
     });
+
 
     function handleRightClick(e, file) {
         e.preventDefault();

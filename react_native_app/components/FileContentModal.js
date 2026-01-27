@@ -10,7 +10,8 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) {
     const { theme } = useTheme();
     const { locale } = useLanguage();
     const [editVisible, setEditVisible] = useState(false);
-    
+    const DEV_IP = process.env.EXPO_PUBLIC_API_URL;
+
     // Local state for immediate UI updates (Content AND Name)
     const [displayedContent, setDisplayedContent] = useState("");
     const [displayedName, setDisplayedName] = useState("");
@@ -31,13 +32,13 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) {
     const HEADER_TEXT = theme.colors.textMain || theme.colors.text;
     const ICON_COLOR = theme.colors.primary;
     const isThemeDark = theme.dark || theme.mode === 'dark';
-    
+
     // Use local displayedContent
     const contentString = String(displayedContent || "");
 
     const handleSave = (updatedData) => {
         // updatedData is now an object: { name: "...", content: "..." }
-        
+
         if (updatedData.content !== undefined) {
             setDisplayedContent(updatedData.content);
         }
@@ -47,7 +48,7 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) {
 
         // Propagate to parent list
         onEdit && onEdit(file.id, updatedData);
-        
+
         setEditVisible(false);
     };
 
@@ -95,7 +96,7 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) {
                                 <Image
                                     source={{
                                         uri: contentString.startsWith('/uploads')
-                                            ? `http://10.0.2.2:8080${contentString}`
+                                            ? `http://${DEV_IP}:8080${contentString}`
                                             : contentString.startsWith('data:')
                                                 ? contentString
                                                 : `data:image/jpeg;base64,${contentString}`
@@ -119,7 +120,7 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) {
             <EditFileForm
                 visible={editVisible}
                 // Pass current displayed values to the form
-                file={{ ...file, name: displayedName, content: displayedContent }} 
+                file={{ ...file, name: displayedName, content: displayedContent }}
                 onCancel={() => setEditVisible(false)}
                 onSave={handleSave}
                 lang={locale}

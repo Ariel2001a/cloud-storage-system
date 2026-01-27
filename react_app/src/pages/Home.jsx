@@ -1,8 +1,8 @@
 // src/pages/Home.jsx
 import { useState, useEffect } from "react";
-import { getFiles, searchFiles } from "../api/files";
+import { getLastOpenFiles, searchFiles } from "../api/files";
 import FileView from "./FileView";
-import FileTable from "../components/FileTable";
+import FileTableHome from "../components/FileTableHome";
 import { useNavigate } from "react-router-dom";
 import { getUserIdFromToken } from "../utils/tokenUtils";
 import defaultAvatar from "../images/default.png";
@@ -48,7 +48,7 @@ export default function Home({ searchTerm }) {
                 if (searchTerm && searchTerm.trim() !== "") {
                     data = await searchFiles(searchTerm);
                 } else {
-                    data = await getFiles();
+                    data = await getLastOpenFiles();
                 }
                 setItems(data || []);
 
@@ -89,7 +89,7 @@ export default function Home({ searchTerm }) {
             </h2>
 
 
-            <FileTable
+            <FileTableHome
                 items={items}
                 isLoading={isLoading}
                 isRtl={isRtl}

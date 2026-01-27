@@ -1,8 +1,7 @@
 import React from 'react';
 import "./FileTable.css";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FileRightClickMenu } from "../components/FileRightClickMenu";
-import { getUserDetails } from '../api/files.js';
 
 
 const formatFileSize = (bytes) => {
@@ -13,28 +12,8 @@ const formatFileSize = (bytes) => {
     return "\u200e" + parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 };
 
-const OwnerInfo = ({ ownerId, isRtl }) => {
-    const [owner, setOwner] = useState(null);
 
-    useEffect(() => {
-        if (ownerId) {
-            getUserDetails(ownerId).then(setOwner).catch(console.error);
-        }
-    }, [ownerId]);
-
-    return (
-        <div className="owner-info">
-            <div className="owner-avatar-mini">
-                {owner?.first_name ? owner.first_name[0].toUpperCase() : "U"}
-            </div>
-            <span>{(isRtl ? "אני" : "Me")}</span>
-        </div>
-    );
-};
-
-
-
-export default function FileTable({ items, setItems, isLoading, isRtl, user, openItem }) {
+export default function FileTableHome({ items, setItems, isLoading, isRtl, user, openItem }) {
     const [menu, setMenu] = useState({
         visible: false,
         x: 0,
@@ -57,9 +36,7 @@ export default function FileTable({ items, setItems, isLoading, isRtl, user, ope
                 <thead>
                     <tr>
                         <th>{isRtl ? "שם" : "Name"}</th>
-                        <th>{isRtl ? "בעלים" : "Owner"}</th>
-                        <th>{isRtl ? "שינוי אחרון" : "Last modified"}</th>
-                        <th>{isRtl ? "גודל קובץ" : "File size"}</th>
+                        <th>{isRtl ? "נפתח לאחרונה" : "Last opened"}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,16 +53,11 @@ export default function FileTable({ items, setItems, isLoading, isRtl, user, ope
                                     <span className="file-icon">{item.type === 'folder' ? '📁' : '📄'}</span>
                                     {item.name}
                                 </td>
-                                <td className="col-owner">
-                                    <OwnerInfo ownerId={item.ownerId} isRtl={isRtl} />
-                                </td>
+
                                 <td className="col-date">
-                                    {item.date ? new Date(item.date).toLocaleDateString(isRtl ? 'he-IL' : 'en-US', {
+                                    {item.open ? new Date(item.open).toLocaleDateString(isRtl ? 'he-IL' : 'en-US', {
                                         day: '2-digit', month: '2-digit', year: 'numeric'
                                     }) : "--"}
-                                </td>
-                                <td className="col-size">
-                                    {item.type === 'folder' ? '--' : formatFileSize(item.size)}
                                 </td>
                             </tr>
                         ))
