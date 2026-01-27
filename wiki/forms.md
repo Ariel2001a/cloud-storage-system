@@ -1,7 +1,7 @@
 ## File Form
 
 ![File Form](task5_readme/file_form.jpg)  
-**File Form** – Used to create a new file. Users can enter the file name and select file type.
+**File Form** – Used to create a new file. Users can enter the file name and content.
 
 ## Edit File Form
 
@@ -11,13 +11,13 @@
 
 ## Picture Form
 
-![Picture Form](task5_readme/picture_form.jpg)  
-**Picture Form** – Used to upload an image. Users can select a picture from their device and add a title or description.
+![Picture Form](task5_readme/imageupload.png)  
+**Picture Form** – Used to upload an image. Users can select a picture from their device or use their camera, and name it.
 
 ## Edit Picture Form
 
 ![Edit Picture Form](task5_readme/edit_picture_form.jpg)  
-**Edit Picture Form** – Allows replacing the image or deleting it 
+**Edit Picture Form** – Allows replacing the image or deleting it .
 
 
 ## Move Folder Form
@@ -30,11 +30,6 @@
 ![Share File Form](task5_readme/share_file_form.jpg)  
 **Share File Form** – Used to share files or folders with other users by entering their email and selecting permissions.
 
-
-## Create File Form
-
-![Create File Form](task5_readme/create_file_form.jpg)  
-**Create File Form** – Used to create a new file. 
 
 ## Create Picture Form
 
