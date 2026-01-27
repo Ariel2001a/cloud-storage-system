@@ -4,18 +4,18 @@ import { styles } from '../styles/FileCard.styles.js';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import MenuOptions from './MenuOptions.js'
-import {usePathname} from 'expo-router'
-import {getUserDetails} from '../api/files.js'
+import { usePathname } from 'expo-router'
+import { getUserDetails } from '../api/files.js'
 
-export default function FileCard({ item, onPress,isTrash,isStarPage }) {
+export default function FileCard({ item, onPress, isTrash, isStarPage }) {
     const { theme } = useTheme();
-    const { locale,t } = useLanguage();
+    const { locale, t } = useLanguage();
     const pathname = usePathname();
 
-    let isHome = pathname.includes('Home');
+    let isHome = pathname.includes('Home') || pathname.includes('(tabs)');
     let isSharePage = pathname.includes('ShareFiles');
-  
-    const getOwnerEmail = async () =>{ 
+
+    const getOwnerEmail = async () => {
 
         let ownerName = await getUserDetails(item.ownerId);
         return ownerName;
@@ -60,13 +60,14 @@ export default function FileCard({ item, onPress,isTrash,isStarPage }) {
                 {!isHome && !isSharePage && <Text style={[styles.fileDetails, { color: theme.colors.textSub, textAlign: locale === 'he' ? 'right' : 'left' }]}>
                     {item.type === 'file' || 'image' ? `${item.size || '0'} KB` : 'Folder'}
                 </Text>}
-
-                {isHome && <Text style={[styles.fileDetails, { color: theme.colors.textSub, textAlign: locale === 'he' ? 'right' : 'left' }]}>
-                    {t("Lastopened") `${item.open}`}
-                </Text>}
+                {isHome && (
+                    <Text style={[styles.fileDetails, { color: theme.colors.textSub, textAlign: locale === 'he' ? 'right' : 'left' }]}>
+                        {t("Lastopened")} {item.open ? new Date(item.open).toLocaleDateString(locale === 'he' ? 'he-IL' : 'en-US') : '--'}
+                    </Text>
+                )}
 
                 {isSharePage && <Text style={[styles.fileDetails, { color: theme.colors.textSub, textAlign: locale === 'he' ? 'right' : 'left' }]}>
-                    {t("owner") `${ownerEmail}`}
+                    {t("owner")} {ownerEmail}
                 </Text>}
             </View>
 
@@ -77,11 +78,11 @@ export default function FileCard({ item, onPress,isTrash,isStarPage }) {
                 isStarPage={isStarPage}
                 anchor={
                     <TouchableOpacity>
-                    <Ionicons
-                        name="ellipsis-vertical"
-                        size={20}
-                        color={theme.colors.textSub}
-                    />
+                        <Ionicons
+                            name="ellipsis-vertical"
+                            size={20}
+                            color={theme.colors.textSub}
+                        />
                     </TouchableOpacity>
                 }
             />

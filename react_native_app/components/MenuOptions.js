@@ -15,7 +15,6 @@ import {
 
 import EmailPromptModal from './EmailPromptModal';
 import MoveFolderDialog from './MoveFolderDialog';
-import { useLanguage } from '../context/LanguageContext';
 
 export default function MenuOptions({ item, isTrash }) {
     const [visible, setVisible] = useState(false);
@@ -24,10 +23,8 @@ export default function MenuOptions({ item, isTrash }) {
     const [newName, setNewName] = useState(item.name);
     const [moveVisible, setMoveVisible] = useState(false);
     const { locale, t } = useLanguage();
-
-
     const { theme } = useTheme();
-    const { t, locale } = useLanguage();
+
 
     const openMenu = () => setVisible(true);
     const closeMenu = () => setVisible(false);
@@ -88,12 +85,12 @@ export default function MenuOptions({ item, isTrash }) {
                             value={newName}
                             onChangeText={setNewName}
                             autoFocus
-                            placeholder = {t('newName')}
+                            placeholder={t('newName')}
                             style={{ textAlign: locale === 'he' ? 'right' : 'left' }}
                         />
                     </Dialog.Content>
                     <Dialog.Actions>
-              </Button>
+
 
                         <Button onPress={() => setRenameVisible(false)}>{t('cancel')}</Button>
                         <Button onPress={() => {

@@ -5,14 +5,14 @@ import { getFiles, getFolderChildren } from "../api/files";
 import { useLanguage } from '../context/LanguageContext';
 
 
-export default function MoveFolderDialog({visible, onClose, onMoveConfirm, file}) {
+export default function MoveFolderDialog({ visible, onClose, onMoveConfirm, file }) {
   const idMyDrive = 0;
 
   const [currentFolderId, setCurrentFolderId] = useState(null);
   const [items, setItems] = useState([]);
   const [folderStack, setFolderStack] = useState([null]);
   const [selectedFolderId, setSelectedFolderId] = useState(null);
-  const { locale } = useLanguage();
+  const { t, locale } = useLanguage();
 
 
   useEffect(() => {

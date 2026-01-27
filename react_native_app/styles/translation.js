@@ -73,11 +73,11 @@ export const translations = {
     signInFailed: "Sign In Failed",
     signedInSuccessfully: "Signed in successfully!",
 
-  
+
     //Menu options
 
     RemovefromStarred: "Remove from Starred",
-    AddtoStarred : "Add to Starred",
+    AddtoStarred: "Add to Starred",
     Movetobin: "Move to bin",
     Rename: "Rename",
     Share: "Share",
@@ -85,8 +85,8 @@ export const translations = {
     Restore: "Restore",
     DeleteForever: "Delete forever",
     newName: "new name",
-    Cancle : "Cancle",
-    OK : "OK",
+    Cancle: "Cancle",
+    OK: "OK",
 
     //Share
 
@@ -104,7 +104,7 @@ export const translations = {
     Novalidfolderselected: "No valid folder selected",
     Root: "Root",
     Folderisempty: "Folder is empty",
-    ConfirmMove: "Confirm Move"
+    ConfirmMove: "Confirm Move",
     trash: "Trash",
     recent: "Recent",
     settings: "Settings",
@@ -226,7 +226,7 @@ export const translations = {
     //Menu options
 
     removefromStarred: "הורדה ממועדפים",
-    AddtoStarred : "הוספה למועדפים",
+    AddtoStarred: "הוספה למועדפים",
     Movetobin: "העברה לאשפה",
     Rename: "שינוי שם",
     Share: "שיתוף",
@@ -234,8 +234,8 @@ export const translations = {
     Restore: "שחזור",
     DeleteForever: "מחיקה לצמיתות",
     newName: "שם חדש",
-    Cancle : "ביטול",
-    OK : "אישור",
+    Cancle: "ביטול",
+    OK: "אישור",
 
     //Share
 

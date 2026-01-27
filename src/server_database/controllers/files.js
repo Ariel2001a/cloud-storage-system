@@ -18,7 +18,7 @@ exports.createFileOrFolder = async (req, res) => {
     const user = await User.getUserById(parseInt(userId));
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    if(type === 'folder' && content != null){
+    if (type === 'folder' && content != null) {
         console.log("invalid folder");
         return res.status(400).json({ error: "folder is without content!" });
     }
@@ -74,7 +74,7 @@ exports.createFileOrFolder = async (req, res) => {
 
             filesCounter = Date.now();
         }
-        
+
 
         await filesModel.addFileOrFolder(userId, {
             id: filesCounter,
@@ -89,7 +89,7 @@ exports.createFileOrFolder = async (req, res) => {
         const perms = Permission.PERMISSION_TYPES;
         console.log(perms);
         for (const p of perms) {
-           let newPermission = await Permission.addPermission({
+            let newPermission = await Permission.addPermission({
                 userId: parseInt(userId),
                 fileId: filesCounter,
                 permission: p,
@@ -142,7 +142,7 @@ exports.getFolderChildren = async (req, res) => {
     res.json({ files: children });
 };
 
-exports.getRecentFiles = async(req, res) => {
+exports.getRecentFiles = async (req, res) => {
     const userId = req.userId;
     if (!userId) {
         return res.status(401).json({ error: 'User not logged in' });
@@ -157,7 +157,7 @@ exports.getRecentFiles = async(req, res) => {
     res.json({ files });
 };
 
-exports.getLastOpenFiles = async(req, res) => {
+exports.getLastOpenFiles = async (req, res) => {
     const userId = req.userId;
     if (!userId) {
         return res.status(401).json({ error: 'User not logged in' });
@@ -172,7 +172,7 @@ exports.getLastOpenFiles = async(req, res) => {
     res.json({ files });
 };
 
-exports.getSharedFiles = async(req, res) => {
+exports.getSharedFiles = async (req, res) => {
     const userId = req.userId;
     if (!userId) {
         return res.status(401).json({ error: 'User not logged in' });
@@ -259,7 +259,7 @@ exports.patchFileById = async (req, res) => {
     if (!file) return res.status(404).json({ error: 'File not found' });
 
     const { name, content, parentId } = req.body;
-    console.log("controller:" , parentId);
+    console.log("controller:", parentId);
 
     let updateContent = false, updateName = false, updateParentId = false;
 
@@ -282,7 +282,7 @@ exports.patchFileById = async (req, res) => {
 
         else {
             const parent = await filesModel.getFileById(userId, parentId);
-            console.log("controller parent: " , parent);
+            console.log("controller parent: ", parent);
             if (!parent || parent.type !== 'folder') {
                 return res.status(400).json({ error: 'Folder Parent does not exist' });
             }
@@ -397,8 +397,7 @@ exports.deleteFileById = async (req, res) => {
     if (file.type === 'folder') {
         const idsInFolder = await filesModel.getFolderFiles(userId, idToDelete);
 
-        if(idsInFolder != null)
-        {
+        if (idsInFolder != null) {
             for (const childId of idsInFolder) {
                 const subFile = await filesModel.getFileByIdFromDeleted(userId, childId);
 
@@ -436,7 +435,7 @@ exports.starOrUnstarFile = async (req, res) => {
     if (!userId) {
         return res.status(401).json({ error: 'User not logged in' });
     }
-        
+
     const user = await User.getUserById(parseInt(userId));
     if (!user) {
         return res.status(404).json({ error: "User not found" });
