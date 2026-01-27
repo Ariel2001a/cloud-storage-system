@@ -4,7 +4,7 @@
 
 - The Home page serves as the main dashboard of the application.  
 
-- The files in this page are files that the user created in the past month
+- The files in this page are files that the user opened in the past month
 
 
 ---
