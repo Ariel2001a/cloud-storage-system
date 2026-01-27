@@ -2,8 +2,8 @@
 
 ![Side menu](task5_readme/side_menu.jpg)
 
-- The side menu provides **global navigation** and quick access to core application features.
-- It displays the **logged-in user’s profile**, including profile picture and email, which are loaded dynamically using the stored JWT.
+
+- It displays the **logged-in user’s profile**, including profile picture and email.
 - From the side menu, users can:
   - Create new files or folders using the **New Storage** button.
   - Navigate to **Recent files**.
