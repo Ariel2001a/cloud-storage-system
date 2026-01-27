@@ -1,6 +1,6 @@
 ## Side Menu
 
-![Side menu](images/task5_readme/side_menu.png)
+![Side menu](task5_readme/side_menu.jpg)
 
 - The side menu provides **global navigation** and quick access to core application features.
 - It displays the **logged-in user’s profile**, including profile picture and email, which are loaded dynamically using the stored JWT.
@@ -11,10 +11,9 @@
   - Access **Settings**, including theme and language preferences.
 - The menu is rendered as an overlay and can be closed by tapping outside of it.
 
-
 ## Settings Menu
 
-![Settings menu](images/task5_readme/settings_menu.png)
+![Settings menu](task5_readme/settings_menu.jpg)
 
 - The settings menu allows users to customize the application and manage their account.
 - Available options include:
@@ -22,10 +21,9 @@
   - **Theme toggle** – switch between Dark and Light mode.
   - **Sign out** – log out from the application and clear stored authentication data.
 
-
 ## Item Options Menu
 
-![Item options menu](images/task5_readme/item_options_menu.png)
+![Item options menu](task5_readme/item_options_menu.jpg)
 
 - The item options menu is accessible via the **three-dot icon** on each file or folder.
 - It provides contextual actions depending on the item state (normal view, starred page, or bin).
@@ -40,10 +38,9 @@
   - **Delete forever** (permanent deletion).
 - Dialogs and modals are used for actions that require user input, such as renaming, sharing permissions, or selecting a destination folder.
 
-
 ## Top Bar
 
-![Top bar](images/task5_readme/top_bar.png)
+![Top bar](task5_readme/top_bar.jpg)
 
 - The top bar contains a **search input** for finding files and folders.
 - It also includes a **button to open the side menu**, giving access to profile, settings, and quick actions.
