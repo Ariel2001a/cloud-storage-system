@@ -36,7 +36,7 @@
 - When viewing items in the **Bin**, the menu changes to:
   - **Restore** the item.
   - **Delete forever** (permanent deletion).
-- Dialogs and modals are used for actions that require user input, such as renaming, sharing permissions, or selecting a destination folder.
+
 
 
 ## File Menu in Trash
