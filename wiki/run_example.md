@@ -16,7 +16,7 @@
 ![My Drive Page](task5_readme/newfile_run.png)
 
 **Step 6:** Edit the content of **"New file"** and save the changes.  
-![Edit File Form](task5_readme/fileafteredit.png)
+![Edit File Form](task5_readme/fileafteredit_run.png)
 
 **Step 7:** Create a new image file inside **"new folder"**.  
 ![Picture Form](task5_readme/imageupload.png)
