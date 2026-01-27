@@ -43,11 +43,14 @@ The system operates with the following features:
 Refer to the following Wiki pages for setup, usage, and UI demonstrations:
 
 * **Setup Guide:** Instructions for building and running the system environment.
+* **Full Run Example:** A complete end-to-end user flow demonstrating registration, file creation, editing, sharing, deletion, restoration, and system configuration.
+
+
 * **Registration & Login Pages:** Screens and explanations for user authentication flow.
 * **Application Pages:** Home, My Drive, Bin, Starred, Recent, and Shared pages.
 * **Menus:** Side Menu, Top Bar, Bottom Bar, Settings Menu, and Item Options Menu.
 * **Forms:** Create/Edit File, Create/Edit Picture, Create Folder, Move Folder, and Share File forms.
-* **Full Run Example:** A complete end-to-end user flow demonstrating registration, file creation, editing, sharing, deletion, restoration, and system configuration.
+
 
 Each Wiki page includes screenshots and explanations demonstrating real user interactions.
 
