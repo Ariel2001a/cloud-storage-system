@@ -40,7 +40,9 @@
 
 
 
+## change the IP in the env filr
 
+![change env](task5_readme/env.png)
 
 ## run the servers and apps
 
