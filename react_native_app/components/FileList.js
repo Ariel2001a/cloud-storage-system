@@ -7,7 +7,7 @@ import FileCard from './FileCard';
 import FolderView from './FolderView';
 import FileContentModal from './FileContentModal';
 
-export default function FileList({fetchData,isTrash,isStarPage}) {
+export default function FileList({fetchData}) {
     const { theme } = useTheme();
     const { t } = useLanguage();
     const {
@@ -37,7 +37,7 @@ export default function FileList({fetchData,isTrash,isStarPage}) {
                 onRefresh={fetchFiles}
                 refreshing={loading}
                 renderItem={({ item }) => (
-                    <FileCard item={item} onPress={() => navigateInto(item)} isTrash ={isTrash} isStarPage={isStarPage} />
+                    <FileCard item={item} onPress={() => navigateInto(item)} />
                 )}
                 ListEmptyComponent={
                     <View style={{ marginTop: 50, alignItems: 'center' }}>

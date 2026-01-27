@@ -24,7 +24,7 @@ exports.createFileOrFolder = async (req, res) => {
     }
 
     if (parentId != null) {
-        const parent = await filesModel.getFileById(userId, Number(parentId));
+        const parent = await filesModel.getFileById(Number(parentId));
         if (!parent || parent.type !== 'folder') {
             return res.status(400).json({ error: "Folder Parent does not exist" });
         }
@@ -210,12 +210,14 @@ exports.getFileById = async (req, res) => {
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const fileId = req.params.id;
-    const file = await filesModel.getFileById(userId, parseInt(fileId));
+    const file = await filesModel.getFileById(parseInt(fileId));
 
     if (!file) return res.status(404).json({ error: 'File not found' });
 
-    file.open = Date.now();
-    file.save();
+    if(userId == file.ownerId){
+        file.open = Date.now();
+        file.save();
+    }
 
     let content = ""
 
@@ -255,7 +257,7 @@ exports.patchFileById = async (req, res) => {
     const user = User.getUserById(userId);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
-    const file = await filesModel.getFileById(userId, parseInt(req.params.id));
+    const file = await filesModel.getFileById(parseInt(req.params.id));
     if (!file) return res.status(404).json({ error: 'File not found' });
 
     const { name, content, parentId } = req.body;
@@ -281,7 +283,7 @@ exports.patchFileById = async (req, res) => {
         }
 
         else {
-            const parent = await filesModel.getFileById(userId, parentId);
+            const parent = await filesModel.getFileById(parentId);
             console.log("controller parent: ", parent);
             if (!parent || parent.type !== 'folder') {
                 return res.status(400).json({ error: 'Folder Parent does not exist' });
@@ -359,7 +361,17 @@ exports.deleteFileById = async (req, res) => {
 
     const idToDelete = parseInt(req.params.id);
 
-    let file = await filesModel.getFileById(userId, idToDelete);
+    let file = await filesModel.getFileById(idToDelete);
+
+    if(file && file.ownerId != userId)
+    {
+        const permissionsUser = await Permission.getPermissionsUser(userId,idToDelete);
+        for (const perm of permissionsUser) {
+            await Permission.deletePermissionById(perm.id);
+        }
+        
+        return res.status(204).end();
+    }
 
     if (file && !file.bin) {
         await filesModel.deleteFileByIdFromUserFiles(userId, idToDelete);

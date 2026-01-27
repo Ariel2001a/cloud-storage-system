@@ -11,7 +11,7 @@ export default function StarFilesPage() {
     return (
         <PaperProvider>
             <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <FileList fetchData={getStarredFiles} isTrash={false} isStarPage={true}/>
+                <FileList fetchData={getStarredFiles}/>
             </View>
         </PaperProvider>
     );
