@@ -3,7 +3,7 @@
 ![Home page](task5_readme/home_page.jpg)
 
 - The Home page serves as the main dashboard of the application.  
-- It provides quick access to recent activity, important files, and navigation to all other sections.
+
 
 ---
 
@@ -21,7 +21,6 @@
 ![My Drive page](task5_readme/mydrive_page.jpg)
 
 - My Drive contains all files and folders owned by the user.  
-- From this page, users can **create**, **upload**, **edit**, **rename**, and **delete** files and directories.
 
 ---
 
