@@ -5,7 +5,7 @@
 
 ## Edit File Form
 
-![Edit File Form](task5_readme/edit_file_form.png)  
+![Edit File Form](task5_readme/edit_file_form.jpg)  
 **Edit File Form** – Allows editing the file name or updating its content.
 
 ## Create File Form
