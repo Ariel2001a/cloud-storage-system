@@ -38,6 +38,17 @@
   - **Delete forever** (permanent deletion).
 - Dialogs and modals are used for actions that require user input, such as renaming, sharing permissions, or selecting a destination folder.
 
+
+## File Menu in Trash
+
+![File Menu in Trash](task5_readme/file_menu_in_trash.jpg)
+
+- The file menu in the Trash is accessed via the **three-dot icon** on deleted items.  
+- It provides actions specific to items in the Bin:  
+  - **Restore** – move the item back to My Drive.  
+  - **Delete Forever** – permanently remove the item from the system.  
+
+
 ## Top Bar
 
 ![Top bar](task5_readme/top_bar.jpg)

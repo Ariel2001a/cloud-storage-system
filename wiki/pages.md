@@ -7,9 +7,9 @@
 
 ---
 
-## Bin Page
+## Trash Page
 
-![Bin page](task5_readme/bin_page.jpg)
+![Bin page](task5_readme/trash_page.jpg)
 
 - The Bin page displays files and folders that were deleted by the user.  
 - Items can be **restored** back to My Drive or **permanently deleted** from the system.
