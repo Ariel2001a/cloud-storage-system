@@ -11,7 +11,7 @@ export default function MyDrive() {
     return (
         <PaperProvider>
             <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <FileList fetchData={getFiles} isTrash={false} isStarPage={false}/>
+                <FileList fetchData={getFiles}/>
             </View>
         </PaperProvider>
     );

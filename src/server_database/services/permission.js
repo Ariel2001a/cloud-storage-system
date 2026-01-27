@@ -80,6 +80,10 @@ const deletePermissionById = async(pId) => {
     return true;
 };
 
+const getPermissionsUser = async (userId,fileId) => {
+    return  await Permission.find({userId : userId , fileId : fileId }) || [];
+}
+
 // Export functions and permission types
 module.exports = {
     addPermission,
@@ -87,6 +91,7 @@ module.exports = {
     updatePermissionById,
     deletePermissionById,
     getUserPermissionsByFilterPermission,
+    getPermissionsUser,
     PERMISSION_TYPES
 };
 

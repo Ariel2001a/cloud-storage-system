@@ -62,8 +62,6 @@ export default function BinPage() {
             <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
                 <FileList
                     fetchData={getDeletedFiles}
-                    isTrash={true}
-                    isStarPage={false}
                 />
             </View>
         </PaperProvider>

@@ -11,7 +11,7 @@ export default function ShareFiles() {
     return (
         <PaperProvider>
             <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <FileList fetchData={getSharedFiles} isTrash={false} isStarPage={false}/>
+                <FileList fetchData={getSharedFiles}/>
             </View>
         </PaperProvider>
     );
