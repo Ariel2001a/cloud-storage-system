@@ -111,7 +111,7 @@ const getFileByIdFromShared = async (userId, fileId) => {
 
 // Deletes a file/folder by its ID for a given user
 const deleteFileByIdFromUserFiles = async (userId, fileId) => {
-    let file = await getFileById(userId, fileId);
+    let file = await getFileById(fileId);
     if (!file) {
         return false;
     }

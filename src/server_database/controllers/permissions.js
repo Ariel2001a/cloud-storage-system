@@ -3,72 +3,13 @@ const filesModel = require('../services/files');
 const Permission = require('../services/permission');
 
 
-/**
- * Create a new permission for a file or folder
- */
-/*
-async function createPermission(req, res) {
-    const fileId = parseInt(req.params.id, 10);
-    const { userId, permission } = req.body;
-    const ownerId = req.userId; 
-
-   // Check if the request is from a logged-in user
-    if (!ownerId) {
-        return res.status(401).json({ error: 'User not logged in' });
-    }
-
-    const owner = User.getUserById(parseInt(ownerId));
-    if (!owner) {
-        return res.status(404).json({ error: 'User not found' });
-    }
-
- 
-    // Ensure the owner has access to the file
-    const userFiles = filesModel.getUserFiles(ownerId);
-    const file = userFiles.find(f => f.id == fileId);
-
-    if (!file) {
-        return res.status(404).json({ error: 'File or folder not found' });
-    }
-
- 
-    // Validate input
-    if (!userId || !permission) {
-        return res.status(400).json({ error: 'Missing fields' });
-    }
-
- 
-    const targetUser = User.getUserById(parseInt(userId));
-    if (!targetUser) {
-        return res.status(404).json({ error: 'Target user not found' });
-    }
-
-    if (!PERMISSION_TYPES[file.type].includes(permission)) {
-        return res.status(400).json({ error: `Invalid permission type for ${file.type}` });
-    }
-
-
-    // Add the permission
-    const newPermission = addPermission({ userId, fileId, permission, type: file.type });
-    if (!newPermission) {
-        return res.status(409).json({ error: 'Permission already exists' });
-    }
-    
-    let success = filesModel.sharedWithUsers(ownerId, fileId, userId);
-    if (!success) {
-        return res.status(400).json({ error: 'Failed to share file with user' });
-    }
-    return res.status(201).json(newPermission);
-}
-*/
-
 async function createPermissionByUsername(req, res) {
     const fileId = parseInt(req.params.id, 10);
     const { username, permission } = req.body;
     const ownerId = req.userId;
-; 
+    ;
 
-   // Check if the request is from a logged-in user
+    // Check if the request is from a logged-in user
     if (!ownerId) {
         return res.status(401).json({ error: 'User not logged in' });
     }
@@ -78,17 +19,17 @@ async function createPermissionByUsername(req, res) {
         return res.status(404).json({ error: 'User not found' });
     }
 
-      // Validate input
+    // Validate input
     if (!username || !permission) {
         return res.status(400).json({ error: 'Missing fields' });
     }
 
- 
+
     const targetUser = await User.getUserByUsername(username);
     if (!targetUser) {
         return res.status(404).json({ error: 'Target user not found' });
     }
-    
+
     // Ensure the owner has access to the file
     const file = await filesModel.getFileById(fileId);
 
@@ -117,7 +58,7 @@ async function createPermissionByUsername(req, res) {
  */
 const getPermissionsByFile = async (req, res) => {
     const ownerId = req.userId;
-; 
+    ;
     if (!ownerId) {
         return res.status(401).json({ error: 'User not logged in' });
     }
@@ -134,7 +75,7 @@ const getPermissionsByFile = async (req, res) => {
     return res.status(200).json(permissions);
 };
 
-const getPermissionsBySharedFile = async(req, res) => {
+const getPermissionsBySharedFile = async (req, res) => {
     const ownerId = req.userId;
     if (!ownerId) {
         return res.status(401).json({ error: 'User not logged in' });
@@ -144,7 +85,7 @@ const getPermissionsBySharedFile = async(req, res) => {
 
 
     // Ensure the owner has access
-    const file = await filesModel.getFileByIdFromShared(ownerId, fileId) ;
+    const file = await filesModel.getFileByIdFromShared(ownerId, fileId);
     console.log("controller:", file);
 
     if (!file) {
@@ -152,9 +93,9 @@ const getPermissionsBySharedFile = async(req, res) => {
     }
 
     // Fetch and return permissions
-    const permissions = await Permission.getPermissionsByFileId(fileId);    
+    const permissions = await Permission.getPermissionsByFileId(fileId);
     const perm = permissions.find(p => p.id === pId);
-    console.log("perm : " , perm);
+    console.log("perm : ", perm);
     return res.status(200).json(perm);
 };
 
@@ -167,7 +108,7 @@ const getPermissionsByDeletedFile = async (req, res) => {
     const permissionId = Number(req.params.pId);
 
     // Ensure the owner has access
-    const file = await filesModel.getFileByIdFromDeleted(ownerId, fileId) ;
+    const file = await filesModel.getFileByIdFromDeleted(ownerId, fileId);
     if (!file) {
         return res.status(404).json({ error: "File or folder not found" });
     }
@@ -175,7 +116,7 @@ const getPermissionsByDeletedFile = async (req, res) => {
     // Fetch and return permissions
     const permissions = await Permission.getPermissionsByFileId(fileId);
     const perm = permissions.find(p => p.id === permissionId);
-    console.log("perm : " , perm);
+    console.log("perm : ", perm);
     return res.status(200).json(perm);
 };
 
@@ -207,15 +148,15 @@ async function updatePermission(req, res) {
     }
 
     // Prevent duplicate permissions for the same user
-    const duplicate = await Permission.getPermissionsByFileId(fileId).some(p => 
-    p.userId === updated.userId &&
-    p.permission === permission &&
-    p.id !== updated.id
-);
+    const duplicate = await Permission.getPermissionsByFileId(fileId).some(p =>
+        p.userId === updated.userId &&
+        p.permission === permission &&
+        p.id !== updated.id
+    );
 
-if (duplicate) {
-    return res.status(409).json({ error: 'Permission already exists for this user' });
-}
+    if (duplicate) {
+        return res.status(409).json({ error: 'Permission already exists for this user' });
+    }
 
     return res.status(200).json(updated);
 }
@@ -262,7 +203,7 @@ async function deletePermission(req, res) {
 
 const getPermissionsByDetails = async (req, res) => {
     const ownerId = req.userId;
-    const {username} = req.query; 
+    const { username } = req.query;
     const fileId = req.params.id;
     const { permission } = req.query;
 
@@ -274,7 +215,7 @@ const getPermissionsByDetails = async (req, res) => {
         return res.status(400).json({ error: 'Missing fields' });
     }
 
-    const targetUser = await User.getUserByUsername(username+"@ead.com");
+    const targetUser = await User.getUserByUsername(username + "@ead.com");
     if (!targetUser) {
         return res.status(404).json({ error: 'Target user not found' });
     }
@@ -289,7 +230,7 @@ const getPermissionsByDetails = async (req, res) => {
     if (!file) {
         file = await filesModel.getFileByIdFromShared(ownerId, fileId);
 
-        if(!file){
+        if (!file) {
             return res.status(404).json({ error: "File or folder not found" });
         }
     }
@@ -299,13 +240,15 @@ const getPermissionsByDetails = async (req, res) => {
     }
 
     const permissionUser = await Permission.getUserPermissionsByFilterPermission(userId, fileId, permission) || [];
-    if(permissionUser.length > 0){
+    if (permissionUser.length > 0) {
         return res.json({ allowed: true });
 
-    }else{
+    } else {
         return res.json({ allowed: false });
     }
 };
 
-module.exports = { createPermissionByUsername, getPermissionsByFile, updatePermission, deletePermission,
-                    getPermissionsBySharedFile,getPermissionsByDeletedFile, getPermissionsByDetails };
+module.exports = {
+    createPermissionByUsername, getPermissionsByFile, updatePermission, deletePermission,
+    getPermissionsBySharedFile, getPermissionsByDeletedFile, getPermissionsByDetails
+};

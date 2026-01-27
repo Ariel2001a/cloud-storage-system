@@ -138,7 +138,7 @@ exports.getFolderChildren = async (req, res) => {
     if (!userId) return res.status(401).json({ error: 'User not logged in' });
 
     const folderId = req.params.id;
-    const file = await filesModel.getFileById(userId, parseInt(folderId));
+    const file = await filesModel.getFileById(parseInt(folderId));
 
     if (!file) return res.status(404).json({ error: 'File not found' });
     file.open = Date.now();
@@ -219,7 +219,7 @@ exports.getFileById = async (req, res) => {
 
     if (!file) return res.status(404).json({ error: 'File not found' });
 
-    if(userId == file.ownerId){
+    if (userId == file.ownerId) {
         file.open = Date.now();
         file.save();
     }
@@ -368,13 +368,13 @@ exports.deleteFileById = async (req, res) => {
 
     let file = await filesModel.getFileById(idToDelete);
 
-    if(file && file.ownerId != userId)
-    {
-        const permissionsUser = await Permission.getPermissionsUser(userId,idToDelete);
+    console.log(file.ownerId, userId);
+    if (file && file.ownerId != userId) {
+        const permissionsUser = await Permission.getPermissionsUser(userId, idToDelete);
         for (const perm of permissionsUser) {
             await Permission.deletePermissionById(perm.id);
         }
-        
+
         return res.status(204).end();
     }
 

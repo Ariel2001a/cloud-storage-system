@@ -6,8 +6,9 @@ import { useFiles } from './useFiles';
 import FileCard from './FileCard';
 import FolderView from './FolderView';
 import FileContentModal from './FileContentModal';
+import { DeviceEventEmitter } from 'react-native';
 
-export default function FileList({fetchData}) {
+export default function FileList({ fetchData }) {
     const { theme } = useTheme();
     const { t } = useLanguage();
     const {
@@ -16,12 +17,30 @@ export default function FileList({fetchData}) {
     } = useFiles();
 
     useEffect(() => {
+        DeviceEventEmitter.emit("REFRESH_FILES");
+
+        if (!fetchData) return;
+
+        const initFetch = async () => {
+            try {
+                await setFetchData(fetchData);
+
+                await fetchFiles();
+            } catch (error) {
+                console.error("Fetch failed:", error);
+            }
+        };
+
+        initFetch();
+    }, [fetchData]);
+    /*useEffect(() => {
+        DeviceEventEmitter.emit("REFRESH_FILES");
         if (!fetchData) return;
         (async () => {
             setFetchData(fetchData);
             await fetchFiles();
         })();
-    }, [fetchData]);
+    }, [fetchData]);*/
 
     return (
         <View style={{ flex: 1, width: '100%' }}>
