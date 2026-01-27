@@ -48,5 +48,5 @@
 
 ![Shared page](pics/shared_page.png)
 
-- The Shared page lists files and folders that were **shared with the user** by others.  
+- The Shared page lists files and folders that were **contains files that created recently** by others.  
 - Users can view and interact with shared content based on the permissions granted to them.
