@@ -27,7 +27,7 @@
 ## Rename **"New file"** to **"new name file"**, star it, and share it with another user.  
 
 
-**Step 9:** Log in with a different user account and verify that the shared file appears in the **Shared** page.  
+**Step 9:** Log in with a different user account and verify that the shared file appears in the **Shared** page.  (we use the other client on a web client)
 ![Item Options Menu](task5_readme/sharedfile.png)
 
 **Step 10:** Open the **Starred** page to verify the file appears as starred.  
@@ -39,11 +39,12 @@
 **Step 12:** Open the **Bin** and restore **"new name file"**.  
 ![Bin Page](task5_readme/filerestore.png)
 
-**Step 13:** Delete **"new name file"** permanently.  
+
+**Step 13:** Open the **Recent** page to review the activity history.  
+![Recent Page](task5_readme/recentpage.png)
+
+**Step 14:** Delete **"new name file"** permanently.  
 ![My Drive Page](task5_readme/filedeleted.png)
 
-**Step 14:** Open **Settings**, toggle dark mode, change the language.  
+**Step 15:** Open **Settings**, toggle dark mode, change the language.  
 ![Settings Menu](task5_readme/darkHEBREW.png)
-
-**Step 15:** Open the **Recent** page to review the activity history.  
-![Recent Page](task5_readme/recentpage.png)
