@@ -11,7 +11,7 @@ export default function Home() {
     return (
         <PaperProvider>
             <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-                <FileList fetchData={getLastOpenFiles} isTrash={false} isStarPage={false}/>
+                <FileList fetchData={getLastOpenFiles}/>
             </View>
         </PaperProvider>
     );

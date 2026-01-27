@@ -87,8 +87,8 @@ const addFileOrFolder = async (userId, fileData) => {
 
 
 
-const getFileById = async (userId, fileId) => {
-    const files = await getUserFilesByFilter(userId, { id: fileId });
+const getFileById = async (fileId) => {
+    const files = await File.find({ id: fileId });
     return files[0] || null;
 };
 
@@ -148,7 +148,7 @@ const deleteFileByIdFromBin = async (userId, fileId) => {
 };
 
 const starOrUnstarFile = async (userId, fileId) => {
-    let file = await getFileById(userId, fileId);
+    let file = await getFileById(fileId);
     if (!file) {
         return false;
     }
@@ -159,7 +159,7 @@ const starOrUnstarFile = async (userId, fileId) => {
 
 
 const doFilePublic = async (userId, fileId) => {
-    let file = await getFileById(userId, fileId);
+    let file = await getFileById(fileId);
     if (!file) {
         return false;
     }

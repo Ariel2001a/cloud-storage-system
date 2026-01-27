@@ -8,7 +8,7 @@ import { usePathname } from 'expo-router'
 import { getUserDetails } from '../api/files.js'
 import { useEffect, useState } from 'react';
 
-export default function FileCard({ item, onPress, isTrash, isStarPage }) {
+export default function FileCard({ item, onPress }) {
     const { theme } = useTheme();
     const { locale, t } = useLanguage();
     const pathname = usePathname();
@@ -16,6 +16,7 @@ export default function FileCard({ item, onPress, isTrash, isStarPage }) {
 
     let isHome = pathname === '/' || pathname === '/(tabs)' || pathname === '/(tabs)/' || pathname.includes('Home');
     let isSharePage = pathname.includes('ShareFiles');
+    let isTrash = pathname.includes('BinPage')
 
     const [ownerEmail, setOwnerEmail] = useState('');
 
@@ -87,7 +88,7 @@ export default function FileCard({ item, onPress, isTrash, isStarPage }) {
                 item={item}
                 locale={locale}
                 isTrash={isTrash}
-                isStarPage={isStarPage}
+                isShare={isSharePage}
                 anchor={
                     <TouchableOpacity>
                         <Ionicons

@@ -90,7 +90,7 @@ async function createPermissionByUsername(req, res) {
     }
     
     // Ensure the owner has access to the file
-    const file = await filesModel.getFileById(ownerId,fileId);
+    const file = await filesModel.getFileById(fileId);
 
     if (!file) {
         return res.status(404).json({ error: 'File or folder not found' });
@@ -124,7 +124,7 @@ const getPermissionsByFile = async (req, res) => {
     const fileId = req.params.id;
 
     // Ensure the owner has access
-    const file = await filesModel.getFileById(ownerId,fileId);
+    const file = await filesModel.getFileById(fileId);
     if (!file) {
         return res.status(404).json({ error: "File or folder not found" });
     }
@@ -233,7 +233,7 @@ async function deletePermission(req, res) {
     }
 
     // Check that the file belongs to the user
-    const file = await filesModel.getFileById(ownerId, fileId);
+    const file = await filesModel.getFileById(fileId);
     if (!file) {
         return res.status(404).json({ error: 'File or folder not found' });
     }
@@ -283,7 +283,7 @@ const getPermissionsByDetails = async (req, res) => {
 
     // Ensure the owner has access
 
-    let file = await filesModel.getFileById(ownerId, fileId);
+    let file = await filesModel.getFileById(fileId);
 
 
     if (!file) {

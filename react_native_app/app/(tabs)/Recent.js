@@ -62,8 +62,6 @@ export default function Recent() {
             <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
                 <FileList
                     fetchData={getRecentFiles}
-                    isTrash={false}
-                    isStarPage={false}
                 />
             </View>
         </PaperProvider>

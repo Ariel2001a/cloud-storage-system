@@ -12,7 +12,6 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
     const [loading, setLoading] = useState(false);
     const DEV_IP = process.env.EXPO_PUBLIC_API_URL;
 
-    // Determine if the file is an image based on name or type
     const isImage = file?.name?.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/) || file?.type === 'image';
 
     useEffect(() => {
@@ -22,6 +21,16 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
         }
     }, [visible, file]);
 
+    // --- SHARED IMAGE HANDLER ---
+    const handleImageResult = (result) => {
+        if (!result.canceled && result.assets && result.assets.length > 0) {
+            const asset = result.assets[0];
+            const base64String = `data:${asset.mimeType || 'image/jpeg'};base64,${asset.base64}`;
+            setContent(base64String);
+        }
+    };
+
+    // 1. Pick from Gallery
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
@@ -35,12 +44,24 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
             quality: 0.5,
             base64: true,
         });
+        handleImageResult(result);
+    };
 
-        if (!result.canceled && result.assets && result.assets.length > 0) {
-            const asset = result.assets[0];
-            const base64String = `data:${asset.mimeType || 'image/jpeg'};base64,${asset.base64}`;
-            setContent(base64String);
+    // 2. Take New Photo
+    const takePhoto = async () => {
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+            Alert.alert(lang === "he" ? "שגיאה" : "Error", lang === "he" ? "נדרשת גישה למצלמה" : "Camera permission required");
+            return;
         }
+
+        let result = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 0.5,
+            base64: true,
+        });
+        handleImageResult(result);
     };
 
     const removeImage = () => {
@@ -55,7 +76,6 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
 
         setLoading(true);
         try {
-            // Update both name and content on server
             await patchFileById(file.id, { name, content });
 
             // Update parent immediately with local state object
@@ -72,7 +92,6 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
 
     if (!visible || !file) return null;
 
-    // Theme styles
     const colors = theme.isDark
         ? { background: '#121212', text: '#eee', border: '#555', inputBg: '#1e1e1e', btnPrimary: '#2196F3', btnText: '#fff', danger: '#ff4444' }
         : { background: '#fff', text: '#000', border: '#ccc', inputBg: '#fff', btnPrimary: '#2196F3', btnText: '#fff', danger: '#ff4444' };
@@ -114,7 +133,6 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
                     </Text>
 
                     {isImage ? (
-                        // IMAGE UI
                         <View style={{ alignItems: 'center', borderWidth: 1, borderColor: colors.border, borderRadius: 5, padding: 10, backgroundColor: colors.inputBg }}>
                             {content ? (
                                 <Image
@@ -128,22 +146,37 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
                                     </Text>
                                 </View>
                             )}
+                            
+                            {/* IMAGE ACTION BUTTONS */}
+                            <View style={{ flexDirection: 'column', width: '100%', gap: 10 }}>
+                                <View style={{ flexDirection: 'row', gap: 10, justifyContent: 'center' }}>
+                                    {/* Camera Button */}
+                                    <TouchableOpacity 
+                                        onPress={takePhoto} 
+                                        style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.btnPrimary, padding: 10, borderRadius: 5 }}
+                                    >
+                                        <Ionicons name="camera-outline" size={20} color={colors.btnText} style={{ marginRight: 5 }} />
+                                        <Text style={{ color: colors.btnText }}>
+                                            {lang === "he" ? "מצלמה" : "Camera"}
+                                        </Text>
+                                    </TouchableOpacity>
 
-                            <View style={{ flexDirection: 'row', gap: 10 }}>
-                                <TouchableOpacity
-                                    onPress={pickImage}
-                                    style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: colors.btnPrimary, padding: 10, borderRadius: 5 }}
-                                >
-                                    <Ionicons name="image-outline" size={20} color={colors.btnText} style={{ marginRight: 5 }} />
-                                    <Text style={{ color: colors.btnText }}>
-                                        {lang === "he" ? "בחר תמונה" : "Choose Image"}
-                                    </Text>
-                                </TouchableOpacity>
+                                    {/* Gallery Button */}
+                                    <TouchableOpacity 
+                                        onPress={pickImage} 
+                                        style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.btnPrimary, padding: 10, borderRadius: 5 }}
+                                    >
+                                        <Ionicons name="image-outline" size={20} color={colors.btnText} style={{ marginRight: 5 }} />
+                                        <Text style={{ color: colors.btnText }}>
+                                            {lang === "he" ? "גלריה" : "Gallery"}
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
 
                                 {content ? (
-                                    <TouchableOpacity
-                                        onPress={removeImage}
-                                        style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: colors.danger, padding: 10, borderRadius: 5 }}
+                                    <TouchableOpacity 
+                                        onPress={removeImage} 
+                                        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.danger, padding: 10, borderRadius: 5 }}
                                     >
                                         <Ionicons name="trash-outline" size={20} color={colors.btnText} style={{ marginRight: 5 }} />
                                         <Text style={{ color: colors.btnText }}>
@@ -154,7 +187,6 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
                             </View>
                         </View>
                     ) : (
-                        // TEXT UI
                         <TextInput
                             multiline
                             style={{
@@ -173,7 +205,7 @@ export default function EditFileForm({ visible, file, onSave, onCancel, lang }) 
                     )}
                 </View>
 
-                {/* Actions */}
+                {/* Bottom Actions */}
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 30 }}>
                     <TouchableOpacity onPress={onCancel} style={{ padding: 10, marginRight: 10 }}>
                         <Text style={{ color: colors.text }}>{lang === "he" ? "ביטול" : "Cancel"}</Text>

@@ -16,7 +16,7 @@ import {
 import EmailPromptModal from './EmailPromptModal';
 import MoveFolderDialog from './MoveFolderDialog';
 
-export default function MenuOptions({ item, isTrash }) {
+export default function MenuOptions({ item, isTrash, isShare }) {
     const [visible, setVisible] = useState(false);
     const [renameVisible, setRenameVisible] = useState(false);
     const [shareVisible, setShareVisible] = useState(false);
@@ -58,6 +58,12 @@ export default function MenuOptions({ item, isTrash }) {
         { label: t('delete_forever'), onPress: () => executeAndRefresh(deleteFileOrFolder, 'deleted_permanently', item.id) }
     ];
 
+    const actionsShare = [
+        { label: t('rename'), onPress: () => { closeMenu(); setRenameVisible(true); } },
+        { label: t('share'), onPress: () => { closeMenu(); setShareVisible(true); } },
+        { label: t('delete_forever'), onPress: () => executeAndRefresh(deleteFileOrFolder, 'deleted_permanently', item.id) }
+    ];
+
     return (
         <>
             <Menu
@@ -71,7 +77,7 @@ export default function MenuOptions({ item, isTrash }) {
                     />
                 }
             >
-                {(isTrash ? actionsTrash : actions).map((action, idx) => (
+                {(isTrash ? actionsTrash : isShare? actionsShare : actions).map((action, idx) => (
                     <Menu.Item key={idx} onPress={action.onPress} title={action.label} />
                 ))}
             </Menu>
