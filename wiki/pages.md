@@ -44,7 +44,7 @@
 
 ## Shared Page
 
-![Shared page](task5_readme/shared_page.png)
+![Shared page](pics/shared_page.png)
 
 - The Shared page lists files and folders that were **shared with the user** by others.  
 - Users can view and interact with shared content based on the permissions granted to them.
