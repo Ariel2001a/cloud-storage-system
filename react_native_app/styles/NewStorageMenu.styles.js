@@ -40,6 +40,6 @@ export const getStyles = (theme) => StyleSheet.create({
     optionLabel: {
         fontSize: 14,
         fontWeight: '500',
-        color: theme.colors.textMain, // שימוש ב-Theme
+        color: theme.colors.textMain,
     },
 });

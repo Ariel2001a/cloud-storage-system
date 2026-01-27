@@ -5,18 +5,14 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import CardLogo from '../assets/logo.png'; // Your logo
+import CardLogo from '../assets/logo.png';
 import styles from '../styles/Login.styles';
 import { useLanguage } from '../context/LanguageContext';
 
 
-// ===== SERVER URL CONFIG =====
-// Change this to switch between LAN, ngrok, or production
-// Current placeholder: localhost```
-// Your PC LAN IP: 192.168.1.225
+
 const DEV_IP = process.env.EXPO_PUBLIC_API_URL;
 const SERVER_URL = `http://${DEV_IP}:8080`;  // Android emulator localhost
-//const SERVER_URL = 'http://192.168.1.75:8080';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -54,7 +50,6 @@ export default function LoginScreen() {
 
       const { token } = await res.json();
       await AsyncStorage.setItem('token', token);
-      console.log(token);
 
       Alert.alert(t('success'), t('signedInSuccessfully'), [
         { text: 'OK', onPress: () => router.replace('(tabs)') }
@@ -62,7 +57,6 @@ export default function LoginScreen() {
 
     } catch (err) {
       Alert.alert(t('error'), t('couldNotConnect'));
-      console.log(err);
     }
   };
 

@@ -86,7 +86,6 @@ const getPermissionsBySharedFile = async (req, res) => {
 
     // Ensure the owner has access
     const file = await filesModel.getFileByIdFromShared(ownerId, fileId);
-    console.log("controller:", file);
 
     if (!file) {
         return res.status(404).json({ error: "File or folder not found" });
@@ -95,7 +94,6 @@ const getPermissionsBySharedFile = async (req, res) => {
     // Fetch and return permissions
     const permissions = await Permission.getPermissionsByFileId(fileId);
     const perm = permissions.find(p => p.id === pId);
-    console.log("perm : ", perm);
     return res.status(200).json(perm);
 };
 
@@ -116,7 +114,6 @@ const getPermissionsByDeletedFile = async (req, res) => {
     // Fetch and return permissions
     const permissions = await Permission.getPermissionsByFileId(fileId);
     const perm = permissions.find(p => p.id === permissionId);
-    console.log("perm : ", perm);
     return res.status(200).json(perm);
 };
 

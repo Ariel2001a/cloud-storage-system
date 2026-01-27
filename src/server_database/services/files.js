@@ -101,9 +101,7 @@ const getFileByIdFromDeleted = async (userId, fileId) => {
 
 const getFileByIdFromShared = async (userId, fileId) => {
     const files = await getFilesSharedWithUser(userId);
-    console.log("services:", files);
     if (!files || files.length === 0) {
-        console.log("services: null");
         return null;
     }
     return files.find(f => f.id === fileId) || null;
@@ -122,7 +120,6 @@ const deleteFileByIdFromUserFiles = async (userId, fileId) => {
 
 const RestoreFileByIdFromBin = async (userId, fileId) => {
     let file = await getFileByIdFromDeleted(userId, fileId);
-    console.log("services:", file);
     if (!file) {
         return false;
     }
@@ -134,7 +131,6 @@ const RestoreFileByIdFromBin = async (userId, fileId) => {
 const deleteFileByIdFromBin = async (userId, fileId) => {
     let file = await getFileByIdFromDeleted(userId, fileId);
     if (!file) {
-        console.log("not deleted");
         return false;
     }
     const result = await File.deleteOne({
@@ -143,7 +139,6 @@ const deleteFileByIdFromBin = async (userId, fileId) => {
         bin: true
     });
 
-    console.log("deleted");
     return true;
 };
 

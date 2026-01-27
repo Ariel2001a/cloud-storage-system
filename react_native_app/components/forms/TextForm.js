@@ -1,4 +1,3 @@
-//import
 import { useState } from 'react';
 import { Modal, View, Text, TextInput, TouchableOpacity, Pressable, ActivityIndicator, Alert } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';

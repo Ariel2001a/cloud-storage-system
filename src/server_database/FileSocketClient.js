@@ -84,7 +84,6 @@ class FileSocketClient {
       this.currentReject = null;
 
       if (retries > 0) {
-        console.log(`Timeout, retrying: ${cmd}`);
         this.queue.unshift({ cmd, resolve, reject: rejectFn, retries: retries - 1 });
       } else {
         if (rejectFn) rejectFn(new Error(`Command timed out: ${cmd}`));

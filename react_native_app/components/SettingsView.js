@@ -17,7 +17,6 @@ export default function SettingsView({ onBack }) {
             await AsyncStorage.removeItem('token'); // remove JWT
             router.replace('login'); // navigate to login
         } catch (err) {
-            console.log(err);
             Alert.alert('Error', 'Could not sign out. Please try again.');
         }
     };

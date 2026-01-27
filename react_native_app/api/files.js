@@ -27,7 +27,6 @@ export async function getLastOpenFiles() {
 
         if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();
-        console.log(data);
         return data.files || [];
     } catch (err) {
         console.error(err);
@@ -45,7 +44,6 @@ export async function getFiles() {
 
         if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();
-        console.log(data);
         return data.files || [];
     } catch (err) {
         console.error(err);
@@ -71,7 +69,6 @@ export async function getFolderChildren(folderId) {
 // 3️⃣ Get file content
 export async function getFileContent(fileId) {
     try {
-        console.log(fileId);
         const res = await fetch(`${API_BASE}/files/${fileId}`, {
             headers: await getAuthHeaders()
         });
@@ -100,7 +97,6 @@ export async function createFileOrFolder(body) {
     });
 
     const responseData = await res.json().catch(() => ({}));
-    console.log("SERVER RESPONSE:", responseData);
 
     if (!res.ok) {
         throw new Error(responseData.error || 'Failed to create file/folder');
@@ -125,8 +121,6 @@ export async function searchFiles(query) {
         }
 
         const data = await res.json();
-        console.log("Search results received:", data);
-
 
         return data.files || [];
 
@@ -192,13 +186,11 @@ export async function renameFileOrFolder(fileId, newName) {
     }
 
     const text = await res.text();
-    console.log(text);
     return text;
 }
 
 export async function moveFolder(fileId, folderId) {
-    console.log("folderId:", folderId);
-    const res = await fetch(`${API_BASE}/files/${fileId}`, {
+        const res = await fetch(`${API_BASE}/files/${fileId}`, {
         method: "PATCH",
         headers: await getAuthHeaders(),
         body: JSON.stringify({ parentId: folderId })
@@ -248,7 +240,6 @@ export async function starOrUnstarFileOrPublic(fileId, request) {
 
 export async function shareFileOrFolder(fileId, sharedWithUsername, permission) {
 
-    console.log(fileId, sharedWithUsername, permission);
     const res = await fetch(`${API_BASE}/files/${fileId}/permissions`, {
         method: "POST",
         headers: await getAuthHeaders(),
@@ -267,7 +258,6 @@ export async function shareFileOrFolder(fileId, sharedWithUsername, permission) 
 
 export async function checkPermission(username, fileId, permission) {
 
-    console.log(fileId, permission);
     const res = await fetch(`${API_BASE}/files/${fileId}/permission?username=${username}&permission=${permission}`, {
         method: "GET",
         headers: await getAuthHeaders(),
@@ -280,7 +270,6 @@ export async function checkPermission(username, fileId, permission) {
         throw new Error("Failed to search permission" + errText);
     }
     const data = await res.json();
-    console.log(data.allowed);
     return data.allowed;
 }
 
@@ -293,7 +282,6 @@ export async function getDeletedFiles() {
 
         if (!res.ok) throw new Error('Failed to fetch files');
         const data = await res.json();
-        console.log(data.files)
         return data.files || [];
     } catch (err) {
         console.error(err);

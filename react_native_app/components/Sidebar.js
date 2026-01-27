@@ -10,7 +10,6 @@ import NewStorageButton from './SideBar/NewStorageButton';
 import { DeviceEventEmitter } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// 1. Import your API functions
 import { getUserDetails, API_BASE } from '../api/files';
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -20,15 +19,12 @@ export default function Sidebar({ isOpen, onClose }) {
     const [isSettingsMode, setIsSettingsMode] = useState(false);
     const [currentFolderId, setCurrentFolderId] = useState(null);
 
-    // User Data States
     const [user, setUser] = useState({ email: '', username: '' });
     const [loadingUser, setLoadingUser] = useState(true);
     const [imageError, setImageError] = useState(false);
 
-    // Calculate Server Root: "http://.../api" -> "http://..."
     const SERVER_ROOT = API_BASE.replace(/\/api\/?$/, '');
 
-    // --- HELPER: Decode JWT without external libraries ---
     const decodeJwt = (token) => {
         try {
             const base64Url = token.split('.')[1];
@@ -41,7 +37,6 @@ export default function Sidebar({ isOpen, onClose }) {
             );
             return JSON.parse(jsonPayload);
         } catch (e) {
-            // Polyfill for React Native environments where atob is missing
             try {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
                 const str = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
@@ -86,7 +81,7 @@ export default function Sidebar({ isOpen, onClose }) {
                 }
 
             } catch (error) {
-                console.log("Failed to load user:", error);
+                alert("Failed to load user:", error);
             } finally {
                 setLoadingUser(false);
             }

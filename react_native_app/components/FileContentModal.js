@@ -37,7 +37,6 @@ export default function FileContentModal({ visible, file, onClose, onEdit }) {
     const contentString = String(displayedContent || "");
 
     const handleSave = (updatedData) => {
-        // updatedData is now an object: { name: "...", content: "..." }
 
         if (updatedData.content !== undefined) {
             setDisplayedContent(updatedData.content);

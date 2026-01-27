@@ -19,7 +19,6 @@ exports.createFileOrFolder = async (req, res) => {
     if (!user) return res.status(404).json({ error: "User not found" });
 
     if (type === 'folder' && content != null) {
-        console.log("invalid folder");
         return res.status(400).json({ error: "folder is without content!" });
     }
 
@@ -47,8 +46,6 @@ exports.createFileOrFolder = async (req, res) => {
 
                 const fileName = `${Date.now()}-${name.replace(/\s+/g, '_')}`;
                 const fullPath = path.join(uploadDir, fileName);
-
-                console.log("Saving image to absolute path:", path.resolve(fullPath));
 
                 fs.writeFileSync(fullPath, buffer);
 
@@ -87,7 +84,6 @@ exports.createFileOrFolder = async (req, res) => {
         });
 
         const perms = Permission.PERMISSION_TYPES;
-        console.log(perms);
         for (const p of perms) {
             let newPermission = await Permission.addPermission({
                 userId: parseInt(userId),
@@ -95,8 +91,6 @@ exports.createFileOrFolder = async (req, res) => {
                 permission: p,
                 type
             });
-
-            console.log(newPermission);
         }
 
         return res.status(201).location(`/api/files/${filesCounter}`).json({ id: filesCounter });
@@ -117,7 +111,6 @@ exports.getFiles = async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     const files = await filesModel.getTopLevelFiles(userId);
-    console.log("files controller:", files);
     res.json({ files });
 };
 
@@ -266,7 +259,6 @@ exports.patchFileById = async (req, res) => {
     if (!file) return res.status(404).json({ error: 'File not found' });
 
     const { name, content, parentId } = req.body;
-    console.log("controller:", parentId);
 
     let updateContent = false, updateName = false, updateParentId = false;
 
@@ -289,7 +281,6 @@ exports.patchFileById = async (req, res) => {
 
         else {
             const parent = await filesModel.getFileById(parentId);
-            console.log("controller parent: ", parent);
             if (!parent || parent.type !== 'folder') {
                 return res.status(400).json({ error: 'Folder Parent does not exist' });
             }
@@ -368,7 +359,6 @@ exports.deleteFileById = async (req, res) => {
 
     let file = await filesModel.getFileById(idToDelete);
 
-    console.log(file.ownerId, userId);
     if (file && file.ownerId != userId) {
         const permissionsUser = await Permission.getPermissionsUser(userId, idToDelete);
         for (const perm of permissionsUser) {
@@ -380,7 +370,6 @@ exports.deleteFileById = async (req, res) => {
 
     if (file && !file.bin) {
         await filesModel.deleteFileByIdFromUserFiles(userId, idToDelete);
-        console.log("first delete controller2")
 
 
         if ((file.type === 'file' || file.type === 'image') && file.starred) {
@@ -391,7 +380,6 @@ exports.deleteFileById = async (req, res) => {
     }
 
     file = await filesModel.getFileByIdFromDeleted(userId, idToDelete);
-    console.log("first delete controller1")
 
     if (!file) {
         return res.status(404).json({ error: 'File not found' });
@@ -438,7 +426,6 @@ exports.deleteFileById = async (req, res) => {
     }
 
     await filesModel.deleteFileByIdFromBin(userId, idToDelete);
-    console.log("delete controller")
 
     return res.status(204).end();
 };
@@ -485,7 +472,6 @@ exports.restoreFileFromBin = async (req, res) => {
 
     const fileId = parseInt(req.params.id);
     const success = await filesModel.RestoreFileByIdFromBin(userId, fileId);
-    console.log("controller:", success);
     if (!success) {
         return res.status(404).json({ error: 'File not found' });
     }

@@ -33,14 +33,6 @@ export default function FileList({ fetchData }) {
 
         initFetch();
     }, [fetchData]);
-    /*useEffect(() => {
-        DeviceEventEmitter.emit("REFRESH_FILES");
-        if (!fetchData) return;
-        (async () => {
-            setFetchData(fetchData);
-            await fetchFiles();
-        })();
-    }, [fetchData]);*/
 
     return (
         <View style={{ flex: 1, width: '100%' }}>

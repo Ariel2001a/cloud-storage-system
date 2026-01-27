@@ -21,11 +21,9 @@ const addPermission = async ( {userId, fileId, permission, type} ) => {
 
     let permissions = await getUserPermissionsByFilterPermission(userId, fileId, permission);
 
-    console.log ("per:" ,permissions);
 
     // Initialize array for file if not exists
     if (permissions.length > 0) {
-        console.log("2");
         return null;
     }
 

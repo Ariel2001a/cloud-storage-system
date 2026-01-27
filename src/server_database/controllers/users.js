@@ -26,7 +26,6 @@ exports.createUser = async (req, res) => {
         }
 
         let existsUser = await User.getUserByUsername(email);
-        console.log(existsUser);
         if (existsUser) {
             return res.status(400).json({ error: 'username exists in the system' });
         }
