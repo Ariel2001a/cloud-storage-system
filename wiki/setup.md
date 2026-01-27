@@ -40,13 +40,17 @@
 
 
 
-## change the IP in the env file
+## change the IP in the env fil
 
 ![change env](task5_readme/env.png)
 
 ## run the servers and apps
 
 ![run](task5_readme/dockercomposebuild.png)
+
+## Good run
+![good](task5_readme/withbarcode.png)
+
 
 ## Barcode does not display correctly
 
@@ -55,10 +59,6 @@
 ## Fixed with this command
 
 ![bug](task5_readme/problemfixcommand.png)
-
-## Good run
-![good](task5_readme/withbarcode.png)
-
 
 
 
