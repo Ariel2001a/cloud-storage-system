@@ -52,7 +52,7 @@
 
 ## Bottom Bar
 
-![Bottom bar](images/task5_readme/bottom_bar.jpg)
+![Bottom bar](task5_readme/bottom_bar.jpg)
 
 - The bottom bar provides **navigation between main pages**:
   - Home
