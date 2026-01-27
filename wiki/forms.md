@@ -10,7 +10,7 @@
 
 ## Create File Form
 
-![Create File Form](task5_readme/create_file_form.jpg)  
+![Create File Form](pics/create_file_form.jpg)  
 **Create File Form** – Used to create a new file. Users can enter the file name and select file type.
 
 ## Create Picture Form
