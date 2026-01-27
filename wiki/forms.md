@@ -19,11 +19,13 @@
 ## Picture Form
 
 ![Picture Form](task5_readme/imageupload.png)
+
 **Picture Form** – view your picture
 
 ## Edit Picture Form
 
 ![Edit Picture Form](task5_readme/file_menu_in_starred.png)  
+
 **Edit Picture Form** – Allows replacing the image or deleting it .
 
 
