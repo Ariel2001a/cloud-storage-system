@@ -37,7 +37,7 @@
 ![My Drive Page](task5_readme/fileintrash.png)
 
 **Step 12:** Open the **Bin** and restore **"new name file"**.  
-![Bin Page](images/task5_readme/filerestore.png)
+![Bin Page](task5_readme/filerestore.png)
 
 **Step 13:** Delete **"new name file"** permanently.  
 ![My Drive Page](task5_readme/filedeleted.png)
