@@ -1,20 +1,13 @@
+## Registration Screen
 
+![Register Screen](task5_readme/register_screen.jpg)
 
-## registration screen
+- The password must be at least 8 characters long and include both letters and numbers.  
+- During registration, users may upload a profile picture or continue with the default profile image.
 
- ![register screen](images/task5_readme/register_screen.png) 
+## Login Screen
 
- - The password must be at least 8 characters long and include both letters and numbers.
+![Login Screen](task5_readme/login_screen.jpg)
 
- - During registration, users may upload a profile picture or continue with the default profile image.
-
-
-
- 
-## login screen
-
- ![login screen](images/task5_readme/login_screen.png) 
-
- - Users can log in using either their username or username@ead.com
-
- - Upon successful login, a JWT token is created and stored in AsyncStorage.
+- Users can log in using either their username or `username@ead.com`.  
+- Upon successful login, a JWT token is created and stored in AsyncStorage.
