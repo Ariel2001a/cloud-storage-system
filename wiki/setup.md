@@ -48,10 +48,6 @@
 
 ![run](task5_readme/dockercomposebuild.png)
 
-## Good run
-![good](task5_readme/withbarcode.png)
-
-
 ## Barcode does not display correctly
 
 ![bug](task5_readme/notshowingbarcode.png)
@@ -59,6 +55,10 @@
 ## Fixed with this command
 
 ![bug](task5_readme/problemfixcommand.png)
+
+## Good run
+![good](task5_readme/withbarcode.png)
+
 
 
 
