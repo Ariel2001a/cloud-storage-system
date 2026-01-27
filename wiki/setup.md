@@ -40,7 +40,7 @@
 
 
 
-## change the IP in the env filr
+## change the IP in the env file
 
 ![change env](task5_readme/env.png)
 
