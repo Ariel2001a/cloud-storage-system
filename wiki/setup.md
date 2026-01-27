@@ -24,20 +24,18 @@
 
 
 ## run in seperated device
-3.
 
 
--  to use a separate device:
 
-    1. Open CMD and run `ipconfig` to get your IP address.
+1. Open CMD and run `ipconfig` to get your IP address.
 
-    2. Go to the `.env` file inside the `react_native_app` folder and set your IP there.
+2. Go to the `.env` file inside the `react_native_app` folder and set your IP there.
 
-    3. run the command - docker compose up --build
+3. run the command - docker compose up --build
 
-    4. scan the QR code.
+4. scan the QR code.
     
-    5. If the QR does not display correctly,open new terminal and use the following command: docker compose logs -f mobile_app
+5. If the QR does not display correctly,open new terminal and use the following command: docker compose logs -f mobile_app
 
 
 
