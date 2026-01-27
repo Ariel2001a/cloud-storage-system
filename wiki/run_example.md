@@ -24,26 +24,26 @@
 **Step 8:** Edit the image by replacing or updating the picture.  
 ![Edit Picture Form](task5_readme/imageafteredit.png)
 
-**Step 9:** Rename **"New file"** to **"new name file"**, star it, and share it with another user.  
+## Rename **"New file"** to **"new name file"**, star it, and share it with another user.  
+
+
+**Step 9:** Log in with a different user account and verify that the shared file appears in the **Shared** page.  
 ![Item Options Menu](task5_readme/sharedfile.png)
 
-**Step 10:** Log in with a different user account and verify that the shared file appears in the **Shared** page.  
-![Item Options Menu](task5_readme/sharedfile.png)
-
-**Step 11:** Open the **Starred** page to verify the file appears as starred.  
+**Step 10:** Open the **Starred** page to verify the file appears as starred.  
 ![Starred Page](task5_readme/starredfile.png)
 
-**Step 12:** Delete **"new name file"** (the file is moved to the Bin).  
+**Step 11:** Delete **"new name file"** (the file is moved to the Bin).  
 ![My Drive Page](task5_readme/fileintrash.png)
 
-**Step 13:** Open the **Bin** and restore **"new name file"**.  
+**Step 12:** Open the **Bin** and restore **"new name file"**.  
 ![Bin Page](images/task5_readme/filerestore.png)
 
-**Step 14:** Delete **"new name file"** permanently.  
+**Step 13:** Delete **"new name file"** permanently.  
 ![My Drive Page](task5_readme/filedeleted.png)
 
-**Step 15:** Open **Settings**, toggle dark mode, change the language.  
+**Step 14:** Open **Settings**, toggle dark mode, change the language.  
 ![Settings Menu](task5_readme/darkHEBREW.png)
 
-**Step 16:** Open the **Recent** page to review the activity history.  
+**Step 15:** Open the **Recent** page to review the activity history.  
 ![Recent Page](task5_readme/recentpage.png)
