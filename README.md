@@ -21,12 +21,6 @@ The system operates with the following features:
 * Share files and folders with other users via email
 * Permission-based access to shared content
 
-**Smart Navigation & Organization**
-* Home dashboard with quick access to content
-* Starred files for favorites
-* Recent activity tracking
-* Dedicated Shared page for received items
-
 **Modern UI & Customization**
 * Side menu and item options menu
 * Search bar and bottom tab navigation
@@ -62,3 +56,10 @@ Each Wiki page includes screenshots and explanations demonstrating real user int
 This project demonstrates a complete full-stack file management platform, integrating a mobile client with a secure backend and database. It reflects real-world application flows, including authentication, content management, and user collaboration.
 
 The system was developed as part of the Advanced Programming Systems course and showcases modern development practices, clean architecture, and comprehensive documentation through the project Wiki.
+
+
+## Authors
+
+- Ariel Golod
+- Dvir Tabib
+- Eylon Hakak
