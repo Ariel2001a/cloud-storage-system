@@ -8,11 +8,23 @@
 
 2. Make sure u have c++17 compiler
 
-3. 
-     * run the command - bla bla
+3.
+
+ - The default IP in the .env file (10.0.2.2) is configured for use with the Android emulator.
+
+- If you'd like to use a separate device:
+
+    1. Open CMD and run `ipconfig` to get your IP address.
+
+    2. Go to the `.env` file inside the `react_native_app` folder and set your IP there.
 
 
-4. If the barcode does not display correctly, use the following command: bla bla
+    
+4.  run the command - docker compose up --build
+
+
+
+5. If the barcode does not display correctly, use the following command: bla bla
 
 
 ## run the servers and apps
