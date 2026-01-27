@@ -46,6 +46,6 @@
 **Step 16:** Open the **Recent** page to review the activity history.
 
 ![Settings Menu](images/task5_readme/darkHEBREW.png)  
-**Step 15:** Open **Settings**, toggle dark mode, change the language.
+**Step 15:** Open **Settings**, toggle dark mode, change the language
 
 
