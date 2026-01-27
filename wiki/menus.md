@@ -36,6 +36,18 @@
   - **Restore** the item.
   - **Delete forever** (permanent deletion).
 
+
+  ## Choose File Type
+
+![Choose File Type](task5_readme/choose_file_type.png)
+
+- When creating a new file, users can select the **type of file** they want to create.  
+- Available file types include:
+  - **Text File** – create a standard text file.
+  - **Image File** – create a new image 
+  - **Folder** – create a new folder to organize files.  
+
+
 ## File Menu in Trash
 
 ![File Menu in Trash](task5_readme/file_menu_in_trash.jpg)
@@ -52,6 +64,17 @@
 - The file menu in Starred is accessed via the **three-dot icon** on starred items.  
 - It provides actions specific to items in the Starred page:  
   - **Remove from Starred** – unmark the item as favorite.  
+
+
+## File Menu in Shared
+
+![File Menu in Shared](task5_readme/file_menu_in_shared.png)
+
+- The file menu in the Shared page is accessed via the **three-dot icon** on shared items.  
+- It provides actions specific to items shared with the user:
+  - **Rename** – change the name of the shared item (if permissions allow).  
+  - **Share** – re-share the item with another user.  
+  - **Delete Forever** – permanently remove the shared item from the system.
 
 
 ## Top Bar
