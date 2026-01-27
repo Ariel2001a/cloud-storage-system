@@ -9,13 +9,14 @@
 **Edit File Form** – Allows editing the file name or updating its content.
 
 
-## Picture Form
+
 
 ## Create Picture Form
 
 ![Create Picture Form](task5_readme/create_image_form.jpg)  
 **Create Picture Form** – Used to upload a new image. Users can select a picture or use camera to take picture
 
+## Picture Form
 
 ![Picture Form](task5_readme/imageupload.png)
 **Picture Form** – view your picture
