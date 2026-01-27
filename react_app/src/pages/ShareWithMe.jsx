@@ -7,7 +7,7 @@ import "./Home.css";
 import { FileRightClickMenu } from "../components/FileRightClickMenu";
 import { useLang } from "../context/LangContext";
 import { getUserIdFromToken } from "../utils/tokenUtils";
-import FileTable from "../components/FileTable";
+import FileTableShred from "../components/FileTableShred";
 
 
 
@@ -97,7 +97,7 @@ export default function ShareWithMe({ searchTerm, user }) {
             </h2>
 
 
-            <FileTable
+            <FileTableShred
                 items={items}
                 isLoading={isLoading}
                 isRtl={isRtl}

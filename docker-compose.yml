@@ -99,6 +99,32 @@ services:
     networks:
       - local
 
+  mobile_app:
+    build:
+      context: ./react_native_app 
+      dockerfile: Dockerfile
+    container_name: mobile_app_container
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    env_file:
+      - ./react_native_app/.env
+    ports:
+      - "8081:8081"
+    environment:
+      - EXPO_PUBLIC_API_URL=${EXPO_PUBLIC_API_URL:-http://10.0.2.2:8080}
+    networks:
+      - local
+    stdin_open: true
+    tty: true
+    attach: true
+    command: /bin/sh -c "npx expo start --tunnel"
+    depends_on:
+      - server_node
+
+
+
+
 volumes:
   mongo_data:
 

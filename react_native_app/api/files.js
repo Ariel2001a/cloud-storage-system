@@ -1,19 +1,9 @@
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const DEV_IP = Platform.OS === 'android' ? '10.0.2.2' : 'localhost';
+const DEV_IP = process.env.EXPO_PUBLIC_API_URL;
+//const DEV_IP = Platform.OS === 'android' ? '10.0.2.2' : 'localhost';
 export const API_BASE = `http://${DEV_IP}:8080/api`;
-
-// helper to get headers with token
-/*function getAuthHeaders() {
-    const token = sessionStorage.getItem('token');
-    if (!token) throw new Error("No token found");
-    return {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-    };```
-}*/
-
 
 async function getAuthHeaders() {
     try {

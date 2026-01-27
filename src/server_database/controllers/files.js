@@ -117,6 +117,7 @@ exports.getFiles = async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     const files = await filesModel.getTopLevelFiles(userId);
+    console.log("files controller:", files);
     res.json({ files });
 };
 
@@ -137,7 +138,11 @@ exports.getFolderChildren = async (req, res) => {
     if (!userId) return res.status(401).json({ error: 'User not logged in' });
 
     const folderId = req.params.id;
+    const file = await filesModel.getFileById(userId, parseInt(folderId));
 
+    if (!file) return res.status(404).json({ error: 'File not found' });
+    file.open = Date.now();
+    file.save();
     const children = await filesModel.getFolderFiles(userId, folderId);
     res.json({ files: children });
 };

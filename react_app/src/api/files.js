@@ -13,13 +13,27 @@ function getAuthHeaders() {
 }
 
 
+export async function getLastOpenFiles() {
+    try {
+        const res = await fetch(`${API_BASE}/files/`, {
+            headers: getAuthHeaders()
+        });
 
+        if (!res.ok) throw new Error('Failed to fetch files');
+        const data = await res.json();
+        console.log(data);
+        return data.files || [];
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
+}
 
 
 // 1️⃣ Get top-level files
 export async function getFiles() {
     try {
-        const res = await fetch(`${API_BASE}/files`, {
+        const res = await fetch(`${API_BASE}/files/myDrive`, {
             headers: getAuthHeaders()
         });
 
@@ -31,6 +45,8 @@ export async function getFiles() {
         return [];
     }
 }
+
+
 
 // 2️⃣ Get folder children
 export async function getFolderChildren(folderId) {
@@ -97,7 +113,7 @@ export async function searchFiles(query) {
         console.log("Search results received:", data);
 
 
-        return data.filesList || [];
+        return data.files || [];
 
     } catch (err) {
         console.error("Search error:", err);
