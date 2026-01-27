@@ -6,23 +6,36 @@ import { useLanguage } from '../context/LanguageContext';
 import MenuOptions from './MenuOptions.js'
 import { usePathname } from 'expo-router'
 import { getUserDetails } from '../api/files.js'
+import { useEffect, useState } from 'react';
 
 export default function FileCard({ item, onPress, isTrash, isStarPage }) {
     const { theme } = useTheme();
     const { locale, t } = useLanguage();
     const pathname = usePathname();
 
-    let isHome = pathname.includes('Home') || pathname.includes('(tabs)');
+
+    let isHome = pathname === '/' || pathname === '/(tabs)' || pathname === '/(tabs)/' || pathname.includes('Home');
     let isSharePage = pathname.includes('ShareFiles');
 
-    const getOwnerEmail = async () => {
+    const [ownerEmail, setOwnerEmail] = useState(''); // 2. סטייט לאימייל
 
-        let ownerName = await getUserDetails(item.ownerId);
-        return ownerName;
+    useEffect(() => {
+        // 3. פונקציה פנימית לשליפת הנתונים
+        const fetchEmail = async () => {
+            if (isSharePage && item.ownerId) {
+                try {
+                    const userDetails = await getUserDetails(item.ownerId);
+                    if (userDetails && userDetails.email) {
+                        setOwnerEmail(userDetails.email);
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch owner details:", error);
+                }
+            }
+        };
 
-    }
-
-    let ownerEmail = getOwnerEmail.email;
+        fetchEmail();
+    }, [item.ownerId, isSharePage]); // ירוץ רק כשה-ID משתנה
 
     return (
         <TouchableOpacity
@@ -67,7 +80,7 @@ export default function FileCard({ item, onPress, isTrash, isStarPage }) {
                 )}
 
                 {isSharePage && <Text style={[styles.fileDetails, { color: theme.colors.textSub, textAlign: locale === 'he' ? 'right' : 'left' }]}>
-                    {t("owner")} {ownerEmail}
+                    {t("Owner")}: {ownerEmail}
                 </Text>}
             </View>
 
