@@ -23,7 +23,7 @@
 
 ## Edit Picture Form
 
-![Edit Picture Form](task5_readme/edit_picture_form.jpg)  EDITING IAMGE PHOTO
+![Edit Picture Form](task5_readme/edit_picture_form.png)  
 **Edit Picture Form** – Allows replacing the image or deleting it .
 
 

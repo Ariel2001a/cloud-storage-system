@@ -2,7 +2,6 @@
 
 ![Side menu](task5_readme/side_menu.jpg)
 
-
 - It displays the **logged-in user’s profile**, including profile picture and email.
 - From the side menu, users can:
   - Create new files or folders using the **New Storage** button.
@@ -37,8 +36,6 @@
   - **Restore** the item.
   - **Delete forever** (permanent deletion).
 
-
-
 ## File Menu in Trash
 
 ![File Menu in Trash](task5_readme/file_menu_in_trash.jpg)
@@ -47,6 +44,14 @@
 - It provides actions specific to items in the Bin:  
   - **Restore** – move the item back to My Drive.  
   - **Delete Forever** – permanently remove the item from the system.  
+
+## File Menu in Starred
+
+![File Menu in Starred](task5_readme/file_menu_in_starred.png)
+
+- The file menu in Starred is accessed via the **three-dot icon** on starred items.  
+- It provides actions specific to items in the Starred page:  
+  - **Remove from Starred** – unmark the item as favorite.  
 
 
 ## Top Bar
