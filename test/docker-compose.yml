@@ -1,0 +1,29 @@
+# Docker Compose configuration to define and run multiple containers
+
+version: "3.9"
+
+services:
+  tests:
+
+   # Build the container from a Dockerfile
+    build:
+      context: ..
+      dockerfile: test/Dockerfile
+
+    # Attach a folder from the host to the container
+    volumes:
+      - ./newFiles:/usr/src/app/newFiles
+
+    # Connect the container to a custom network
+    networks:
+      - local
+
+
+# Define named volumes for persistent or shared storage
+volumes:
+  newFiles:
+
+# Define networks for communication between containers
+networks:
+  local:
+    driver: bridge

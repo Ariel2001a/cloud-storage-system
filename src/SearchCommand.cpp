@@ -1,33 +1,55 @@
-#include "SearchCommand.h"
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
+#include "SearchCommand.h"
+#include "Config.h"
+
+using namespace std;
+
 // Constructor: initializes the command with name "search"
 // Also stores pointer to Compressor and the folder path to search
-SearchCommand::SearchCommand(Compressor* compPtr, const std::string& folderPath)
-    : ICommand("search"), comp(compPtr), folder(folderPath) {}
+SearchCommand::SearchCommand(): ICommand(){}
 
 // Print the search results to the console
 // Results are printed in a single line separated by spaces
-void SearchCommand::printResults(const std::vector<std::string>& results) {
+string SearchCommand::resultsMessage(const std::vector<std::string>& results) {
+    string msg="";
     for (size_t i = 0; i < results.size(); ++i) {
-        std::cout << results[i];
-        if (i != results.size() - 1) std::cout << " ";
+        msg+=results[i];
+        if (i != results.size() - 1) msg+=" ";
     }
-    std::cout << std::endl;
+
+    return msg;
 }
 
 // Run function called by CommandManager
 // Takes the first argument as the search query and prints the results
-void SearchCommand::run(const std::vector<std::string>& args) {
-    if (args.empty()) return;
+string SearchCommand::run(const std::vector<std::string>& args) {
+    string query = args[0];
+    query.erase(query.find_last_not_of(" \r\n\t") + 1);
+    query.erase(0, query.find_first_not_of(" \r\n\t"));
 
-    std::vector<std::string> results = search(args[0]); // search for query in all files
-    printResults(results); // print matched filenames
+    std::vector<std::string> results = search(query); // search for query in all files
+    if (results.empty()) {
+        return LOGICAL_PROBLEM; // no results found
+    }
+    string msg= resultsMessage(results); // print matched filenames
+    return string(SUCCESS_SEARCH) + msg;
 }
 
+
+
+int avoid_duplicates (const std::string& filename, const std::vector<std::string>& results )
+{
+    if (std::find(results.begin(), results.end(), filename) == results.end())
+    {
+        return 1;
+    }
+    return 0;
+}
 
 
 // Search function: returns a vector of filenames containing the query
@@ -35,7 +57,7 @@ std::vector<std::string> SearchCommand::search(const std::string& query) {
     std::vector<std::string> results;
 
     namespace fs = std::filesystem;
-    fs::path dir(folder);
+    string dir = ICommand::GetFolderPath();
 
     // Iterate over all files in the directory
     for (const auto& entry : fs::directory_iterator(dir)) {
@@ -45,11 +67,11 @@ std::vector<std::string> SearchCommand::search(const std::string& query) {
         buffer << file.rdbuf();
         std::string fileContents = buffer.str();
 
-        // Decompress the content before searching
-        std::string temp = comp->decompress(fileContents);
+        std::string temp = Compressor::decompress(fileContents);
+        std::string temp_name = entry.path().filename();
 
         // If the query is found in the decompressed content, add filename to results
-        if (temp.find(query) != std::string::npos)
+        if ((temp.find(query) != std::string::npos) && avoid_duplicates(temp_name,results))
             results.push_back(entry.path().filename().string());
     }
 

@@ -1,6 +1,9 @@
 #include "ICommand.h"
 #include "AddCommand.h"
 #include "SearchCommand.h"
+#include "Compressor.h"
+#include "Config.h"
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -9,53 +12,51 @@
 #include <sys/stat.h>
 #include <filesystem>
 
-#include "Compressor.h"
-
-
 using namespace std;
 namespace fs = filesystem;
 
+// AddCommand constructor
+AddCommand::AddCommand() : ICommand() {}
 
-//AddCommand constructor
-AddCommand::AddCommand() : ICommand("add") {}
-
-//Execute add command
-void AddCommand::run(const vector<string>& args)
+// Execute add command
+string AddCommand::run(const vector<string> &args)
 {
-    string filename = args[0];
+
+    if (args.size() < 1)
+    {
+        return INVALID_COMMAND;
+    }
+
+    string fileId = args[0];
     string text;
 
     // Concatenate remaining arguments as text
-    for (size_t i = 1; i < args.size(); i++) {
+    for (size_t i = 1; i < args.size(); i++)
+    {
         text += args[i];
-        if (i + 1 < args.size()){ 
+        if (i + 1 < args.size())
+        {
             text += " ";
         }
     }
 
+    text.erase(text.find_last_not_of(" \n\r\t") + 1);
+    text.erase(0, text.find_first_not_of(" \n\r\t"));
+
     string compressed = Compressor::compress(text);
 
-    // Get directory from environment variable
-    const char* folder = getenv("EX1_DIR");
-    if (!folder){
-         return;
-    }
-
     // Create full file path
-    string fullPath = string(folder) + "/" + filename;
-
-    // Check if file already exists- do not overwrite
-    if (fs::exists(fullPath)) {
-        return;
-    }
-
+    string filePath = ICommand::GetFolderPath() + "/" + fileId;
 
     // Failed to open file for writing- abort
-    ofstream out(fullPath);
-    if (!out) {
-        return;
+    ofstream out(filePath);
+    if (!out)
+    {
+        return SERVER_ERROR;
     }
 
     out << compressed;
     out.close();
+
+    return SUCCESS_ADD;
 }

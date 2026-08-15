@@ -1,0 +1,105 @@
+import React from 'react';
+import "./FileTable.css";
+import { useState, useEffect } from 'react';
+import { FileRightClickMenu } from "../components/FileRightClickMenu";
+import { getUserDetails } from '../api/files.js';
+
+
+const formatFileSize = (bytes) => {
+    if (!bytes || bytes === 0) return "--";
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return "\u200e" + parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+};
+
+const OwnerInfo = ({ ownerId, isRtl }) => {
+    const [owner, setOwner] = useState(null);
+
+    useEffect(() => {
+        if (ownerId) {
+            getUserDetails(ownerId).then(setOwner).catch(console.error);
+        }
+    }, [ownerId]);
+
+    return (
+        <div className="owner-info">
+            <div className="owner-avatar-mini">
+                {owner?.first_name ? owner.first_name[0].toUpperCase() : "U"}
+            </div>
+            <span>{owner?.email || (isRtl ? "טוען..." : "Loading...")}</span>
+        </div>
+    );
+};
+
+
+export default function FileTableShred({ items, setItems, isLoading, isRtl, user, openItem }) {
+    const [menu, setMenu] = useState({
+        visible: false,
+        x: 0,
+        y: 0,
+        file: null
+    });
+
+
+    function handleRightClick(e, file) {
+        e.preventDefault();
+        setMenu({
+            visible: true,
+            x: e.clientX,
+            y: e.clientY,
+            file
+        });
+    };
+    return (
+        <div className={`table-container ${isRtl ? 'rtl' : 'ltr'}`}>
+            <table className="files-table">
+                <thead>
+                    <tr>
+                        <th>{isRtl ? "שם" : "Name"}</th>
+                        <th>{isRtl ? "בעלים" : "Owner"}</th>
+                        <th>{isRtl ? "שינוי אחרון" : "Last modified"}</th>
+                        <th>{isRtl ? "גודל קובץ" : "File size"}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {isLoading ? (
+                        <tr>
+                            <td colSpan="4" className="status-msg">
+                                {isRtl ? "טוען..." : "Loading..."}
+                            </td>
+                        </tr>
+                    ) : items.length > 0 ? (
+                        items.map(item => (
+                            <tr key={item.id} className="file-row" onClick={() => openItem(item)} onContextMenu={(e) => handleRightClick(e, item)}>
+                                <td className="col-name">
+                                    <span className="file-icon">{item.type === 'folder' ? '📁' : '📄'}</span>
+                                    {item.name}
+                                </td>
+                                <td className="col-owner">
+                                    <OwnerInfo ownerId={item.ownerId} isRtl={isRtl} />
+                                </td>
+                                <td className="col-date">
+                                    {item.date ? new Date(item.date).toLocaleDateString(isRtl ? 'he-IL' : 'en-US', {
+                                        day: '2-digit', month: '2-digit', year: 'numeric'
+                                    }) : "--"}
+                                </td>
+                                <td className="col-size">
+                                    {item.type === 'folder' ? '--' : formatFileSize(item.size)}
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="4" className="status-msg">
+                                {isRtl ? "אין קבצים להצגה" : "No files to show"}
+                            </td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+            <FileRightClickMenu menu={menu} setMenu={setMenu} items={items} setItems={setItems} isRTL={isRtl} />
+        </div>
+
+    );
+}
